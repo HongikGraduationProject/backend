@@ -11,8 +11,9 @@ spring:
     username: guest
     password: guest
 
-# RabbitMQ queue, exchange, routing-key ??
 rabbitmq:
-  queue.name: sample.queue
   exchange.name: sample.exchange
-  routing.key: sample.key
+  url.queue.name: url.queue
+  url.routing.key: url.key
+  summary.queue.name: summary.queue
+  summary.routing.key: summary.key

@@ -16,22 +16,28 @@ public class MessageService {
     @Value("${rabbitmq.exchange.name}")
     private String exchangeName;
 
-    @Value("${rabbitmq.routing.key}")
-    private String routingKey;
+    @Value("${rabbitmq.url.routing.key}")
+    private String urlRoutingKey;
 
+//    @Value("${rabbitmq.summary.queue.name}")
+//    private String summaryQueueName;
+//
+//    @Value("${rabbitmq.summary.routing.key}")
+//    private String summaryRoutingKey;
+//
     private final RabbitTemplate rabbitTemplate;
 
     public void sendMessage(MessageDto messageDto) {
         log.info("message sent: {}", messageDto.toString());
-        rabbitTemplate.convertAndSend(exchangeName, routingKey, messageDto);
+        rabbitTemplate.convertAndSend(exchangeName, urlRoutingKey, messageDto);
     }
 
     public void sendVideoUrlToQueue(VideoSummarizeRequest videoSummarizeRequest) {
         log.info("message sent: {}", videoSummarizeRequest.toString());
-        rabbitTemplate.convertAndSend(exchangeName, routingKey, videoSummarizeRequest);
+        rabbitTemplate.convertAndSend(exchangeName, urlRoutingKey, videoSummarizeRequest);
     }
 
-    @RabbitListener(queues = "${rabbitmq.queue.name}")
+    @RabbitListener(queues = "${rabbitmq.summary.queue.name}")
     public void receiveVideoUrlFromQueue(VideoSummarizeRequest videoSummarizeRequest) {
         log.info("Received message: {}", videoSummarizeRequest.toString());
     }
