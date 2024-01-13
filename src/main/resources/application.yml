@@ -1,0 +1,18 @@
+# Service Post ??
+server:
+  port: 8080
+
+
+# RabbitMQ ?? ??
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+# RabbitMQ queue, exchange, routing-key ??
+rabbitmq:
+  queue.name: sample.queue
+  exchange.name: sample.exchange
+  routing.key: sample.key

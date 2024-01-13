@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class VideoService {
+    private final MessageService messageService;
     public VideoSummarizeResponse summarizeVideo(VideoSummarizeRequest videoSummarizeRequest){
+        messageService.sendVideoUrlToQueue(videoSummarizeRequest);
         return new VideoSummarizeResponse(videoSummarizeRequest.getUrl());
     }
 }
