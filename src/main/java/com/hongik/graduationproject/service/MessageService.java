@@ -19,7 +19,7 @@ public class MessageService {
     @Value("${rabbitmq.url.routing.key}")
     private String urlRoutingKey;
 
-//    @Value("${rabbitmq.summary.queue.name}")
+    //    @Value("${rabbitmq.summary.queue.name}")
 //    private String summaryQueueName;
 //
 //    @Value("${rabbitmq.summary.routing.key}")
@@ -33,7 +33,7 @@ public class MessageService {
     }
 
     public void sendVideoUrlToQueue(VideoSummarizeRequest videoSummarizeRequest) {
-        log.info("message sent: {}", videoSummarizeRequest.toString());
+        log.info("video url sent queue, url = {}, uuid = {}", videoSummarizeRequest.getUrl(), videoSummarizeRequest.getUuid());
         rabbitTemplate.convertAndSend(exchangeName, urlRoutingKey, videoSummarizeRequest);
     }
 
