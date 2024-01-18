@@ -2,6 +2,9 @@ package com.hongik.graduationproject.service;
 
 import com.hongik.graduationproject.domain.dto.MessageDto;
 import com.hongik.graduationproject.domain.dto.video.VideoSummarizeRequest;
+import com.hongik.graduationproject.domain.dto.video.VideoSummaryMessage;
+import com.hongik.graduationproject.domain.entity.VideoSummary;
+import com.hongik.graduationproject.repository.VideoSummaryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -18,14 +21,8 @@ public class MessageService {
 
     @Value("${rabbitmq.url.routing.key}")
     private String urlRoutingKey;
-
-    //    @Value("${rabbitmq.summary.queue.name}")
-//    private String summaryQueueName;
-//
-//    @Value("${rabbitmq.summary.routing.key}")
-//    private String summaryRoutingKey;
-//
     private final RabbitTemplate rabbitTemplate;
+    private final VideoSummaryRepository videoSummaryRepository;
 
     public void sendMessage(MessageDto messageDto) {
         log.info("message sent: {}", messageDto.toString());
@@ -38,7 +35,8 @@ public class MessageService {
     }
 
     @RabbitListener(queues = "${rabbitmq.summary.queue.name}")
-    public void receiveVideoUrlFromQueue(VideoSummarizeRequest videoSummarizeRequest) {
-        log.info("Received message: {}", videoSummarizeRequest.toString());
+    public void receiveVideoUrlFromQueue(VideoSummaryMessage videoSummaryMessage) {
+        log.info("Received message: {}", videoSummaryMessage.toString());
+        videoSummaryRepository.save(new VideoSummary(videoSummaryMessage));
     }
 }

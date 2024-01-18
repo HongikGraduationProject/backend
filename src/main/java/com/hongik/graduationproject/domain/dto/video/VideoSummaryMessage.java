@@ -9,7 +9,11 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class VideoSummarizeRequest {
+public class VideoSummaryMessage {
     String uuid;
+    String title;
+    String description;
+    List<String> keywords;
     String url;
+    String summary;
 }

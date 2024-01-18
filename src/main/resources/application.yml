@@ -11,6 +11,11 @@ spring:
     username: guest
     password: guest
 
+  data:
+    mongodb:
+      uri: ${MONGODB_URI}
+      authentication-database: admin
+      database: ${MONGODB_DB_NAME}
 rabbitmq:
   exchange.name: sample.exchange
   url.queue.name: url.queue
