@@ -1,8 +1,7 @@
 package com.hongik.graduationproject.service;
 
-import com.hongik.graduationproject.domain.dto.MessageDto;
-import com.hongik.graduationproject.domain.dto.video.VideoSummarizeRequest;
-import com.hongik.graduationproject.domain.dto.video.VideoSummaryMessage;
+import com.hongik.graduationproject.domain.dto.video.VideoSummaryInitiateRequest;
+import com.hongik.graduationproject.domain.dto.video.VideoSummaryDto;
 import com.hongik.graduationproject.domain.entity.VideoSummary;
 import com.hongik.graduationproject.repository.VideoSummaryRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,19 +23,15 @@ public class MessageService {
     private final RabbitTemplate rabbitTemplate;
     private final VideoSummaryRepository videoSummaryRepository;
 
-    public void sendMessage(MessageDto messageDto) {
-        log.info("message sent: {}", messageDto.toString());
-        rabbitTemplate.convertAndSend(exchangeName, urlRoutingKey, messageDto);
-    }
 
-    public void sendVideoUrlToQueue(VideoSummarizeRequest videoSummarizeRequest) {
-        log.info("video url sent queue, url = {}, uuid = {}", videoSummarizeRequest.getUrl(), videoSummarizeRequest.getUuid());
-        rabbitTemplate.convertAndSend(exchangeName, urlRoutingKey, videoSummarizeRequest);
+    public void sendVideoUrlToQueue(VideoSummaryInitiateRequest videoSummaryInitiateRequest) {
+        log.info("video url sent queue, url = {}, uuid = {}", videoSummaryInitiateRequest.getUrl(), videoSummaryInitiateRequest.getUuid());
+        rabbitTemplate.convertAndSend(exchangeName, urlRoutingKey, videoSummaryInitiateRequest);
     }
 
     @RabbitListener(queues = "${rabbitmq.summary.queue.name}")
-    public void receiveVideoUrlFromQueue(VideoSummaryMessage videoSummaryMessage) {
-        log.info("Received message: {}", videoSummaryMessage.toString());
-        videoSummaryRepository.save(new VideoSummary(videoSummaryMessage));
+    public void receiveVideoUrlFromQueue(VideoSummaryDto videoSummaryDto) {
+        log.info("Received message: {}", videoSummaryDto.toString());
+        videoSummaryRepository.save(new VideoSummary(videoSummaryDto));
     }
 }
