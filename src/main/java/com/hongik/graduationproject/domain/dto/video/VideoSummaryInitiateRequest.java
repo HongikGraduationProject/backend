@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class VideoSummaryRequest {
+public class VideoSummaryInitiateRequest {
     String uuid;
     String url;
 }

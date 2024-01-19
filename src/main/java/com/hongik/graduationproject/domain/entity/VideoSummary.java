@@ -1,6 +1,6 @@
 package com.hongik.graduationproject.domain.entity;
 
-import com.hongik.graduationproject.domain.dto.video.VideoSummaryMessage;
+import com.hongik.graduationproject.domain.dto.video.VideoSummaryDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,12 +22,12 @@ public class VideoSummary {
     private String url;
     private String summary;
 
-    public VideoSummary(VideoSummaryMessage videoSummaryMessage) {
-        uuid = videoSummaryMessage.getUuid();
-        title = videoSummaryMessage.getTitle();
-        description = videoSummaryMessage.getDescription();
-        keywords = videoSummaryMessage.getKeywords();
-        url = videoSummaryMessage.getUrl();
-        summary = videoSummaryMessage.getSummary();
+    public VideoSummary(VideoSummaryDto videoSummaryDto) {
+        uuid = videoSummaryDto.getUuid();
+        title = videoSummaryDto.getTitle();
+        description = videoSummaryDto.getDescription();
+        keywords = videoSummaryDto.getKeywords();
+        url = videoSummaryDto.getUrl();
+        summary = videoSummaryDto.getSummary();
     }
 }

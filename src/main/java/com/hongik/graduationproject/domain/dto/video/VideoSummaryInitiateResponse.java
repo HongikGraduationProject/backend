@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class VideoSummaryResponse {
+public class VideoSummaryInitiateResponse {
     String uuid;
 }
