@@ -23,6 +23,10 @@ public class ApiResponse<T> {
         return new ApiResponse<>(SUCCESS_RESULT, null, null);
     }
 
+    public static ApiResponse<?> createSuccessWithMessage(String message) {
+        return new ApiResponse<>(SUCCESS_RESULT, message, null);
+    }
+
     public static ApiResponse<?> createError(String message) {
         return new ApiResponse<>(ERROR_RESULT, message, null);
     }
