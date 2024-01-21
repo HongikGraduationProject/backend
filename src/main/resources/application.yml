@@ -15,7 +15,7 @@ spring:
     mongodb:
       uri: ${MONGODB_URI}
       authentication-database: admin
-      database: ${MONGODB_DB_NAME}
+      database: ${MONGODB_DBNAME}
 rabbitmq:
   exchange.name: sample.exchange
   url.queue.name: url.queue
