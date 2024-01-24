@@ -6,7 +6,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -21,6 +23,10 @@ public class VideoSummary {
     private List<String> keywords;
     private String url;
     private String summary;
+    private String address;
+
+    @Field("created_at")
+    private LocalDateTime createdAt;
 
     public VideoSummary(VideoSummaryDto videoSummaryDto) {
         uuid = videoSummaryDto.getUuid();
@@ -29,5 +35,7 @@ public class VideoSummary {
         keywords = videoSummaryDto.getKeywords();
         url = videoSummaryDto.getUrl();
         summary = videoSummaryDto.getSummary();
+        address = videoSummaryDto.getAddress();
+        createdAt = LocalDateTime.now().plusHours(9);
     }
 }

@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -19,7 +20,11 @@ public class VideoSummaryDto {
     List<String> keywords;
     String url;
     String summary;
-    public static VideoSummaryDto toDto(VideoSummary videoSummary){
+    String address;
+    LocalDateTime createdAt;
+
+    public static VideoSummaryDto toDto(VideoSummary videoSummary) {
+        System.out.println("videoSummary = " + videoSummary.getCreatedAt());
         return VideoSummaryDto.builder()
                 .uuid(videoSummary.getUuid())
                 .title(videoSummary.getTitle())
@@ -27,6 +32,8 @@ public class VideoSummaryDto {
                 .keywords(videoSummary.getKeywords())
                 .url(videoSummary.getUrl())
                 .summary(videoSummary.getSummary())
+                .address(videoSummary.getAddress())
+                .createdAt(videoSummary.getCreatedAt().minusHours(9))
                 .build();
     }
 }
