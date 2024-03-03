@@ -6,6 +6,7 @@ server:
 # RabbitMQ ?? ??
 spring:
   rabbitmq:
+    host: localhost
     port: 5672
     username: guest
     password: guest
@@ -13,8 +14,7 @@ spring:
   data:
     mongodb:
       uri: ${MONGODB_URI}
-      authentication-database: admin
-      database: ${MONGODB_DBNAME}
+
 rabbitmq:
   exchange.name: sample.exchange
   url.queue.name: url.queue
