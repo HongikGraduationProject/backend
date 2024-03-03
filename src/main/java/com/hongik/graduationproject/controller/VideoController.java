@@ -3,7 +3,6 @@ package com.hongik.graduationproject.controller;
 import com.hongik.graduationproject.domain.dto.ApiResponse;
 import com.hongik.graduationproject.domain.dto.video.VideoSummaryDto;
 import com.hongik.graduationproject.domain.dto.video.VideoSummaryInitiateRequest;
-import com.hongik.graduationproject.repository.VideoSummaryRepository;
 import com.hongik.graduationproject.service.VideoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +21,7 @@ public class VideoController {
     }
 
     @GetMapping("/summary/status/{uuid}")
-    public ApiResponse<?> hi(@PathVariable(name = "uuid") String uuid) {
+    public ApiResponse<?> getSummarizeStatus(@PathVariable(name = "uuid") String uuid) {
         log.info("summarize status request uuid = {}", uuid);
         VideoSummaryDto videoSummaryDto = videoService.findByUuid(uuid);
         if (!(videoSummaryDto == null)) {
