@@ -5,8 +5,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class VideoSummarizeResponse {
-    String summary;
+@NoArgsConstructor
+public class VideoSummaryInitiateRequest {
+    String uuid;
+    String url;
 }

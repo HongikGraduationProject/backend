@@ -1,7 +1,9 @@
 package com.hongik.graduationproject.service;
 
-import com.hongik.graduationproject.domain.dto.MessageDto;
-import com.hongik.graduationproject.domain.dto.video.VideoSummarizeRequest;
+import com.hongik.graduationproject.domain.dto.video.VideoSummaryInitiateRequest;
+import com.hongik.graduationproject.domain.dto.video.VideoSummaryDto;
+import com.hongik.graduationproject.domain.entity.VideoSummary;
+import com.hongik.graduationproject.repository.VideoSummaryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -18,27 +20,18 @@ public class MessageService {
 
     @Value("${rabbitmq.url.routing.key}")
     private String urlRoutingKey;
-
-//    @Value("${rabbitmq.summary.queue.name}")
-//    private String summaryQueueName;
-//
-//    @Value("${rabbitmq.summary.routing.key}")
-//    private String summaryRoutingKey;
-//
     private final RabbitTemplate rabbitTemplate;
+    private final VideoSummaryRepository videoSummaryRepository;
 
-    public void sendMessage(MessageDto messageDto) {
-        log.info("message sent: {}", messageDto.toString());
-        rabbitTemplate.convertAndSend(exchangeName, urlRoutingKey, messageDto);
-    }
 
-    public void sendVideoUrlToQueue(VideoSummarizeRequest videoSummarizeRequest) {
-        log.info("message sent: {}", videoSummarizeRequest.toString());
-        rabbitTemplate.convertAndSend(exchangeName, urlRoutingKey, videoSummarizeRequest);
+    public void sendVideoUrlToQueue(VideoSummaryInitiateRequest videoSummaryInitiateRequest) {
+        log.info("video url sent queue, url = {}, uuid = {}", videoSummaryInitiateRequest.getUrl(), videoSummaryInitiateRequest.getUuid());
+        rabbitTemplate.convertAndSend(exchangeName, urlRoutingKey, videoSummaryInitiateRequest);
     }
 
     @RabbitListener(queues = "${rabbitmq.summary.queue.name}")
-    public void receiveVideoUrlFromQueue(VideoSummarizeRequest videoSummarizeRequest) {
-        log.info("Received message: {}", videoSummarizeRequest.toString());
+    public void receiveVideoUrlFromQueue(VideoSummaryDto videoSummaryDto) {
+        log.info("Received message: {}", videoSummaryDto.toString());
+        videoSummaryRepository.save(new VideoSummary(videoSummaryDto));
     }
 }
