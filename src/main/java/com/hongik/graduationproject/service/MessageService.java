@@ -32,6 +32,6 @@ public class MessageService {
     @RabbitListener(queues = "${rabbitmq.summary.queue.name}")
     public void receiveVideoUrlFromQueue(VideoSummaryDto videoSummaryDto) {
         log.info("Received message: {}", videoSummaryDto.toString());
-        videoSummaryRepository.save(new VideoSummary(videoSummaryDto));
+        videoSummaryRepository.save(VideoSummary.of(videoSummaryDto));
     }
 }

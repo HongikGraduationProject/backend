@@ -23,8 +23,8 @@ public class VideoSummaryDto {
     String address;
     LocalDateTime createdAt;
 
-    public static VideoSummaryDto toDto(VideoSummary videoSummary) {
-        System.out.println("videoSummary = " + videoSummary.getCreatedAt());
+
+    public static VideoSummaryDto from(VideoSummary videoSummary) {
         return VideoSummaryDto.builder()
                 .uuid(videoSummary.getUuid())
                 .title(videoSummary.getTitle())

@@ -27,15 +27,17 @@ public class VideoSummary {
 
     @Field("created_at")
     private LocalDateTime createdAt;
-
-    public VideoSummary(VideoSummaryDto videoSummaryDto) {
-        uuid = videoSummaryDto.getUuid();
-        title = videoSummaryDto.getTitle();
-        description = videoSummaryDto.getDescription();
-        keywords = videoSummaryDto.getKeywords();
-        url = videoSummaryDto.getUrl();
-        summary = videoSummaryDto.getSummary();
-        address = videoSummaryDto.getAddress();
-        createdAt = LocalDateTime.now().plusHours(9);
+    public static VideoSummary of(VideoSummaryDto videoSummaryDto) {
+        return VideoSummary
+                .builder()
+                .uuid(videoSummaryDto.getUuid())
+                .title(videoSummaryDto.getTitle())
+                .description(videoSummaryDto.getDescription())
+                .keywords(videoSummaryDto.getKeywords())
+                .url(videoSummaryDto.getUrl())
+                .summary(videoSummaryDto.getSummary())
+                .address(videoSummaryDto.getAddress())
+                .createdAt(LocalDateTime.now().plusHours(9))
+                .build();
     }
 }

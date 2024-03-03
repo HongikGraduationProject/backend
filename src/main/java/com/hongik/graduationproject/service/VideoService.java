@@ -26,6 +26,6 @@ public class VideoService {
 
     public VideoSummaryDto findByUuid(String uuid) {
         Optional<VideoSummary> videoSummary = videoSummaryRepository.findByUuid(uuid);
-        return videoSummary.map(VideoSummaryDto::toDto).orElse(null);
+        return VideoSummaryDto.from(videoSummary.get());
     }
 }
