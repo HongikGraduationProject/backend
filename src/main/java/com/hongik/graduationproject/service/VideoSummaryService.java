@@ -14,7 +14,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class VideoService {
+public class VideoSummaryService {
     private final MessageService messageService;
     private final VideoSummaryRepository videoSummaryRepository;
 
