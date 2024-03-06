@@ -23,13 +23,12 @@ public class VideoController {
     @GetMapping("/summary/status/{uuid}")
     public ApiResponse<?> getSummarizeStatus(@PathVariable(name = "uuid") String uuid) {
         log.info("summarize status request uuid = {}", uuid);
-        VideoSummaryDto videoSummaryDto = videoService.findByUuid(uuid);
-        if (!(videoSummaryDto == null)) {
-            log.info("summarize status response uuid = {}", videoSummaryDto.getUuid());
-            return ApiResponse.createSuccess(videoSummaryDto);
-        } else {
-            log.info("summarize status response uuid = not found", uuid);
-            return ApiResponse.createSuccessWithMessage("processing");
-        }
+        return ApiResponse.createSuccess(videoService.getStatus(uuid));
+    }
+
+    @GetMapping("/summary/{uuid}")
+    public ApiResponse<?> getSummaryByUuid(@PathVariable(name = "uuid") String uuid) {
+        log.info("summarize status request uuid = {}", uuid);
+        return ApiResponse.createSuccess(videoService.getVideoByUuid(uuid));
     }
 }
