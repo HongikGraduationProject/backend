@@ -17,12 +17,10 @@ import org.springframework.beans.factory.annotation.Value;
 public class MessageService {
     @Value("${rabbitmq.exchange.name}")
     private String exchangeName;
-
     @Value("${rabbitmq.url.routing.key}")
     private String urlRoutingKey;
     private final RabbitTemplate rabbitTemplate;
     private final VideoSummaryRepository videoSummaryRepository;
-
 
     public void sendVideoUrlToQueue(VideoSummaryInitiateRequest videoSummaryInitiateRequest) {
         log.info("Sent url: {}, uuid: {}", videoSummaryInitiateRequest.getUrl(), videoSummaryInitiateRequest.getUuid());
