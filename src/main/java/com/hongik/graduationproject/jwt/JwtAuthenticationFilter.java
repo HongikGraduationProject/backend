@@ -49,7 +49,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
-        return path.startsWith("/api/oauth");
+        return path.startsWith("/api/oauth") || path.startsWith("/api/test") ;
     }
 
     private String parseBearerToken(HttpServletRequest request){
