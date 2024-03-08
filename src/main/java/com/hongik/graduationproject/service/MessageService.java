@@ -25,7 +25,7 @@ public class MessageService {
 
 
     public void sendVideoUrlToQueue(VideoSummaryInitiateRequest videoSummaryInitiateRequest) {
-        log.info("video url sent queue, url = {}, uuid = {}", videoSummaryInitiateRequest.getUrl(), videoSummaryInitiateRequest.getUuid());
+        log.info("Sent url: {}, uuid: {}", videoSummaryInitiateRequest.getUrl(), videoSummaryInitiateRequest.getUuid());
         rabbitTemplate.convertAndSend(exchangeName, urlRoutingKey, videoSummaryInitiateRequest);
     }
 
