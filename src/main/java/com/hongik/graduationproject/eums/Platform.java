@@ -9,6 +9,6 @@ public enum Platform {
     YOUTUBE("YOUTUBE"),
     INSTAGRAM("INSTAGRAM"),
     TIKTOK("TIKTOK");
-    private final String platform;
+    private final String name;
 
 }
