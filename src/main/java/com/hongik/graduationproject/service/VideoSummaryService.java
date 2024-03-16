@@ -45,7 +45,9 @@ public class VideoSummaryService {
         if (platformName.equals(YOUTUBE.getName())) {
             Pattern pattern = Pattern.compile(youtubeIdRegex);
             Matcher matcher = pattern.matcher(url);
-            return matcher.group(3);
+            if (matcher.find()) {
+                return matcher.group(3);
+            }
         } else if (platformName.equals(INSTAGRAM.getName())) {
 
         }
