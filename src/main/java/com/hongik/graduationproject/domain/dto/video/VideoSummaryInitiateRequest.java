@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class VideoSummaryInitiateRequest {
-    String uuid;
+    String videoCode;
     String url;
 }
