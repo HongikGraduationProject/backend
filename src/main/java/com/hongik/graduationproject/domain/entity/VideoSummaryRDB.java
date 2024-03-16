@@ -21,7 +21,7 @@ public class VideoSummaryRDB {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "video_summary_id")
-    private Long videoSummaryId;
+    private Long id;
     private String title;
     private String description;
     private String keywords;
