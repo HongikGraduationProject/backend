@@ -45,6 +45,9 @@ dependencies {
     // MySQL
     runtimeOnly 'com.mysql:mysql-connector-j'
 
+    // redis
+    implementation group: 'org.springframework.data', name: 'spring-data-redis', version: '3.2.3'
+
 }
 
 jar {
