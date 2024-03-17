@@ -45,10 +45,13 @@ public class VideoSummaryRDB {
 
     private static String listToString(List<String> keywords) {
         StringBuilder sb = new StringBuilder();
-        for (String keyword : keywords) {
-            sb.append(keyword).append(',');
+        if (keywords != null && !keywords.isEmpty()) {
+            for (String keyword : keywords) {
+                sb.append(keyword).append(',');
+            }
+            return sb.substring(0, sb.length() - 2);
+        } else {
+            return "";
         }
-
-        return sb.substring(0, sb.length() - 2);
     }
 }
