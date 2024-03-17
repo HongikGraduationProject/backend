@@ -1,4 +1,4 @@
-package com.hongik.graduationproject.domain.entity;
+package com.hongik.graduationproject.domain.entity.cache;
 
 import jakarta.persistence.Index;
 import lombok.AllArgsConstructor;

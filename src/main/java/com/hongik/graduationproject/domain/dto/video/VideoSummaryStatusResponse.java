@@ -1,6 +1,6 @@
 package com.hongik.graduationproject.domain.dto.video;
 
-import com.hongik.graduationproject.domain.entity.VideoSummaryStatusCache;
+import com.hongik.graduationproject.domain.entity.cache.VideoSummaryStatusCache;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -1,7 +1,7 @@
 package com.hongik.graduationproject.repository;
 
 
-import com.hongik.graduationproject.domain.entity.VideoSummaryStatusCache;
+import com.hongik.graduationproject.domain.entity.cache.VideoSummaryStatusCache;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;
