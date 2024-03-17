@@ -51,7 +51,4 @@ public class MessageService {
         videoSummaryStatusCacheRepository.save(statusCache);
     }
 
-    private void updateStatusCache() {
-
-    }
 }
