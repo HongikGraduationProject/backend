@@ -11,10 +11,6 @@ spring:
     username: guest
     password: guest
 
-  data:
-    mongodb:
-      uri: ${MONGODB_URI}
-
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: ${DB_URI}
