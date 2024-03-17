@@ -1,6 +1,7 @@
 package com.hongik.graduationproject.domain.entity;
 
 import com.hongik.graduationproject.domain.dto.video.VideoSummaryDto;
+import com.hongik.graduationproject.domain.entity.global.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,7 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class VideoSummaryRDB {
+public class VideoSummaryRDB extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "video_summary_id")
@@ -29,12 +30,12 @@ public class VideoSummaryRDB {
     private String url;
     private String summary;
     private String address;
-    @CreatedDate
-    private LocalDateTime createdAt;
+    private String videoCode;
 
     public static VideoSummaryRDB of(VideoSummaryDto videoSummaryDto) {
         return VideoSummaryRDB
                 .builder()
+                .videoCode(videoSummaryDto.getVideoCode())
                 .title(videoSummaryDto.getTitle())
                 .description(videoSummaryDto.getDescription())
                 .keywords(listToString(videoSummaryDto.getKeywords()))
