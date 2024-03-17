@@ -1,15 +1,18 @@
 package com.hongik.graduationproject.service;
 
+import com.hongik.graduationproject.domain.dto.video.VideoSummaryDto;
 import com.hongik.graduationproject.domain.dto.video.VideoSummaryInitiateRequest;
 import com.hongik.graduationproject.domain.dto.video.VideoSummaryInitiateResponse;
 import com.hongik.graduationproject.domain.dto.video.VideoSummaryStatusResponse;
-import com.hongik.graduationproject.domain.entity.VideoSummaryStatusCache;
+import com.hongik.graduationproject.domain.entity.VideoSummaryRDB;
+import com.hongik.graduationproject.domain.entity.cache.VideoSummaryStatusCache;
 import com.hongik.graduationproject.eums.Platform;
 import com.hongik.graduationproject.repository.VideoSummaryRepository;
 import com.hongik.graduationproject.repository.VideoSummaryStatusCacheRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,12 +35,13 @@ public class VideoSummaryService {
         return new VideoSummaryInitiateResponse(videoCode);
     }
 
-//    public VideoSummaryDto getVideoByUuid(String uuid) {
-//        Optional<VideoSummary> videoSummary = videoSummaryRepository.findByid/uuid);
-//        return VideoSummaryDto.from(videoSummary.get());
-//    }
-//
+    public VideoSummaryDto getVideoSummaryById(Long videoSummaryId) {
+        Optional<VideoSummaryRDB> videoSummary = videoSummaryRepository.findById(videoSummaryId);
+        return VideoSummaryDto.from(videoSummary.get());
+    }
+
     public VideoSummaryStatusResponse getStatus(String videoCode) {
+        videoSummaryRepository.findById(8L);
         return VideoSummaryStatusResponse.from(videoSummaryStatusCacheRepository.findById(videoCode).get());
     }
 

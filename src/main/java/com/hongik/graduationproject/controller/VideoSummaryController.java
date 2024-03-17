@@ -25,10 +25,10 @@ public class VideoSummaryController {
         log.info("summarize status request videoCode = {}", videoCode);
         return ApiResponse.createSuccess(videoSummaryService.getStatus(videoCode));
     }
-//
-//    @GetMapping("/summaries/{uuid}")
-//    public ApiResponse<?> getSummaryByUuid(@PathVariable(name = "uuid") String uuid) {
-//        log.info("summary requested uuid = {}", uuid);
-//        return ApiResponse.createSuccess(videoSummaryService.getVideoByUuid(uuid));
-//    }
+
+    @GetMapping("/summaries/{videoSummaryId}")
+    public ApiResponse<?> getSummaryByVideoSummaryId(@PathVariable(name = "videoSummaryId") Long videoSummaryId) {
+        log.info("summary requested videoSummaryId = {}", videoSummaryId);
+        return ApiResponse.createSuccess(videoSummaryService.getVideoSummaryById(videoSummaryId));
+    }
 }
