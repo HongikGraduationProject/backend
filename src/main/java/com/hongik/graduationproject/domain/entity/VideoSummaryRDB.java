@@ -23,6 +23,7 @@ public class VideoSummaryRDB {
     @Column(name = "video_summary_id")
     private Long id;
     private String title;
+    @Column(length = 500)
     private String description;
     private String keywords;
     private String url;

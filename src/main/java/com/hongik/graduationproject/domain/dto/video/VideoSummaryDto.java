@@ -1,5 +1,7 @@
 package com.hongik.graduationproject.domain.dto.video;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hongik.graduationproject.domain.entity.VideoSummary;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +16,8 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class VideoSummaryDto {
-    String uuid;
+    @JsonProperty("video_code")
+    String videoCode;
     String title;
     String description;
     List<String> keywords;
@@ -24,16 +27,18 @@ public class VideoSummaryDto {
     LocalDateTime createdAt;
 
 
-    public static VideoSummaryDto from(VideoSummary videoSummary) {
-        return VideoSummaryDto.builder()
-                .uuid(videoSummary.getUuid())
-                .title(videoSummary.getTitle())
-                .description(videoSummary.getDescription())
-                .keywords(videoSummary.getKeywords())
-                .url(videoSummary.getUrl())
-                .summary(videoSummary.getSummary())
-                .address(videoSummary.getAddress())
-                .createdAt(videoSummary.getCreatedAt().minusHours(9))
-                .build();
-    }
+//    public static VideoSummaryDto from(VideoSummary videoSummary) {
+//        return VideoSummaryDto.builder()
+//                .videoCode(videoSummary.())
+//                .title(videoSummary.getTitle())
+//                .description(videoSummary.getDescription())
+//                .keywords(videoSummary.getKeywords())
+//                .url(videoSummary.getUrl())
+//                .summary(videoSummary.getSummary())
+//                .address(videoSummary.getAddress())
+//                .createdAt(videoSummary.getCreatedAt().minusHours(9))
+//                .build();
+//    }
+//
+
 }

@@ -25,4 +25,12 @@ public class VideoSummaryStatusCache {
         this.videoSummaryId = -1L;
         this.status = "PROCESSING";
     }
+
+    public void updateStatus(String status) {
+        this.status = status;
+    }
+
+    public void updateVideoSummaryId(Long videoSummaryId) {
+        this.videoSummaryId = videoSummaryId;
+    }
 }
