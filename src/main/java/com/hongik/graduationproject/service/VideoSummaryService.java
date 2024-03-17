@@ -41,7 +41,6 @@ public class VideoSummaryService {
     }
 
     public VideoSummaryStatusResponse getStatus(String videoCode) {
-        videoSummaryRepository.findById(8L);
         return VideoSummaryStatusResponse.from(videoSummaryStatusCacheRepository.findById(videoCode).get());
     }
 
