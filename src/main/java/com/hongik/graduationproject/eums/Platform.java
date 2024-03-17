@@ -6,9 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum Platform {
-    YOUTUBE("YOUTUBE"),
-    INSTAGRAM("INSTAGRAM"),
-    TIKTOK("TIKTOK");
-    private final String name;
-
+    YOUTUBE,
+    INSTAGRAM,
+    TIKTOK
 }
