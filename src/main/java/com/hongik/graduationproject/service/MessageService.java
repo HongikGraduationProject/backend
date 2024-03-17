@@ -2,9 +2,8 @@ package com.hongik.graduationproject.service;
 
 import com.hongik.graduationproject.domain.dto.video.VideoSummaryInitiateRequest;
 import com.hongik.graduationproject.domain.dto.video.VideoSummaryDto;
-import com.hongik.graduationproject.domain.entity.VideoSummary;
 import com.hongik.graduationproject.domain.entity.VideoSummaryRDB;
-import com.hongik.graduationproject.domain.entity.VideoSummaryStatusCache;
+import com.hongik.graduationproject.domain.entity.cache.VideoSummaryStatusCache;
 import com.hongik.graduationproject.repository.VideoSummaryRepository;
 import com.hongik.graduationproject.repository.VideoSummaryStatusCacheRepository;
 import lombok.RequiredArgsConstructor;
@@ -46,8 +45,10 @@ public class MessageService {
 
     private void updateStatusCache(VideoSummaryDto videoSummaryDto, VideoSummaryRDB savedVideoSummary) {
         VideoSummaryStatusCache statusCache = videoSummaryStatusCacheRepository.findByVideoCode(videoSummaryDto.getVideoCode()).get();
+
         statusCache.updateStatus("COMPLETE");
         statusCache.updateVideoSummaryId(savedVideoSummary.getId());
+
         videoSummaryStatusCacheRepository.save(statusCache);
     }
 
