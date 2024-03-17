@@ -2,8 +2,11 @@ package com.hongik.graduationproject.service;
 
 import com.hongik.graduationproject.domain.dto.video.VideoSummaryInitiateRequest;
 import com.hongik.graduationproject.domain.dto.video.VideoSummaryInitiateResponse;
+import com.hongik.graduationproject.domain.dto.video.VideoSummaryStatusResponse;
+import com.hongik.graduationproject.domain.entity.VideoSummaryStatusCache;
 import com.hongik.graduationproject.eums.Platform;
 import com.hongik.graduationproject.repository.VideoSummaryRepository;
+import com.hongik.graduationproject.repository.VideoSummaryStatusCacheRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +20,7 @@ import static com.hongik.graduationproject.eums.Platform.*;
 public class VideoSummaryService {
     private final MessageService messageService;
     private final VideoSummaryRepository videoSummaryRepository;
+    private final VideoSummaryStatusCacheRepository videoSummaryStatusCacheRepository;
 
     public VideoSummaryInitiateResponse sendUrlToQueue(VideoSummaryInitiateRequest videoSummaryInitiateRequest) {
         String videoCode = generateVideoCode(videoSummaryInitiateRequest.getUrl());
@@ -24,7 +28,7 @@ public class VideoSummaryService {
         videoSummaryInitiateRequest.setVideoCode(videoCode);
         messageService.sendVideoUrlToQueue(videoSummaryInitiateRequest);
 
-
+        videoSummaryStatusCacheRepository.save(new VideoSummaryStatusCache(videoCode));
         return new VideoSummaryInitiateResponse(videoCode);
     }
 
@@ -33,9 +37,9 @@ public class VideoSummaryService {
 //        return VideoSummaryDto.from(videoSummary.get());
 //    }
 //
-//    public VideoSummaryStatusResponse getStatus(String uuid) {
-//        return new VideoSummaryStatusResponse(videoSummaryRepository.existsById(uuid) ? "COMPLETE" : "PROCESSING");
-//    }
+    public VideoSummaryStatusResponse getStatus(String videoCode) {
+        return VideoSummaryStatusResponse.from(videoSummaryStatusCacheRepository.findById(videoCode).get());
+    }
 
     private String generateVideoCode(String url) {
         Platform platform = getVideoPlatform(url);

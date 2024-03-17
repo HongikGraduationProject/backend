@@ -9,25 +9,26 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api")
 @Slf4j
 public class VideoSummaryController {
     private final VideoSummaryService videoSummaryService;
 
-    @PostMapping("/summary/initiate")
+    @PostMapping("/summaries/initiate")
     public ApiResponse<?> summarizeVideo(@RequestBody VideoSummaryInitiateRequest videoSummaryInitiateRequest) {
         log.info("summarize initiate video url={}", videoSummaryInitiateRequest.getUrl());
         return ApiResponse.createSuccess(videoSummaryService.sendUrlToQueue(videoSummaryInitiateRequest));
     }
 
-    @GetMapping("/summary/status/{uuid}")
-    public ApiResponse<?> getSummarizeStatus(@PathVariable(name = "uuid") String uuid) {
-        log.info("summarize status request uuid = {}", uuid);
-        return ApiResponse.createSuccess(videoSummaryService.getStatus(uuid));
+    @GetMapping("/summaries/status/{videoCode}")
+    public ApiResponse<?> getSummarizeStatus(@PathVariable(name = "videoCode") String videoCode) {
+        log.info("summarize status request videoCode = {}", videoCode);
+        return ApiResponse.createSuccess(videoSummaryService.getStatus(videoCode));
     }
-
-    @GetMapping("/summary/{uuid}")
-    public ApiResponse<?> getSummaryByUuid(@PathVariable(name = "uuid") String uuid) {
-        log.info("summary requested uuid = {}", uuid);
-        return ApiResponse.createSuccess(videoSummaryService.getVideoByUuid(uuid));
-    }
+//
+//    @GetMapping("/summaries/{uuid}")
+//    public ApiResponse<?> getSummaryByUuid(@PathVariable(name = "uuid") String uuid) {
+//        log.info("summary requested uuid = {}", uuid);
+//        return ApiResponse.createSuccess(videoSummaryService.getVideoByUuid(uuid));
+//    }
 }
