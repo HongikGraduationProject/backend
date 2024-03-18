@@ -29,10 +29,8 @@ public class KakaoAuthService implements AuthService {
     public ApiResponse<?> loginUser(AuthRequestDto authRequestDto) {
 
         KaKaoRequestDto kakaoRequestDto = (KaKaoRequestDto) authRequestDto;
-        String accessToken = kakaoRequestDto.getAccessToken();
 
-        OauthToken oauthToken = getAccessToken(accessToken);
-        KaKaoProfile kakaoProfile = getKaKaoProfile(oauthToken.getAccessToken());
+        KaKaoProfile kakaoProfile = getKaKaoProfile(kakaoRequestDto.getAccessToken());
         User user = userRepository.findByEmail(kakaoProfile.getKakao_account().getEmail());
 
         if (user == null) {
@@ -99,11 +97,11 @@ public class KakaoAuthService implements AuthService {
 
         ResponseEntity<String> kakaoProfileResponse = restTemplate.exchange(
                 "https://kapi.kakao.com/v2/user/me",
-                HttpMethod.POST,
+                HttpMethod.GET,
                 kakaoProfileRequest,
                 String.class
         );
-
+        System.out.println(kakaoProfileResponse.getBody().toString());
         ObjectMapper objectMapper = new ObjectMapper();
         KaKaoProfile kakaoProfile = null;
         try {
