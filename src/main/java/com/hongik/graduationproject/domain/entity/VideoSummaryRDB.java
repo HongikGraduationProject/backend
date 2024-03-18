@@ -24,11 +24,11 @@ public class VideoSummaryRDB extends BaseTimeEntity {
     @Column(name = "video_summary_id")
     private Long id;
     private String title;
-    @Column(length = 1000)
+    @Column(length = 2000)
     private String description;
     private String keywords;
     private String url;
-    @Column(length = 1000)
+    @Column(length = 2000)
     private String summary;
     private String address;
     private String videoCode;
