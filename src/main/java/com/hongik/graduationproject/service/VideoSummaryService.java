@@ -28,10 +28,19 @@ public class VideoSummaryService {
     public VideoSummaryInitiateResponse sendUrlToQueue(VideoSummaryInitiateRequest videoSummaryInitiateRequest) {
         String videoCode = generateVideoCode(videoSummaryInitiateRequest.getUrl());
 
-        videoSummaryInitiateRequest.setVideoCode(videoCode);
-        messageService.sendVideoUrlToQueue(videoSummaryInitiateRequest);
+        if (!videoSummaryStatusCacheRepository.existsById(videoCode)) {
+            if (videoSummaryRepository.existsByVideoCode(videoCode)) {
+                Long id = videoSummaryRepository.findByVideoCode(videoCode).get().getId();
 
-        videoSummaryStatusCacheRepository.save(new VideoSummaryStatusCache(videoCode));
+                videoSummaryStatusCacheRepository.save(new VideoSummaryStatusCache(videoCode, id, "COMPLETE"));
+            } else {
+                videoSummaryInitiateRequest.setVideoCode(videoCode);
+                messageService.sendVideoUrlToQueue(videoSummaryInitiateRequest);
+
+                videoSummaryStatusCacheRepository.save(new VideoSummaryStatusCache(videoCode, -1L, "PROCESSING"));
+            }
+        }
+
         return new VideoSummaryInitiateResponse(videoCode);
     }
 
@@ -41,7 +50,8 @@ public class VideoSummaryService {
     }
 
     public VideoSummaryStatusResponse getStatus(String videoCode) {
-        return VideoSummaryStatusResponse.from(videoSummaryStatusCacheRepository.findById(videoCode).get());
+        VideoSummaryStatusCache statusCache = videoSummaryStatusCacheRepository.findById(videoCode).get();
+        return VideoSummaryStatusResponse.from(statusCache);
     }
 
     private String generateVideoCode(String url) {

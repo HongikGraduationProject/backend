@@ -15,16 +15,9 @@ import org.springframework.data.redis.core.index.Indexed;
 @RedisHash(value = "videoSummaryStatus")
 public class VideoSummaryStatusCache {
     @Id
-    @Indexed
     private String videoCode;
     private Long videoSummaryId;
     private String status;
-
-    public VideoSummaryStatusCache(String videoCode) {
-        this.videoCode = videoCode;
-        this.videoSummaryId = -1L;
-        this.status = "PROCESSING";
-    }
 
     public void updateStatus(String status) {
         this.status = status;

@@ -44,7 +44,7 @@ public class MessageService {
     }
 
     private void updateStatusCache(VideoSummaryDto videoSummaryDto, VideoSummaryRDB savedVideoSummary) {
-        VideoSummaryStatusCache statusCache = videoSummaryStatusCacheRepository.findByVideoCode(videoSummaryDto.getVideoCode()).get();
+        VideoSummaryStatusCache statusCache = videoSummaryStatusCacheRepository.findById(videoSummaryDto.getVideoCode()).get();
 
         statusCache.updateStatus("COMPLETE");
         statusCache.updateVideoSummaryId(savedVideoSummary.getId());
