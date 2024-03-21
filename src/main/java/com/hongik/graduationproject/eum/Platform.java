@@ -1,4 +1,4 @@
-package com.hongik.graduationproject.eums;
+package com.hongik.graduationproject.eum;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

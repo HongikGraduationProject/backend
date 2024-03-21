@@ -6,7 +6,7 @@ import com.hongik.graduationproject.domain.dto.video.VideoSummaryInitiateRespons
 import com.hongik.graduationproject.domain.dto.video.VideoSummaryStatusResponse;
 import com.hongik.graduationproject.domain.entity.VideoSummary;
 import com.hongik.graduationproject.domain.entity.cache.VideoSummaryStatusCache;
-import com.hongik.graduationproject.eums.Platform;
+import com.hongik.graduationproject.eum.Platform;
 import com.hongik.graduationproject.repository.VideoSummaryRepository;
 import com.hongik.graduationproject.repository.VideoSummaryStatusCacheRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.hongik.graduationproject.eums.Platform.*;
+import static com.hongik.graduationproject.eum.Platform.*;
 
 @Service
 @RequiredArgsConstructor
