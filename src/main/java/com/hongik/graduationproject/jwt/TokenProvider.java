@@ -17,7 +17,7 @@ public class TokenProvider implements InitializingBean {
 
     private static final String SECURITY_KEY = "jwtseckey!@";
 
-    public String create (String id){
+    public String create (Long id){
         Date exprTime = Date.from(Instant.now().plus(1, ChronoUnit.HOURS));
 
         Date refreshExprTime = Date.from(Instant.now().plus(REFRESH_TOKEN_EXPIRATION, ChronoUnit.MILLIS));

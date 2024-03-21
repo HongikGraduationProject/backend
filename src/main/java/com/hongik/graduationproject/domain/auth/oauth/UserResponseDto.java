@@ -1,4 +1,4 @@
-package com.hongik.graduationproject.domain.oauth;
+package com.hongik.graduationproject.domain.auth.oauth;
 
 import com.hongik.graduationproject.domain.entity.User;
 import lombok.AllArgsConstructor;
@@ -8,10 +8,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class KaKaoResponseDto {
+public class UserResponseDto {
 
-    String accessToken;
-    String refreshToken;
-    int exprTime;
+    private String accessToken;
+    private String refreshToken;
+    private int exprTime;
     User user;
 }

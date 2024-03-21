@@ -1,4 +1,4 @@
-package com.hongik.graduationproject.domain.oauth;
+package com.hongik.graduationproject.domain.auth.oauth;
 
 import lombok.Value;
 
