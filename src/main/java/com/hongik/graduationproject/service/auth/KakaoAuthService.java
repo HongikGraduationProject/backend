@@ -36,8 +36,13 @@ public class KakaoAuthService implements AuthService {
     public ApiResponse<?> loginUser(AuthRequestDto authRequestDto) {
 
         KaKaoRequestDto kakaoRequestDto = (KaKaoRequestDto) authRequestDto;
-
         KaKaoProfile kakaoProfile = getKaKaoProfile(kakaoRequestDto.getAccessToken());
+
+        if (kakaoProfile == null || kakaoProfile.getKakao_account() == null) {
+            logger.error("Kakao profile or account information is null");
+            return ApiResponse.createError("Failed to retrieve Kakao profile or account information");
+        }
+
         User user = userRepository.findByEmail(kakaoProfile.getKakao_account().getEmail());
 
         if (user == null) {
@@ -62,7 +67,6 @@ public class KakaoAuthService implements AuthService {
     private OauthToken getAccessToken(String accessToken) {
 
         RestTemplate restTemplate = new RestTemplate();
-
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
@@ -81,12 +85,11 @@ public class KakaoAuthService implements AuthService {
                 String.class
         );
 
-        ObjectMapper objectMapper = new ObjectMapper();
         OauthToken oauthToken = null;
         try {
             oauthToken = objectMapper.readValue(accessTokenResponse.getBody(), OauthToken.class);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            logger.error("Failed to parse access token response: {}", e.getMessage());
         }
 
         return oauthToken;
@@ -98,7 +101,7 @@ public class KakaoAuthService implements AuthService {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + token);
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
-        System.out.println("token = " + token);
+
         HttpEntity<MultiValueMap<String, String>> kakaoProfileRequest =
                 new HttpEntity<>(headers);
 
