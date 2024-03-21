@@ -2,16 +2,14 @@ package com.hongik.graduationproject.domain.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
 @Getter
 @Entity
 @Builder
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Table(name = "user")
 public class User {
