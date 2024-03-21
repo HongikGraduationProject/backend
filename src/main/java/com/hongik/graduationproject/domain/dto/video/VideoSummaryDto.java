@@ -1,9 +1,7 @@
 package com.hongik.graduationproject.domain.dto.video;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hongik.graduationproject.domain.entity.VideoSummary;
-import com.hongik.graduationproject.domain.entity.VideoSummaryRDB;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,7 +26,7 @@ public class VideoSummaryDto {
     String address;
     LocalDateTime createdAt;
 
-    public static VideoSummaryDto from(VideoSummaryRDB videoSummary) {
+    public static VideoSummaryDto from(VideoSummary videoSummary) {
         return VideoSummaryDto.builder()
                 .videoCode(videoSummary.getVideoCode())
                 .title(videoSummary.getTitle())

@@ -4,7 +4,7 @@ import com.hongik.graduationproject.domain.dto.video.VideoSummaryDto;
 import com.hongik.graduationproject.domain.dto.video.VideoSummaryInitiateRequest;
 import com.hongik.graduationproject.domain.dto.video.VideoSummaryInitiateResponse;
 import com.hongik.graduationproject.domain.dto.video.VideoSummaryStatusResponse;
-import com.hongik.graduationproject.domain.entity.VideoSummaryRDB;
+import com.hongik.graduationproject.domain.entity.VideoSummary;
 import com.hongik.graduationproject.domain.entity.cache.VideoSummaryStatusCache;
 import com.hongik.graduationproject.eums.Platform;
 import com.hongik.graduationproject.repository.VideoSummaryRepository;
@@ -45,7 +45,7 @@ public class VideoSummaryService {
     }
 
     public VideoSummaryDto getVideoSummaryById(Long videoSummaryId) {
-        Optional<VideoSummaryRDB> videoSummary = videoSummaryRepository.findById(videoSummaryId);
+        Optional<VideoSummary> videoSummary = videoSummaryRepository.findById(videoSummaryId);
         return VideoSummaryDto.from(videoSummary.get());
     }
 
