@@ -45,6 +45,13 @@ dependencies {
     // MySQL
     runtimeOnly 'com.mysql:mysql-connector-j'
 
+    // redis
+    implementation group: 'org.springframework.data', name: 'spring-data-redis', version: '3.2.3'
+    implementation 'io.lettuce:lettuce-core:6.2.6.RELEASE'
+
+    // swagger
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
+
 }
 
 jar {
