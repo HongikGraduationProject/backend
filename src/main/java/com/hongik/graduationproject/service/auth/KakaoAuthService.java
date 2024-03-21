@@ -3,7 +3,7 @@ package com.hongik.graduationproject.service.auth;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hongik.graduationproject.domain.auth.oauth.OauthToken;
-import com.hongik.graduationproject.domain.dto.ApiResponse;
+import com.hongik.graduationproject.domain.dto.Response;
 import com.hongik.graduationproject.domain.dto.AuthRequestDto;
 import com.hongik.graduationproject.domain.dto.KaKaoResponseDto;
 import com.hongik.graduationproject.domain.entity.User;
@@ -33,14 +33,14 @@ public class KakaoAuthService implements AuthService {
     private final ObjectMapper objectMapper;
 
     @Override
-    public ApiResponse<?> loginUser(AuthRequestDto authRequestDto) {
+    public Response<?> loginUser(AuthRequestDto authRequestDto) {
 
         KaKaoRequestDto kakaoRequestDto = (KaKaoRequestDto) authRequestDto;
         KaKaoProfile kakaoProfile = getKaKaoProfile(kakaoRequestDto.getAccessToken());
 
         if (kakaoProfile == null || kakaoProfile.getKakao_account() == null) {
             logger.error("Kakao profile or account information is null");
-            return ApiResponse.createError("Failed to retrieve Kakao profile or account information");
+            return Response.createError("Failed to retrieve Kakao profile or account information");
         }
 
         User user = userRepository.findByEmail(kakaoProfile.getKakao_account().getEmail());
@@ -58,10 +58,10 @@ public class KakaoAuthService implements AuthService {
             int exprTime = 3600000;
 
             KaKaoResponseDto kaKaoResponseDto = new KaKaoResponseDto(newAccessToken, refreshToken, exprTime, user);
-            return ApiResponse.createSuccess(kaKaoResponseDto);
+            return Response.createSuccess(kaKaoResponseDto);
         }
 
-        return ApiResponse.createError("User already exists");
+        return Response.createError("User already exists");
     }
 
     private OauthToken getAccessToken(String accessToken) {

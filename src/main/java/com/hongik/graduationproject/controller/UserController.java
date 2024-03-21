@@ -15,7 +15,7 @@ public class UserController {
 
     @PostMapping("/oauth/token")
     public Response<?> getLogin(@RequestBody KaKaoRequestDto kaKaoRequestDto){
-        return Response.createSuccess(authService.loginUser(kaKaoRequestDto));
+        return authService.loginUser(kaKaoRequestDto);
     }
 
 }
