@@ -12,18 +12,25 @@ import com.hongik.graduationproject.domain.auth.oauth.KaKaoProfile;
 import com.hongik.graduationproject.jwt.TokenProvider;
 import com.hongik.graduationproject.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class KakaoAuthService implements AuthService {
 
     private final UserRepository userRepository;
     private final TokenProvider tokenProvider;
+    private final Logger logger = LoggerFactory.getLogger(KakaoAuthService.class);
+    private final ObjectMapper objectMapper;
 
     @Override
     public ApiResponse<?> loginUser(AuthRequestDto authRequestDto) {
@@ -95,20 +102,17 @@ public class KakaoAuthService implements AuthService {
         HttpEntity<MultiValueMap<String, String>> kakaoProfileRequest =
                 new HttpEntity<>(headers);
 
-        ResponseEntity<String> kakaoProfileResponse = restTemplate.exchange(
-                "https://kapi.kakao.com/v2/user/me",
-                HttpMethod.GET,
-                kakaoProfileRequest,
-                String.class
-        );
-        System.out.println(kakaoProfileResponse.getBody().toString());
-        ObjectMapper objectMapper = new ObjectMapper();
-        KaKaoProfile kakaoProfile = null;
         try {
-            kakaoProfile = objectMapper.readValue(kakaoProfileResponse.getBody(), KaKaoProfile.class);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            ResponseEntity<KaKaoProfile> response = restTemplate.exchange(
+                    "https://kapi.kakao.com/v2/user/me",
+                    HttpMethod.GET,
+                    kakaoProfileRequest,
+                    KaKaoProfile.class
+            );
+            return response.getBody();
+        } catch (HttpClientErrorException e) {
+            logger.error("Failed to get Kakao profile: {}", e.getMessage());
+            return null;
         }
-        return kakaoProfile;
     }
 }
