@@ -2,7 +2,7 @@ package com.hongik.graduationproject.service;
 
 import com.hongik.graduationproject.domain.dto.video.VideoSummaryInitiateRequest;
 import com.hongik.graduationproject.domain.dto.video.VideoSummaryDto;
-import com.hongik.graduationproject.domain.entity.VideoSummaryRDB;
+import com.hongik.graduationproject.domain.entity.VideoSummary;
 import com.hongik.graduationproject.domain.entity.cache.VideoSummaryStatusCache;
 import com.hongik.graduationproject.repository.VideoSummaryRepository;
 import com.hongik.graduationproject.repository.VideoSummaryStatusCacheRepository;
@@ -13,8 +13,6 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -38,12 +36,12 @@ public class MessageService {
     public void receiveVideoUrlFromQueue(VideoSummaryDto videoSummaryDto) {
         log.info("Received message: {}", videoSummaryDto.toString());
 
-        VideoSummaryRDB savedVideoSummary = videoSummaryRepository.save(VideoSummaryRDB.of(videoSummaryDto));
+        VideoSummary savedVideoSummary = videoSummaryRepository.save(VideoSummary.of(videoSummaryDto));
 
         updateStatusCache(videoSummaryDto, savedVideoSummary);
     }
 
-    private void updateStatusCache(VideoSummaryDto videoSummaryDto, VideoSummaryRDB savedVideoSummary) {
+    private void updateStatusCache(VideoSummaryDto videoSummaryDto, VideoSummary savedVideoSummary) {
         VideoSummaryStatusCache statusCache = videoSummaryStatusCacheRepository.findById(videoSummaryDto.getVideoCode()).get();
 
         statusCache.updateStatus("COMPLETE");
