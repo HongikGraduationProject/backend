@@ -23,7 +23,6 @@ public class User {
     private String kakaoNickname;
     private Long kakaoId;
     private String email;
-    private String nickname;
 
     @CreatedDate
     private LocalDateTime createAt;
