@@ -1,5 +1,7 @@
 package com.hongik.graduationproject.domain.dto.video;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+import com.hongik.graduationproject.eum.Platform;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,4 +16,6 @@ public class VideoSummaryInitiateRequest {
     String url;
     @Schema(hidden = true)
     String videoCode;
+    @Schema(hidden = true)
+    Platform platform;
 }

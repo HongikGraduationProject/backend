@@ -26,7 +26,10 @@ public class VideoSummaryService {
     private final VideoSummaryStatusCacheRepository videoSummaryStatusCacheRepository;
 
     public VideoSummaryInitiateResponse sendUrlToQueue(VideoSummaryInitiateRequest videoSummaryInitiateRequest) {
-        String videoCode = generateVideoCode(videoSummaryInitiateRequest.getUrl());
+        Platform platform = getVideoPlatform(videoSummaryInitiateRequest.getUrl());
+        String videoId = getVideoId(videoSummaryInitiateRequest.getUrl(), platform);
+
+        String videoCode = platform.toString().concat("_").concat(videoId);
 
         if (!videoSummaryStatusCacheRepository.existsById(videoCode)) {
             if (videoSummaryRepository.existsByVideoCode(videoCode)) {
@@ -35,6 +38,7 @@ public class VideoSummaryService {
                 videoSummaryStatusCacheRepository.save(new VideoSummaryStatusCache(videoCode, id, "COMPLETE"));
             } else {
                 videoSummaryInitiateRequest.setVideoCode(videoCode);
+                videoSummaryInitiateRequest.setPlatform(platform);
                 messageService.sendVideoUrlToQueue(videoSummaryInitiateRequest);
 
                 videoSummaryStatusCacheRepository.save(new VideoSummaryStatusCache(videoCode, -1L, "PROCESSING"));
@@ -54,11 +58,11 @@ public class VideoSummaryService {
         return VideoSummaryStatusResponse.from(statusCache);
     }
 
-    private String generateVideoCode(String url) {
-        Platform platform = getVideoPlatform(url);
-        String videoId = getVideoId(url, platform);
-        return platform.toString().concat("_").concat(videoId);
-    }
+//    private String generateVideoCode(String url) {
+//        Platform platform = getVideoPlatform(url);
+//        String videoId = getVideoId(url, platform);
+//        return platform.toString().concat("_").concat(videoId);
+//    }
 
     private String getVideoId(String url, Platform platform) {
         String idExtractRegex;

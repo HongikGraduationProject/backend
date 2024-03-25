@@ -2,6 +2,7 @@ package com.hongik.graduationproject.domain.entity;
 
 import com.hongik.graduationproject.domain.dto.video.VideoSummaryDto;
 import com.hongik.graduationproject.domain.entity.global.BaseTimeEntity;
+import com.hongik.graduationproject.eum.Platform;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,6 +28,8 @@ public class VideoSummary extends BaseTimeEntity {
     private String summary;
     private String address;
     private String videoCode;
+    @Enumerated(EnumType.STRING)
+    private Platform platform;
 
     public static VideoSummary of(VideoSummaryDto videoSummaryDto) {
         return VideoSummary
@@ -38,6 +41,7 @@ public class VideoSummary extends BaseTimeEntity {
                 .url(videoSummaryDto.getUrl())
                 .summary(videoSummaryDto.getSummary())
                 .address(videoSummaryDto.getAddress())
+                .platform(videoSummaryDto.getPlatform())
                 .build();
     }
 
