@@ -13,9 +13,8 @@ public class UserController {
 
     private final AuthService authService;
 
-    @PostMapping("/oauth/token")
+    @PostMapping("/auth/kakao/sign-up")
     public Response<?> getLogin(@RequestBody KaKaoRequestDto kaKaoRequestDto){
         return authService.loginUser(kaKaoRequestDto);
     }
-
 }
