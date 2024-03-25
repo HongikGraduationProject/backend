@@ -1,5 +1,6 @@
 package com.hongik.graduationproject.domain.entity;
 
+import com.hongik.graduationproject.domain.entity.global.BaseTimeEntity;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
@@ -10,11 +11,11 @@ import org.springframework.data.annotation.CreatedDate;
 
 @Getter
 @Entity
-@Builder
+@Table(name = "user")
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "user")
-public class User {
+@Builder
+public class User extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
