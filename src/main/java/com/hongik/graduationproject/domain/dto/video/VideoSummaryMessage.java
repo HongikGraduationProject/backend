@@ -20,4 +20,6 @@ public class VideoSummaryMessage {
     String url;
     String summary;
     String address;
+    @JsonProperty("video_code")
+    String categoryName;
 }
