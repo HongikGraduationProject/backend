@@ -1,6 +1,7 @@
 package com.hongik.graduationproject.domain.entity;
 
 import com.hongik.graduationproject.domain.dto.video.VideoSummaryDto;
+import com.hongik.graduationproject.domain.dto.video.VideoSummaryMessage;
 import com.hongik.graduationproject.domain.entity.global.BaseTimeEntity;
 import com.hongik.graduationproject.eum.Platform;
 import jakarta.persistence.*;
@@ -46,6 +47,19 @@ public class VideoSummary extends BaseTimeEntity {
                 .summary(videoSummaryDto.getSummary())
                 .address(videoSummaryDto.getAddress())
                 .platform(videoSummaryDto.getPlatform())
+                .build();
+    }
+
+    public static VideoSummary of(VideoSummaryMessage videoSummaryMessage) {
+        return VideoSummary
+                .builder()
+                .videoCode(videoSummaryMessage.getVideoCode())
+                .title(videoSummaryMessage.getTitle())
+                .description(videoSummaryMessage.getDescription())
+                .keywords(listToString(videoSummaryMessage.getKeywords()))
+                .url(videoSummaryMessage.getUrl())
+                .summary(videoSummaryMessage.getSummary())
+                .address(videoSummaryMessage.getAddress())
                 .build();
     }
 
