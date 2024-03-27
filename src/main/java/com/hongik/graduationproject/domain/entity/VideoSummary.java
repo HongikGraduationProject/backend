@@ -31,6 +31,10 @@ public class VideoSummary extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Platform platform;
 
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
+
     public static VideoSummary of(VideoSummaryDto videoSummaryDto) {
         return VideoSummary
                 .builder()
