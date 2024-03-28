@@ -34,7 +34,7 @@ public class VideoSummaryService {
         if (!videoSummaryStatusCacheRepository.existsById(videoCode)) {
             if (videoSummaryRepository.existsByVideoCode(videoCode)) {
                 Long id = videoSummaryRepository.findByVideoCode(videoCode).get().getId();
-
+                // TODO: 이미 있다면 카테고리 찾고 관계를 저장?
                 videoSummaryStatusCacheRepository.save(new VideoSummaryStatusCache(videoCode, id, "COMPLETE"));
             } else {
                 videoSummaryInitiateRequest.setVideoCode(videoCode);
