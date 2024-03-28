@@ -15,7 +15,8 @@ public class VideoSummaryStatusCache {
     private String videoCode;
     private Long videoSummaryId;
     private String status;
-
+    private String generatedCategory;
+    private String userSelectCategory;
     public void updateStatus(String status) {
         this.status = status;
     }

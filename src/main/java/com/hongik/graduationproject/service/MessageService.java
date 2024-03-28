@@ -1,10 +1,8 @@
 package com.hongik.graduationproject.service;
 
-import com.hongik.graduationproject.domain.dto.video.VideoSummaryInitiateRequest;
-import com.hongik.graduationproject.domain.dto.video.VideoSummaryDto;
+import com.hongik.graduationproject.domain.dto.video.VideoSummaryInitiateMessage;
 import com.hongik.graduationproject.domain.dto.video.VideoSummaryMessage;
 import com.hongik.graduationproject.domain.entity.Category;
-import com.hongik.graduationproject.domain.entity.User;
 import com.hongik.graduationproject.domain.entity.VideoSummary;
 import com.hongik.graduationproject.domain.entity.cache.VideoSummaryStatusCache;
 import com.hongik.graduationproject.repository.*;
@@ -32,9 +30,9 @@ public class MessageService {
     private final CategoryRepository categoryRepository;
     private final VideoSummaryCategoryRepository videoSummaryCategoryRepository;
 
-    public void sendVideoUrlToQueue(VideoSummaryInitiateRequest videoSummaryInitiateRequest) {
-        log.info("Sent url: {}, videoCode: {}", videoSummaryInitiateRequest.getUrl(), videoSummaryInitiateRequest.getVideoCode());
-        rabbitTemplate.convertAndSend(exchangeName, urlRoutingKey, videoSummaryInitiateRequest);
+    public void sendVideoUrlToQueue(VideoSummaryInitiateMessage videoSummaryInitiateMessage) {
+        log.info("Sent url: {}, videoCode: {}", videoSummaryInitiateMessage.getUrl(), videoSummaryInitiateMessage.getVideoCode());
+        rabbitTemplate.convertAndSend(exchangeName, urlRoutingKey, videoSummaryInitiateMessage);
     }
 
     @RabbitListener(queues = "${rabbitmq.summary.queue.name}")
@@ -43,9 +41,6 @@ public class MessageService {
         log.info("Received message: {}", videoSummaryMessage.toString());
 
         VideoSummary savedVideoSummary = videoSummaryRepository.save(VideoSummary.of(videoSummaryMessage));
-        // TODO: 해당 사용자의 카테고리들을 찾고
-        // TODO: 외래키 설정해서 함께 저장하는 기능 필요.
-        Optional<Category> category = categoryRepository.findByUserIdAndMainCategory(1L, videoSummaryMessage.getCategoryName());
 
         updateStatusCache(videoSummaryMessage, savedVideoSummary);
     }

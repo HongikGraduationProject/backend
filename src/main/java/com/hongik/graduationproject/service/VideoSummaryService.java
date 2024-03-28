@@ -1,9 +1,6 @@
 package com.hongik.graduationproject.service;
 
-import com.hongik.graduationproject.domain.dto.video.VideoSummaryDto;
-import com.hongik.graduationproject.domain.dto.video.VideoSummaryInitiateRequest;
-import com.hongik.graduationproject.domain.dto.video.VideoSummaryInitiateResponse;
-import com.hongik.graduationproject.domain.dto.video.VideoSummaryStatusResponse;
+import com.hongik.graduationproject.domain.dto.video.*;
 import com.hongik.graduationproject.domain.entity.VideoSummary;
 import com.hongik.graduationproject.domain.entity.cache.VideoSummaryStatusCache;
 import com.hongik.graduationproject.eum.Platform;
@@ -33,15 +30,16 @@ public class VideoSummaryService {
 
         if (!videoSummaryStatusCacheRepository.existsById(videoCode)) {
             if (videoSummaryRepository.existsByVideoCode(videoCode)) {
-                Long id = videoSummaryRepository.findByVideoCode(videoCode).get().getId();
-                // TODO: 이미 있다면 카테고리 찾고 관계를 저장?
-                videoSummaryStatusCacheRepository.save(new VideoSummaryStatusCache(videoCode, id, "COMPLETE"));
+                VideoSummary videoSummary = videoSummaryRepository.findByVideoCode(videoCode).get();
+                videoSummaryStatusCacheRepository.save(new VideoSummaryStatusCache(videoCode, videoSummary.getId(), "COMPLETE", videoSummary.getGeneratedCategory(), null));
             } else {
-                videoSummaryInitiateRequest.setVideoCode(videoCode);
-                videoSummaryInitiateRequest.setPlatform(platform);
-                messageService.sendVideoUrlToQueue(videoSummaryInitiateRequest);
+                messageService.sendVideoUrlToQueue(VideoSummaryInitiateMessage.builder()
+                        .url(videoSummaryInitiateRequest.getUrl())
+                        .platform(platform)
+                        .videoCode(videoCode)
+                        .build());
 
-                videoSummaryStatusCacheRepository.save(new VideoSummaryStatusCache(videoCode, -1L, "PROCESSING"));
+                videoSummaryStatusCacheRepository.save(new VideoSummaryStatusCache(videoCode, -1L, "PROCESSING", null, null));
             }
         }
 

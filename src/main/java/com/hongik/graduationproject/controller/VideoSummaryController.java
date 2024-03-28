@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 public class VideoSummaryController {
     private final VideoSummaryService videoSummaryService;
 
-    @Operation(summary = "영상 요약 요청", description = "영상 요약 요청을 위한 메소드")
+    @Operation(summary = "카테고리 미지정 영상 요약 요청", description = "영상 요약 요청을 위한 메소드")
     @ApiResponse(content = @Content(schema = @Schema(implementation = VideoSummaryInitiateResponse.class)))
     @PostMapping("/summaries/initiate")
     public Response<VideoSummaryInitiateResponse> initiateSummarizing(@RequestBody VideoSummaryInitiateRequest videoSummaryInitiateRequest) {
