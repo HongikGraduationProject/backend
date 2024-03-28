@@ -31,6 +31,7 @@ public class VideoSummary extends BaseTimeEntity {
     private String videoCode;
     @Enumerated(EnumType.STRING)
     private Platform platform;
+    private String generatedCategory;
 
     public static VideoSummary of(VideoSummaryMessage videoSummaryMessage) {
         return VideoSummary
@@ -42,6 +43,7 @@ public class VideoSummary extends BaseTimeEntity {
                 .url(videoSummaryMessage.getUrl())
                 .summary(videoSummaryMessage.getSummary())
                 .address(videoSummaryMessage.getAddress())
+                .generatedCategory(videoSummaryMessage.getGeneratedCategory())
                 .build();
     }
 
