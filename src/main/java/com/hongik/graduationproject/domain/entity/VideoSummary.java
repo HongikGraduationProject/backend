@@ -32,7 +32,6 @@ public class VideoSummary extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Platform platform;
 
-
     public static VideoSummary of(VideoSummaryDto videoSummaryDto) {
         return VideoSummary
                 .builder()

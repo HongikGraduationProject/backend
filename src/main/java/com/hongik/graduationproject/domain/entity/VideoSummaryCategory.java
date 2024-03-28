@@ -13,11 +13,11 @@ public class VideoSummaryCategory {
     @Column(name = "video_summary_category_id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     Category category;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "video_summary_id")
     VideoSummary videoSummary;
 }
