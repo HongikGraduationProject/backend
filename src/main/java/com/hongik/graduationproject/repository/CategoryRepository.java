@@ -8,6 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.Optional;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
-    @Query("select c from Category c where c.user.id = :userId")
-    Optional<Category> findByUserId(Long userId);
+    @Query("select c from Category c where c.user.id = :userId and c.mainCategory = :mainCategory")
+    Optional<Category> findByUserIdAndMainCategory(Long userId, String mainCategory);
 }
