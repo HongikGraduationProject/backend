@@ -25,7 +25,7 @@ public class VideoSummaryService {
     private final VideoSummaryRepository videoSummaryRepository;
     private final VideoSummaryStatusCacheRepository videoSummaryStatusCacheRepository;
 
-    public VideoSummaryInitiateResponse sendUrlToQueue(VideoSummaryInitiateRequest videoSummaryInitiateRequest) {
+    public VideoSummaryInitiateResponse initiateSummarizing(VideoSummaryInitiateRequest videoSummaryInitiateRequest) {
         Platform platform = getVideoPlatform(videoSummaryInitiateRequest.getUrl());
         String videoId = getVideoId(videoSummaryInitiateRequest.getUrl(), platform);
 
