@@ -32,20 +32,6 @@ public class VideoSummary extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Platform platform;
 
-    public static VideoSummary of(VideoSummaryDto videoSummaryDto) {
-        return VideoSummary
-                .builder()
-                .videoCode(videoSummaryDto.getVideoCode())
-                .title(videoSummaryDto.getTitle())
-                .description(videoSummaryDto.getDescription())
-                .keywords(listToString(videoSummaryDto.getKeywords()))
-                .url(videoSummaryDto.getUrl())
-                .summary(videoSummaryDto.getSummary())
-                .address(videoSummaryDto.getAddress())
-                .platform(videoSummaryDto.getPlatform())
-                .build();
-    }
-
     public static VideoSummary of(VideoSummaryMessage videoSummaryMessage) {
         return VideoSummary
                 .builder()
