@@ -35,8 +35,7 @@ public class VideoSummaryService {
         Long userId = summaryInitiateRequest.getUserId();
 
         if (summaryStatusCacheRepository.existsByVideoCodeAndUserId(videoCode, userId)) {
-            System.out.println("예외발생");
-            return new VideoSummaryInitiateResponse(videoCode);
+            return new VideoSummaryInitiateResponse("해당 유저가 이미 요약 중인 영상입니다. 요약이 완료된 후 재요청 바랍니다.");
         }
 
         Optional<VideoSummaryStatusCache> statusCache = summaryStatusCacheRepository.findFirstByVideoCode(videoCode);
