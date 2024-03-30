@@ -28,8 +28,6 @@ public class MessageService {
     private final RabbitTemplate rabbitTemplate;
     private final VideoSummaryStatusCacheRepository videoSummaryStatusCacheRepository;
     private final VideoSummaryRepository videoSummaryRepository;
-    private final CategoryRepository categoryRepository;
-    private final VideoSummaryCategoryRepository videoSummaryCategoryRepository;
 
     public void sendVideoUrlToQueue(VideoSummaryInitiateMessage videoSummaryInitiateMessage) {
         log.info("Sent url: {}, videoCode: {}", videoSummaryInitiateMessage.getUrl(), videoSummaryInitiateMessage.getVideoCode());
