@@ -41,7 +41,7 @@ public class VideoSummaryStatusCache {
 
     public static VideoSummaryStatusCache clone(VideoSummaryStatusCache statusCache, Long userId) {
         return VideoSummaryStatusCache.builder()
-                .videoCode(statusCache.getStatus())
+                .videoCode(statusCache.getVideoCode())
                 .userId(userId)
                 .videoSummaryId(statusCache.getVideoSummaryId())
                 .status(statusCache.getStatus())
