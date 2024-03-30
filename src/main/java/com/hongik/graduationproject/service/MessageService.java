@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -45,13 +46,15 @@ public class MessageService {
     }
 
     private void updateStatusCache(VideoSummaryMessage videoSummaryMessage, VideoSummary savedVideoSummary) {
-        VideoSummaryStatusCache statusCache = videoSummaryStatusCacheRepository.findById(videoSummaryMessage.getVideoCode()).get();
-        //todo 리스트 처리
-        statusCache.updateStatus("COMPLETE");
-        statusCache.updateVideoSummaryId(savedVideoSummary.getId());
-        statusCache.updateGeneratedMainCategory(MainCategory.find(videoSummaryMessage.getGeneratedMainCategoryName()));
+        List<VideoSummaryStatusCache> statusCacheList = videoSummaryStatusCacheRepository.findAllByVideoCode(videoSummaryMessage.getVideoCode());
 
-        videoSummaryStatusCacheRepository.save(statusCache);
+        statusCacheList.forEach(cache -> {
+            cache.updateStatus("COMPLETE");
+            cache.updateVideoSummaryId(savedVideoSummary.getId());
+            cache.updateGeneratedMainCategory(MainCategory.find(videoSummaryMessage.getGeneratedMainCategoryName()));
+        });
+
+        videoSummaryStatusCacheRepository.saveAll(statusCacheList);
     }
 
 }

@@ -11,7 +11,7 @@ import org.springframework.data.redis.core.index.Indexed;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@RedisHash(value = "videoSummaryStatus")
+@RedisHash(value = "videoSummaryStatus", timeToLive = 60L)
 public class VideoSummaryStatusCache {
     @Id
     private String id;
