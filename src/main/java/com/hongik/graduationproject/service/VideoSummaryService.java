@@ -13,6 +13,7 @@ import com.hongik.graduationproject.repository.VideoSummaryStatusCacheRepository
 import com.hongik.graduationproject.util.UrlUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -34,7 +35,15 @@ public class VideoSummaryService {
         if (!videoSummaryStatusCacheRepository.existsById(videoCode)) {
             if (videoSummaryRepository.existsByVideoCode(videoCode)) {
                 VideoSummary videoSummary = videoSummaryRepository.findByVideoCode(videoCode).get();
-                videoSummaryStatusCacheRepository.save(new VideoSummaryStatusCache(videoCode, videoSummary.getId(), "COMPLETE", videoSummary.getGeneratedMainCategory(), null));
+
+                videoSummaryStatusCacheRepository.save(VideoSummaryStatusCache.builder()
+                        .videoCode(videoCode)
+                        .videoSummaryId(videoSummary.getId())
+                        .status("COMPLETE")
+                        .generatedMainCategory(videoSummary.getGeneratedMainCategory())
+                        .isCategoryIncluded(videoSummaryInitiateRequest.isCategoryIncluded())
+                        .categoryId(videoSummaryInitiateRequest.getCategoryId())
+                        .build());
             } else {
                 messageService.sendVideoUrlToQueue(VideoSummaryInitiateMessage.builder()
                         .url(videoSummaryInitiateRequest.getUrl())
@@ -42,7 +51,13 @@ public class VideoSummaryService {
                         .videoCode(videoCode)
                         .build());
 
-                videoSummaryStatusCacheRepository.save(new VideoSummaryStatusCache(videoCode, -1L, "PROCESSING", null, null));
+                videoSummaryStatusCacheRepository.save(VideoSummaryStatusCache.builder()
+                        .videoCode(videoCode)
+                        .videoSummaryId(-1L)
+                        .status("PROCESSING")
+                        .isCategoryIncluded(videoSummaryInitiateRequest.isCategoryIncluded())
+                        .categoryId(videoSummaryInitiateRequest.getCategoryId())
+                        .build());
             }
         }
 
@@ -54,6 +69,7 @@ public class VideoSummaryService {
         return VideoSummaryDto.from(videoSummary.get());
     }
 
+    @Transactional
     public VideoSummaryStatusResponse getStatus(String videoCode) {
         VideoSummaryStatusCache statusCache = videoSummaryStatusCacheRepository.findById(videoCode).get();
         if (statusCache.getStatus().equals("COMPLETE")) {
