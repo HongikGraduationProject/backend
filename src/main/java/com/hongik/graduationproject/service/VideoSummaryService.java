@@ -6,6 +6,7 @@ import com.hongik.graduationproject.domain.entity.cache.VideoSummaryStatusCache;
 import com.hongik.graduationproject.eum.Platform;
 import com.hongik.graduationproject.repository.VideoSummaryRepository;
 import com.hongik.graduationproject.repository.VideoSummaryStatusCacheRepository;
+import com.hongik.graduationproject.util.UrlUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,8 +24,8 @@ public class VideoSummaryService {
     private final VideoSummaryStatusCacheRepository videoSummaryStatusCacheRepository;
 
     public VideoSummaryInitiateResponse initiateSummarizing(VideoSummaryInitiateRequest videoSummaryInitiateRequest) {
-        Platform platform = getVideoPlatform(videoSummaryInitiateRequest.getUrl());
-        String videoId = getVideoId(videoSummaryInitiateRequest.getUrl(), platform);
+        Platform platform = UrlUtils.getVideoPlatform(videoSummaryInitiateRequest.getUrl());
+        String videoId = UrlUtils.getVideoId(videoSummaryInitiateRequest.getUrl(), platform);
 
         String videoCode = platform.toString().concat("_").concat(videoId);
 
@@ -54,46 +55,5 @@ public class VideoSummaryService {
     public VideoSummaryStatusResponse getStatus(String videoCode) {
         VideoSummaryStatusCache statusCache = videoSummaryStatusCacheRepository.findById(videoCode).get();
         return VideoSummaryStatusResponse.from(statusCache);
-    }
-
-    private String getVideoId(String url, Platform platform) {
-        String idExtractRegex;
-        int idIndex;
-
-        switch (platform) {
-            case YOUTUBE:
-                idExtractRegex = "(youtu.*be.*)\\/(watch\\?v=|embed\\/|v|shorts|)(.*?((?=[&#?])|$))";
-                idIndex = 3;
-                break;
-            case INSTAGRAM:
-                idExtractRegex = "(?:https?:\\/\\/)?(?:www\\.)?instagram\\.com\\/?([a-zA-Z0-9\\.\\_\\-]+)?\\/([p]+)?([reel]+)?([tv]+)?([stories]+)?\\/([a-zA-Z0-9\\-\\_\\.]+)\\/?([0-9]+)?";
-                idIndex = 6;
-                break;
-            default:
-                throw new RuntimeException();
-        }
-
-        Pattern pattern = Pattern.compile(idExtractRegex);
-        Matcher matcher = pattern.matcher(url);
-        if (matcher.find()) {
-            return matcher.group(idIndex);
-        } else {
-            // TODO : 예외처리 요망
-            throw new RuntimeException();
-
-        }
-    }
-
-    private Platform getVideoPlatform(String url) {
-        String youtubeValidationRegex = "^((?:https?:)?\\/\\/)?((?:www|m)\\.)?((?:youtube(-nocookie)?\\.com|youtu.be))(\\/(?:[\\w\\-]+\\?v=|embed\\/|live\\/|v\\/)?)([\\w\\-]+)(\\S+)?$";
-        String instagramValidationRegex = "https?:\\/\\/(?:www.)?instagram.com\\/reels?\\/([^\\/?#&]+).*";
-        if (url.matches(youtubeValidationRegex)) {
-            return YOUTUBE;
-        } else if (url.matches(instagramValidationRegex)) {
-            return INSTAGRAM;
-        } else {
-            // TODO: 예외 처리 요망
-            throw new RuntimeException();
-        }
     }
 }
