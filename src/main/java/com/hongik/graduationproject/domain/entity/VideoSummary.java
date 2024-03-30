@@ -44,6 +44,7 @@ public class VideoSummary extends BaseTimeEntity {
                 .url(videoSummaryMessage.getUrl())
                 .summary(videoSummaryMessage.getSummary())
                 .address(videoSummaryMessage.getAddress())
+                .platform(videoSummaryMessage.getPlatform())
                 .generatedMainCategory(MainCategory.find(videoSummaryMessage.getGeneratedMainCategoryName()))
                 .build();
     }

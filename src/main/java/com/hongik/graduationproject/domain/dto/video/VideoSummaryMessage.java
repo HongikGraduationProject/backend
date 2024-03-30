@@ -1,6 +1,7 @@
 package com.hongik.graduationproject.domain.dto.video;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.hongik.graduationproject.eum.Platform;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,7 @@ public class VideoSummaryMessage {
     String url;
     String summary;
     String address;
+    Platform platform;
     @JsonProperty("category")
-    String generatedCategory;
+    String generatedMainCategoryName;
 }
