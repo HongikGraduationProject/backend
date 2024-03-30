@@ -48,7 +48,7 @@ public class MessageService {
 
     private void updateStatusCache(VideoSummaryMessage videoSummaryMessage, VideoSummary savedVideoSummary) {
         VideoSummaryStatusCache statusCache = videoSummaryStatusCacheRepository.findById(videoSummaryMessage.getVideoCode()).get();
-
+        //todo 리스트 처리
         statusCache.updateStatus("COMPLETE");
         statusCache.updateVideoSummaryId(savedVideoSummary.getId());
         statusCache.updateGeneratedMainCategory(MainCategory.find(videoSummaryMessage.getGeneratedMainCategoryName()));

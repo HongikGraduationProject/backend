@@ -2,25 +2,27 @@ package com.hongik.graduationproject.domain.entity.cache;
 
 import com.hongik.graduationproject.eum.MainCategory;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.index.Indexed;
 
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@RedisHash(value = "videoSummaryStatus", timeToLive = 60L)
+@RedisHash(value = "videoSummaryStatus")
 public class VideoSummaryStatusCache {
     @Id
+    private String id;
+    @Indexed
     private String videoCode;
+    @Indexed
+    private Long userId;
     private Long videoSummaryId;
     private String status;
     private MainCategory generatedMainCategory;
-    private boolean isCategoryIncluded;
+    private Boolean isCategoryIncluded;
     private Long categoryId;
 
     public void updateStatus(String status) {
@@ -36,4 +38,17 @@ public class VideoSummaryStatusCache {
             this.generatedMainCategory = mainCategory;
         }
     }
+
+    public static VideoSummaryStatusCache clone(VideoSummaryStatusCache statusCache, Long userId) {
+        return VideoSummaryStatusCache.builder()
+                .videoCode(statusCache.getStatus())
+                .userId(userId)
+                .videoSummaryId(statusCache.getVideoSummaryId())
+                .status(statusCache.getStatus())
+                .generatedMainCategory(statusCache.getGeneratedMainCategory())
+                .isCategoryIncluded(statusCache.getIsCategoryIncluded())
+                .categoryId(statusCache.getCategoryId())
+                .build();
+    }
+
 }

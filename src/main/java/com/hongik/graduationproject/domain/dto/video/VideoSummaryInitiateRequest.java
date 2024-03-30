@@ -16,4 +16,5 @@ public class VideoSummaryInitiateRequest {
     Long categoryId;
     @Schema(description = "(임시) 사용자가 카테고리를 지정했는지 여부", example = "true")
     boolean isCategoryIncluded;
+    Long userId;
 }

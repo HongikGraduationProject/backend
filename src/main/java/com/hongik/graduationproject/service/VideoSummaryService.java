@@ -31,34 +31,47 @@ public class VideoSummaryService {
         String videoId = UrlUtils.getVideoId(videoSummaryInitiateRequest.getUrl(), platform);
 
         String videoCode = platform.toString().concat("_").concat(videoId);
+        Long userId = videoSummaryInitiateRequest.getUserId();
+        if (videoSummaryStatusCacheRepository.existsByVideoCodeAndUserId(videoCode, userId)) {
+            // TODO: 해당 유저가 이미 요약하고 있다면 예외 발생
+            System.out.println("예외발생");
+            return new VideoSummaryInitiateResponse(videoCode);
+        }
 
-        if (!videoSummaryStatusCacheRepository.existsById(videoCode)) {
-            if (videoSummaryRepository.existsByVideoCode(videoCode)) {
-                VideoSummary videoSummary = videoSummaryRepository.findByVideoCode(videoCode).get();
+        // 이미 다른 사용자가 요약하고 있다면
+        Optional<VideoSummaryStatusCache> statusCache = videoSummaryStatusCacheRepository.findFirstByVideoCode(videoCode);
+        if (statusCache.isPresent()) {
+            videoSummaryStatusCacheRepository.save(VideoSummaryStatusCache.clone(statusCache.get(), userId));
+            return new VideoSummaryInitiateResponse(videoCode);
+        }
 
-                videoSummaryStatusCacheRepository.save(VideoSummaryStatusCache.builder()
-                        .videoCode(videoCode)
-                        .videoSummaryId(videoSummary.getId())
-                        .status("COMPLETE")
-                        .generatedMainCategory(videoSummary.getGeneratedMainCategory())
-                        .isCategoryIncluded(videoSummaryInitiateRequest.isCategoryIncluded())
-                        .categoryId(videoSummaryInitiateRequest.getCategoryId())
-                        .build());
-            } else {
-                messageService.sendVideoUrlToQueue(VideoSummaryInitiateMessage.builder()
-                        .url(videoSummaryInitiateRequest.getUrl())
-                        .platform(platform)
-                        .videoCode(videoCode)
-                        .build());
+        if (videoSummaryRepository.existsByVideoCode(videoCode)) {
+            VideoSummary videoSummary = videoSummaryRepository.findByVideoCode(videoCode).get();
 
-                videoSummaryStatusCacheRepository.save(VideoSummaryStatusCache.builder()
-                        .videoCode(videoCode)
-                        .videoSummaryId(-1L)
-                        .status("PROCESSING")
-                        .isCategoryIncluded(videoSummaryInitiateRequest.isCategoryIncluded())
-                        .categoryId(videoSummaryInitiateRequest.getCategoryId())
-                        .build());
-            }
+            videoSummaryStatusCacheRepository.save(VideoSummaryStatusCache.builder()
+                    .videoCode(videoCode)
+                    .videoSummaryId(videoSummary.getId())
+                    .status("COMPLETE")
+                    .userId(userId)
+                    .generatedMainCategory(videoSummary.getGeneratedMainCategory())
+                    .isCategoryIncluded(videoSummaryInitiateRequest.isCategoryIncluded())
+                    .categoryId(videoSummaryInitiateRequest.getCategoryId())
+                    .build());
+        } else {
+            messageService.sendVideoUrlToQueue(VideoSummaryInitiateMessage.builder()
+                    .url(videoSummaryInitiateRequest.getUrl())
+                    .platform(platform)
+                    .videoCode(videoCode)
+                    .build());
+
+            videoSummaryStatusCacheRepository.save(VideoSummaryStatusCache.builder()
+                    .videoCode(videoCode)
+                    .videoSummaryId(-1L)
+                    .status("PROCESSING")
+                    .userId(userId)
+                    .isCategoryIncluded(videoSummaryInitiateRequest.isCategoryIncluded())
+                    .categoryId(videoSummaryInitiateRequest.getCategoryId())
+                    .build());
         }
 
         return new VideoSummaryInitiateResponse(videoCode);
@@ -71,7 +84,7 @@ public class VideoSummaryService {
 
     @Transactional
     public VideoSummaryStatusResponse getStatus(String videoCode) {
-        VideoSummaryStatusCache statusCache = videoSummaryStatusCacheRepository.findById(videoCode).get();
+        VideoSummaryStatusCache statusCache = videoSummaryStatusCacheRepository.findByVideoCode(videoCode).get();
         if (statusCache.getStatus().equals("COMPLETE")) {
             Category category = categoryRepository.findDefaultCategoryByUserIdAndMainCategory(1L, statusCache.getGeneratedMainCategory()).get();
             VideoSummary videoSummary = videoSummaryRepository.getReferenceById(statusCache.getVideoSummaryId());
