@@ -13,8 +13,6 @@ import com.hongik.graduationproject.jwt.TokenProvider;
 import com.hongik.graduationproject.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -29,17 +27,15 @@ public class KakaoAuthService implements AuthService {
 
     private final UserRepository userRepository;
     private final TokenProvider tokenProvider;
-    private final Logger logger = LoggerFactory.getLogger(KakaoAuthService.class);
     private final ObjectMapper objectMapper;
 
     @Override
     public Response<?> loginUser(AuthRequestDto authRequestDto) {
-
         KaKaoRequestDto kakaoRequestDto = (KaKaoRequestDto) authRequestDto;
         KaKaoProfile kakaoProfile = getKaKaoProfile(kakaoRequestDto.getAccessToken());
 
         if (kakaoProfile == null || kakaoProfile.getKakao_account() == null) {
-            logger.error("Kakao profile or account information is null");
+            log.error("Failed to retrieve Kakao profile or account information");
             return Response.createError("Failed to retrieve Kakao profile or account information");
         }
 
@@ -65,7 +61,6 @@ public class KakaoAuthService implements AuthService {
     }
 
     private OauthToken getAccessToken(String accessToken) {
-
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
@@ -89,14 +84,13 @@ public class KakaoAuthService implements AuthService {
         try {
             oauthToken = objectMapper.readValue(accessTokenResponse.getBody(), OauthToken.class);
         } catch (JsonProcessingException e) {
-            logger.error("Failed to parse access token response: {}", e.getMessage());
+            log.error("Failed to parse access token response: {}", e.getMessage());
         }
 
         return oauthToken;
     }
 
     private KaKaoProfile getKaKaoProfile(String token) {
-
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + token);
@@ -114,7 +108,7 @@ public class KakaoAuthService implements AuthService {
             );
             return response.getBody();
         } catch (HttpClientErrorException e) {
-            logger.error("Failed to get Kakao profile: {}", e.getMessage());
+            log.error("Failed to get Kakao profile: {}", e.getMessage());
             return null;
         }
     }
@@ -124,14 +118,14 @@ public class KakaoAuthService implements AuthService {
         Long userId = tokenProvider.getUserId(kaKaoRequestDto.getAccessToken());
 
         if (userId == null) {
-            logger.error("Failed to retrieve user information");
+            log.error("Failed to retrieve user information");
             return Response.createError("Failed to retrieve user information");
         }
 
         User user = userRepository.findById(userId).orElse(null);
 
         if (user == null) {
-            logger.error("User not found");
+            log.error("User not found");
             return Response.createError("User not found");
         }
 
