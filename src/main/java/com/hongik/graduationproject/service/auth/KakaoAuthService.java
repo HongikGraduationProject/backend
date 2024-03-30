@@ -118,4 +118,28 @@ public class KakaoAuthService implements AuthService {
             return null;
         }
     }
+
+    @Override
+    public Response<?> reissueToken(KaKaoRequestDto kaKaoRequestDto) {
+        Long userId = tokenProvider.getUserId(kaKaoRequestDto.getAccessToken());
+
+        if (userId == null) {
+            logger.error("Failed to retrieve user information");
+            return Response.createError("Failed to retrieve user information");
+        }
+
+        User user = userRepository.findById(userId).orElse(null);
+
+        if (user == null) {
+            logger.error("User not found");
+            return Response.createError("User not found");
+        }
+
+        String newAccessToken = tokenProvider.create(userId);
+        String newRefreshToken = tokenProvider.refresh(kaKaoRequestDto.getRefreshToken());
+        int exprTime = 3600000;
+
+        KaKaoResponseDto kaKaoResponseDto = new KaKaoResponseDto(newAccessToken, newRefreshToken, exprTime, user);
+        return Response.createSuccess(kaKaoResponseDto);
+    }
 }

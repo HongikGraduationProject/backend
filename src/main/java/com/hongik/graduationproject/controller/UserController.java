@@ -17,4 +17,9 @@ public class UserController {
     public Response<?> getLogin(@RequestBody KaKaoRequestDto kaKaoRequestDto){
         return authService.loginUser(kaKaoRequestDto);
     }
+
+    @PostMapping("/auth/kakao/reissue")
+    public Response<?> reissueToken(@RequestBody KaKaoRequestDto kaKaoRequestDto){
+        return authService.reissueToken(kaKaoRequestDto);
+    }
 }
