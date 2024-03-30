@@ -11,10 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static com.hongik.graduationproject.eum.Platform.*;
 
 @Service
 @RequiredArgsConstructor
