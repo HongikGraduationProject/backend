@@ -1,6 +1,7 @@
 package com.hongik.graduationproject.domain.entity;
 
 import com.hongik.graduationproject.domain.entity.global.BaseTimeEntity;
+import com.hongik.graduationproject.eum.MainCategory;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,6 +19,7 @@ public class Category extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
-    private String mainCategory;
+    @Enumerated(EnumType.STRING)
+    private MainCategory mainCategory;
     private String subCategory;
 }

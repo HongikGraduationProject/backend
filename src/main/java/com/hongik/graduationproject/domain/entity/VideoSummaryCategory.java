@@ -7,6 +7,8 @@ import lombok.*;
 @Entity
 @Table(name = "video_summary_category")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 public class VideoSummaryCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,9 +1,13 @@
 package com.hongik.graduationproject.service;
 
 import com.hongik.graduationproject.domain.dto.video.*;
+import com.hongik.graduationproject.domain.entity.Category;
 import com.hongik.graduationproject.domain.entity.VideoSummary;
+import com.hongik.graduationproject.domain.entity.VideoSummaryCategory;
 import com.hongik.graduationproject.domain.entity.cache.VideoSummaryStatusCache;
 import com.hongik.graduationproject.eum.Platform;
+import com.hongik.graduationproject.repository.CategoryRepository;
+import com.hongik.graduationproject.repository.VideoSummaryCategoryRepository;
 import com.hongik.graduationproject.repository.VideoSummaryRepository;
 import com.hongik.graduationproject.repository.VideoSummaryStatusCacheRepository;
 import com.hongik.graduationproject.util.UrlUtils;
@@ -18,6 +22,8 @@ public class VideoSummaryService {
     private final MessageService messageService;
     private final VideoSummaryRepository videoSummaryRepository;
     private final VideoSummaryStatusCacheRepository videoSummaryStatusCacheRepository;
+    private final CategoryRepository categoryRepository;
+    private final VideoSummaryCategoryRepository videoSummaryCategoryRepository;
 
     public VideoSummaryInitiateResponse initiateSummarizing(VideoSummaryInitiateRequest videoSummaryInitiateRequest) {
         Platform platform = UrlUtils.getVideoPlatform(videoSummaryInitiateRequest.getUrl());
@@ -50,6 +56,15 @@ public class VideoSummaryService {
 
     public VideoSummaryStatusResponse getStatus(String videoCode) {
         VideoSummaryStatusCache statusCache = videoSummaryStatusCacheRepository.findById(videoCode).get();
+        if (statusCache.getStatus().equals("COMPLETE")) {
+            Category category = categoryRepository.findDefaultCategoryByUserIdAndMainCategory(1L, statusCache.getGeneratedMainCategory()).get();
+            VideoSummary videoSummary = videoSummaryRepository.getReferenceById(statusCache.getVideoSummaryId());
+
+            videoSummaryCategoryRepository.save(VideoSummaryCategory.builder()
+                    .category(category)
+                    .videoSummary(videoSummary)
+                    .build());
+        }
         return VideoSummaryStatusResponse.from(statusCache);
     }
 }
