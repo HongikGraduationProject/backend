@@ -5,6 +5,7 @@ import com.hongik.graduationproject.domain.dto.video.VideoSummaryMessage;
 import com.hongik.graduationproject.domain.entity.Category;
 import com.hongik.graduationproject.domain.entity.VideoSummary;
 import com.hongik.graduationproject.domain.entity.cache.VideoSummaryStatusCache;
+import com.hongik.graduationproject.eum.MainCategory;
 import com.hongik.graduationproject.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,6 +51,7 @@ public class MessageService {
 
         statusCache.updateStatus("COMPLETE");
         statusCache.updateVideoSummaryId(savedVideoSummary.getId());
+        statusCache.updateGeneratedMainCategory(MainCategory.find(videoSummaryMessage.getGeneratedMainCategoryName()));
 
         videoSummaryStatusCacheRepository.save(statusCache);
     }

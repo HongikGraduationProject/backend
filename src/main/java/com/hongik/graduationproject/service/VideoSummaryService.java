@@ -31,7 +31,7 @@ public class VideoSummaryService {
         if (!videoSummaryStatusCacheRepository.existsById(videoCode)) {
             if (videoSummaryRepository.existsByVideoCode(videoCode)) {
                 VideoSummary videoSummary = videoSummaryRepository.findByVideoCode(videoCode).get();
-                videoSummaryStatusCacheRepository.save(new VideoSummaryStatusCache(videoCode, videoSummary.getId(), "COMPLETE", videoSummary.getGeneratedCategory(), null));
+                videoSummaryStatusCacheRepository.save(new VideoSummaryStatusCache(videoCode, videoSummary.getId(), "COMPLETE", videoSummary.getGeneratedMainCategory(), null));
             } else {
                 messageService.sendVideoUrlToQueue(VideoSummaryInitiateMessage.builder()
                         .url(videoSummaryInitiateRequest.getUrl())
