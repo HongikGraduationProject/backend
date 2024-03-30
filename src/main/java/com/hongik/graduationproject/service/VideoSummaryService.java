@@ -56,12 +56,6 @@ public class VideoSummaryService {
         return VideoSummaryStatusResponse.from(statusCache);
     }
 
-//    private String generateVideoCode(String url) {
-//        Platform platform = getVideoPlatform(url);
-//        String videoId = getVideoId(url, platform);
-//        return platform.toString().concat("_").concat(videoId);
-//    }
-
     private String getVideoId(String url, Platform platform) {
         String idExtractRegex;
         int idIndex;
