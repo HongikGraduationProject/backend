@@ -2,13 +2,13 @@ package com.hongik.graduationproject.service.auth;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hongik.graduationproject.domain.auth.oauth.OauthToken;
+import com.hongik.graduationproject.domain.dto.auth.oauth.OauthToken;
 import com.hongik.graduationproject.domain.dto.Response;
 import com.hongik.graduationproject.domain.dto.AuthRequestDto;
 import com.hongik.graduationproject.domain.dto.KaKaoResponseDto;
 import com.hongik.graduationproject.domain.entity.User;
 import com.hongik.graduationproject.domain.dto.KaKaoRequestDto;
-import com.hongik.graduationproject.domain.auth.oauth.KaKaoProfile;
+import com.hongik.graduationproject.domain.dto.auth.oauth.KaKaoProfile;
 import com.hongik.graduationproject.jwt.TokenProvider;
 import com.hongik.graduationproject.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
