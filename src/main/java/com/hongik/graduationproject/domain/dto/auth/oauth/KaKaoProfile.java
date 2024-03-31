@@ -6,36 +6,36 @@ import lombok.Data;
 public class KaKaoProfile {
 
     public Long id;
-    public String connected_at;
+    public String connectedAt;
     public KakaoProperties properties;
-    public KakaoAccount kakao_account;
+    public KakaoAccount kakaoAccount;
 
     @Data
     public static class KakaoProperties {
 
-        public String profile_image; // 이미지 경로 필드1
-        public String thumbnail_image;
+        public String profileImage;
+        public String thumbnailImage;
     }
 
     @Data
     public static class KakaoAccount {
 
-        public Boolean profile_nickname_needs_agreement;
-        public Boolean profile_image_needs_agreement;
+        public Boolean profileNicknameNeedsAgreement;
+        public Boolean profileImageNeedsAgreement;
         public Profile profile;
-        public Boolean has_email;
-        public Boolean email_needs_agreement;
-        public Boolean is_email_valid;
-        public Boolean is_email_verified;
+        public Boolean hasEmail;
+        public Boolean emailNeedsAgreement;
+        public Boolean isEmailValid;
+        public Boolean isEmailVerified;
         public String email;
 
         @Data
         public static class Profile {
 
             public String nickname;
-            public String thumbnail_image_url;
-            public String profile_image_url;
-            public Boolean is_default_image;
+            public String thumbnailImageUrl;
+            public String profileImageUrl;
+            public Boolean isDefaultImage;
         }
     }
 }
