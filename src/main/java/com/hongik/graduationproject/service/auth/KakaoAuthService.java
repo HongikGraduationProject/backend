@@ -124,12 +124,14 @@ public class KakaoAuthService implements AuthService {
             return Response.createError("Failed to retrieve user information");
         }
 
-        User user = userRepository.findById(userId).orElse(null);
+        Optional<User> optionalUser = userRepository.findById(userId);
 
-        if (user == null) {
+        if (optionalUser.isEmpty()) {
             log.error("User not found");
             return Response.createError("User not found");
         }
+
+        User user = optionalUser.get();
 
         String newAccessToken = tokenProvider.create(userId);
         String newRefreshToken = tokenProvider.refresh(kaKaoRequestDto.getRefreshToken());
