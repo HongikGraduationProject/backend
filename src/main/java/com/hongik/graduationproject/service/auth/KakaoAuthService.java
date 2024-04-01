@@ -11,6 +11,7 @@ import com.hongik.graduationproject.domain.dto.KaKaoRequestDto;
 import com.hongik.graduationproject.domain.dto.auth.oauth.KaKaoProfile;
 import com.hongik.graduationproject.jwt.TokenProvider;
 import com.hongik.graduationproject.repository.UserRepository;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
@@ -31,33 +32,34 @@ public class KakaoAuthService implements AuthService {
 
     @Override
     public Response<?> loginUser(AuthRequestDto authRequestDto) {
+
         KaKaoRequestDto kakaoRequestDto = (KaKaoRequestDto) authRequestDto;
         KaKaoProfile kakaoProfile = getKaKaoProfile(kakaoRequestDto.getAccessToken());
 
-        if (kakaoProfile == null || kakaoProfile.getKakao_account() == null) {
+        if (kakaoProfile == null || kakaoProfile.getKakaoAccount() == null) {
             log.error("Failed to retrieve Kakao profile or account information");
             return Response.createError("Failed to retrieve Kakao profile or account information");
         }
 
-        User user = userRepository.findByEmail(kakaoProfile.getKakao_account().getEmail());
+        Optional<User> optionalUser = userRepository.findByEmail(kakaoProfile.getKakaoAccount().getEmail());
 
-        if (user == null) {
-            user = User.builder()
-                    .kakaoId(kakaoProfile.getId())
-                    .kakaoNickname(kakaoProfile.getKakao_account().getProfile().getNickname())
-                    .email(kakaoProfile.getKakao_account().getEmail())
-                    .build();
-            User savedUser = userRepository.save(user);
-
-            String newAccessToken = tokenProvider.create(savedUser.getId());
-            String refreshToken = tokenProvider.refresh(newAccessToken);
-            int exprTime = 3600000;
-
-            KaKaoResponseDto kaKaoResponseDto = new KaKaoResponseDto(newAccessToken, refreshToken, exprTime, user);
-            return Response.createSuccess(kaKaoResponseDto);
+        if (optionalUser.isPresent()) {
+            return Response.createError("User already exists");
         }
 
-        return Response.createError("User already exists");
+        User user = User.builder()
+                .kakaoId(kakaoProfile.getId())
+                .kakaoNickname(kakaoProfile.getKakaoAccount().getProfile().getNickname())
+                .email(kakaoProfile.getKakaoAccount().getEmail())
+                .build();
+        User savedUser = userRepository.save(user);
+
+        String newAccessToken = tokenProvider.create(savedUser.getId());
+        String refreshToken = tokenProvider.refresh(newAccessToken);
+        int exprTime = 3600000;
+
+        KaKaoResponseDto kaKaoResponseDto = new KaKaoResponseDto(newAccessToken, refreshToken, exprTime, user);
+        return Response.createSuccess(kaKaoResponseDto);
     }
 
     private OauthToken getAccessToken(String accessToken) {
