@@ -1,6 +1,8 @@
 package com.hongik.graduationproject.util;
 
 import com.hongik.graduationproject.eum.Platform;
+import com.hongik.graduationproject.exception.AppException;
+import com.hongik.graduationproject.exception.ErrorCode;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,31 +17,13 @@ public class UrlUtils {
     private static final String YOUTUBE_VALIDATION_REGEX = "^((?:https?:)?\\/\\/)?((?:www|m)\\.)?((?:youtube(-nocookie)?\\.com|youtu.be))(\\/(?:[\\w\\-]+\\?v=|embed\\/|live\\/|v\\/)?)([\\w\\-]+)(\\S+)?$";
 
     public static String getVideoId(String url, Platform platform) {
-        String idExtractRegex;
-        int idIndex;
-
         switch (platform) {
             case YOUTUBE:
-                idExtractRegex = YOUTUBE_ID_REGEX;
-                idIndex = 3;
-                break;
+                return extractYoutubeId(url);
             case INSTAGRAM:
-                idExtractRegex = INSTAGRAM_ID_REGEX;
-                idIndex = 6;
-                break;
-            default:
-                throw new RuntimeException();
+                return extractInstagramId(url);
         }
-
-        Pattern pattern = Pattern.compile(idExtractRegex);
-        Matcher matcher = pattern.matcher(url);
-        if (matcher.find()) {
-            return matcher.group(idIndex);
-        } else {
-            // TODO : 예외처리 요망
-            throw new RuntimeException();
-
-        }
+        throw new AppException(ErrorCode.FAILED_TO_EXTRACT_EXTRACT_ID);
     }
 
     public static Platform getVideoPlatform(String url) {
@@ -48,8 +32,27 @@ public class UrlUtils {
         } else if (url.matches(INSTAGRAM_VALIDATION_REGEX)) {
             return INSTAGRAM;
         } else {
-            // TODO: 예외 처리 요망
-            throw new RuntimeException();
+            throw new AppException(ErrorCode.INVALID_VIDEO_URL);
+        }
+    }
+
+    private static String extractYoutubeId(String url) {
+        Pattern pattern = Pattern.compile(YOUTUBE_ID_REGEX);
+        Matcher matcher = pattern.matcher(url);
+        if (matcher.find()) {
+            return matcher.group(3);
+        } else {
+            throw new AppException(ErrorCode.FAILED_TO_EXTRACT_EXTRACT_ID);
+        }
+    }
+
+    private static String extractInstagramId(String url) {
+        Pattern pattern = Pattern.compile(INSTAGRAM_ID_REGEX);
+        Matcher matcher = pattern.matcher(url);
+        if (matcher.find()) {
+            return matcher.group(6);
+        } else {
+            throw new AppException(ErrorCode.FAILED_TO_EXTRACT_EXTRACT_ID);
         }
     }
 }
