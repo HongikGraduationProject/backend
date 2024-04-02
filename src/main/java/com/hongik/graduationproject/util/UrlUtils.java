@@ -9,17 +9,22 @@ import static com.hongik.graduationproject.eum.Platform.INSTAGRAM;
 import static com.hongik.graduationproject.eum.Platform.YOUTUBE;
 
 public class UrlUtils {
+    private static final String INSTAGRAM_ID_REGEX = "(?:https?:\\/\\/)?(?:www\\.)?instagram\\.com\\/?([a-zA-Z0-9\\.\\_\\-]+)?\\/([p]+)?([reel]+)?([tv]+)?([stories]+)?\\/([a-zA-Z0-9\\-\\_\\.]+)\\/?([0-9]+)?";
+    private static final String YOUTUBE_ID_REGEX = "(youtu.*be.*)\\/(watch\\?v=|embed\\/|v|shorts|)(.*?((?=[&#?])|$))";
+    private static final String INSTAGRAM_VALIDATION_REGEX = "https?:\\/\\/(?:www.)?instagram.com\\/reels?\\/([^\\/?#&]+).*";
+    private static final String YOUTUBE_VALIDATION_REGEX = "^((?:https?:)?\\/\\/)?((?:www|m)\\.)?((?:youtube(-nocookie)?\\.com|youtu.be))(\\/(?:[\\w\\-]+\\?v=|embed\\/|live\\/|v\\/)?)([\\w\\-]+)(\\S+)?$";
+
     public static String getVideoId(String url, Platform platform) {
         String idExtractRegex;
         int idIndex;
 
         switch (platform) {
             case YOUTUBE:
-                idExtractRegex = "(youtu.*be.*)\\/(watch\\?v=|embed\\/|v|shorts|)(.*?((?=[&#?])|$))";
+                idExtractRegex = YOUTUBE_ID_REGEX;
                 idIndex = 3;
                 break;
             case INSTAGRAM:
-                idExtractRegex = "(?:https?:\\/\\/)?(?:www\\.)?instagram\\.com\\/?([a-zA-Z0-9\\.\\_\\-]+)?\\/([p]+)?([reel]+)?([tv]+)?([stories]+)?\\/([a-zA-Z0-9\\-\\_\\.]+)\\/?([0-9]+)?";
+                idExtractRegex = INSTAGRAM_ID_REGEX;
                 idIndex = 6;
                 break;
             default:
@@ -38,11 +43,9 @@ public class UrlUtils {
     }
 
     public static Platform getVideoPlatform(String url) {
-        String youtubeValidationRegex = "^((?:https?:)?\\/\\/)?((?:www|m)\\.)?((?:youtube(-nocookie)?\\.com|youtu.be))(\\/(?:[\\w\\-]+\\?v=|embed\\/|live\\/|v\\/)?)([\\w\\-]+)(\\S+)?$";
-        String instagramValidationRegex = "https?:\\/\\/(?:www.)?instagram.com\\/reels?\\/([^\\/?#&]+).*";
-        if (url.matches(youtubeValidationRegex)) {
+        if (url.matches(YOUTUBE_VALIDATION_REGEX)) {
             return YOUTUBE;
-        } else if (url.matches(instagramValidationRegex)) {
+        } else if (url.matches(INSTAGRAM_VALIDATION_REGEX)) {
             return INSTAGRAM;
         } else {
             // TODO: 예외 처리 요망
