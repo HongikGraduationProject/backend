@@ -1,44 +1,72 @@
 package com.hongik.graduationproject.service;
 
-import com.hongik.graduationproject.domain.dto.video.VideoSummaryDto;
-import com.hongik.graduationproject.domain.dto.video.VideoSummaryInitiateRequest;
-import com.hongik.graduationproject.domain.dto.video.VideoSummaryInitiateResponse;
-import com.hongik.graduationproject.domain.dto.video.VideoSummaryStatusResponse;
+import com.hongik.graduationproject.domain.dto.video.*;
+import com.hongik.graduationproject.domain.entity.Category;
 import com.hongik.graduationproject.domain.entity.VideoSummary;
+import com.hongik.graduationproject.domain.entity.VideoSummaryCategory;
 import com.hongik.graduationproject.domain.entity.cache.VideoSummaryStatusCache;
-import com.hongik.graduationproject.eums.Platform;
+import com.hongik.graduationproject.eum.Platform;
+import com.hongik.graduationproject.repository.CategoryRepository;
+import com.hongik.graduationproject.repository.VideoSummaryCategoryRepository;
 import com.hongik.graduationproject.repository.VideoSummaryRepository;
 import com.hongik.graduationproject.repository.VideoSummaryStatusCacheRepository;
+import com.hongik.graduationproject.util.UrlUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static com.hongik.graduationproject.eums.Platform.*;
 
 @Service
 @RequiredArgsConstructor
 public class VideoSummaryService {
     private final MessageService messageService;
     private final VideoSummaryRepository videoSummaryRepository;
-    private final VideoSummaryStatusCacheRepository videoSummaryStatusCacheRepository;
+    private final VideoSummaryStatusCacheRepository summaryStatusCacheRepository;
+    private final CategoryRepository categoryRepository;
+    private final VideoSummaryCategoryRepository videoSummaryCategoryRepository;
 
-    public VideoSummaryInitiateResponse sendUrlToQueue(VideoSummaryInitiateRequest videoSummaryInitiateRequest) {
-        String videoCode = generateVideoCode(videoSummaryInitiateRequest.getUrl());
+    public VideoSummaryInitiateResponse initiateSummarizing(VideoSummaryInitiateRequest summaryInitiateRequest) {
+        Platform platform = UrlUtils.getVideoPlatform(summaryInitiateRequest.getUrl());
+        String videoId = UrlUtils.getVideoId(summaryInitiateRequest.getUrl(), platform);
 
-        if (!videoSummaryStatusCacheRepository.existsById(videoCode)) {
-            if (videoSummaryRepository.existsByVideoCode(videoCode)) {
-                Long id = videoSummaryRepository.findByVideoCode(videoCode).get().getId();
+        String videoCode = platform.toString().concat("_").concat(videoId);
 
-                videoSummaryStatusCacheRepository.save(new VideoSummaryStatusCache(videoCode, id, "COMPLETE"));
-            } else {
-                videoSummaryInitiateRequest.setVideoCode(videoCode);
-                messageService.sendVideoUrlToQueue(videoSummaryInitiateRequest);
+        Long userId = summaryInitiateRequest.getUserId();
 
-                videoSummaryStatusCacheRepository.save(new VideoSummaryStatusCache(videoCode, -1L, "PROCESSING"));
-            }
+        if (summaryStatusCacheRepository.existsByVideoCodeAndUserId(videoCode, userId)) {
+            return new VideoSummaryInitiateResponse("해당 유저가 이미 요약 중인 영상입니다. 요약이 완료된 후 재요청 바랍니다.");
+        }
+
+        Optional<VideoSummaryStatusCache> statusCache = summaryStatusCacheRepository.findFirstByVideoCode(videoCode);
+        if (statusCache.isPresent()) {
+            summaryStatusCacheRepository.save(VideoSummaryStatusCache.clone(statusCache.get(), userId));
+            return new VideoSummaryInitiateResponse(videoCode);
+        }
+
+        if (videoSummaryRepository.existsByVideoCode(videoCode)) {
+            VideoSummary videoSummary = videoSummaryRepository.findByVideoCode(videoCode).get();
+
+            summaryStatusCacheRepository.save(VideoSummaryStatusCache.builder()
+                    .videoCode(videoCode)
+                    .videoSummaryId(videoSummary.getId())
+                    .status("COMPLETE")
+                    .userId(userId)
+                    .generatedMainCategory(videoSummary.getGeneratedMainCategory())
+                    .isCategoryIncluded(summaryInitiateRequest.isCategoryIncluded())
+                    .categoryId(summaryInitiateRequest.getCategoryId())
+                    .build());
+        } else {
+            messageService.sendVideoUrlToQueue(new VideoSummaryInitiateMessage(summaryInitiateRequest.getUrl(), videoCode, platform));
+
+            summaryStatusCacheRepository.save(VideoSummaryStatusCache.builder()
+                    .videoCode(videoCode)
+                    .videoSummaryId(-1L)
+                    .status("PROCESSING")
+                    .userId(userId)
+                    .isCategoryIncluded(summaryInitiateRequest.isCategoryIncluded())
+                    .categoryId(summaryInitiateRequest.getCategoryId())
+                    .build());
         }
 
         return new VideoSummaryInitiateResponse(videoCode);
@@ -49,55 +77,18 @@ public class VideoSummaryService {
         return VideoSummaryDto.from(videoSummary.get());
     }
 
+    @Transactional
     public VideoSummaryStatusResponse getStatus(String videoCode) {
-        VideoSummaryStatusCache statusCache = videoSummaryStatusCacheRepository.findById(videoCode).get();
+        VideoSummaryStatusCache statusCache = summaryStatusCacheRepository.findByVideoCode(videoCode).get();
+        if (statusCache.getStatus().equals("COMPLETE")) {
+            Category category = categoryRepository.findDefaultCategoryByUserIdAndMainCategory(1L, statusCache.getGeneratedMainCategory()).get();
+            VideoSummary videoSummary = videoSummaryRepository.getReferenceById(statusCache.getVideoSummaryId());
+
+            videoSummaryCategoryRepository.save(VideoSummaryCategory.builder()
+                    .category(category)
+                    .videoSummary(videoSummary)
+                    .build());
+        }
         return VideoSummaryStatusResponse.from(statusCache);
-    }
-
-    private String generateVideoCode(String url) {
-        Platform platform = getVideoPlatform(url);
-        String videoId = getVideoId(url, platform);
-        return platform.toString().concat("_").concat(videoId);
-    }
-
-    private String getVideoId(String url, Platform platform) {
-        String idExtractRegex;
-        int idIndex;
-
-        switch (platform) {
-            case YOUTUBE:
-                idExtractRegex = "(youtu.*be.*)\\/(watch\\?v=|embed\\/|v|shorts|)(.*?((?=[&#?])|$))";
-                idIndex = 3;
-                break;
-            case INSTAGRAM:
-                idExtractRegex = "(?:https?:\\/\\/)?(?:www\\.)?instagram\\.com\\/?([a-zA-Z0-9\\.\\_\\-]+)?\\/([p]+)?([reel]+)?([tv]+)?([stories]+)?\\/([a-zA-Z0-9\\-\\_\\.]+)\\/?([0-9]+)?";
-                idIndex = 6;
-                break;
-            default:
-                throw new RuntimeException();
-        }
-
-        Pattern pattern = Pattern.compile(idExtractRegex);
-        Matcher matcher = pattern.matcher(url);
-        if (matcher.find()) {
-            return matcher.group(idIndex);
-        } else {
-            // TODO : 예외처리 요망
-            throw new RuntimeException();
-
-        }
-    }
-
-    private Platform getVideoPlatform(String url) {
-        String youtubeValidationRegex = "^((?:https?:)?\\/\\/)?((?:www|m)\\.)?((?:youtube(-nocookie)?\\.com|youtu.be))(\\/(?:[\\w\\-]+\\?v=|embed\\/|live\\/|v\\/)?)([\\w\\-]+)(\\S+)?$";
-        String instagramValidationRegex = "https?:\\/\\/(?:www.)?instagram.com\\/reels?\\/([^\\/?#&]+).*";
-        if (url.matches(youtubeValidationRegex)) {
-            return YOUTUBE;
-        } else if (url.matches(instagramValidationRegex)) {
-            return INSTAGRAM;
-        } else {
-            // TODO: 예외 처리 요망
-            throw new RuntimeException();
-        }
     }
 }
