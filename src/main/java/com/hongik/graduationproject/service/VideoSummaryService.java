@@ -30,7 +30,7 @@ public class VideoSummaryService {
         Platform platform = UrlUtils.getVideoPlatform(summaryInitiateRequest.getUrl());
         String videoId = UrlUtils.getVideoId(summaryInitiateRequest.getUrl(), platform);
 
-        String videoCode = platform.toString().concat("_").concat(videoId);
+        String videoCode = platform.name() + '_' + videoId;
 
         Long userId = summaryInitiateRequest.getUserId();
 
