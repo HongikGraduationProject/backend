@@ -40,7 +40,7 @@ public class VideoSummaryService {
 
         Optional<VideoSummaryStatusCache> statusCache = summaryStatusCacheRepository.findFirstByVideoCode(videoCode);
         if (statusCache.isPresent()) {
-            summaryStatusCacheRepository.save(VideoSummaryStatusCache.clone(statusCache.get(), userId));
+            summaryStatusCacheRepository.save(VideoSummaryStatusCache.of(summaryInitiateRequest, userId, statusCache.get()));
             return new VideoSummaryInitiateResponse(videoCode);
         }
 
@@ -48,29 +48,25 @@ public class VideoSummaryService {
         if (mayBeVideoSummary.isPresent()) {
             VideoSummary videoSummary = mayBeVideoSummary.get();
 
-            summaryStatusCacheRepository.save(VideoSummaryStatusCache.builder()
-                    .videoCode(videoSummary.getVideoCode())
-                    .videoSummaryId(videoSummary.getId())
-                    .status("COMPLETE")
-                    .userId(userId)
-                    .generatedMainCategory(videoSummary.getGeneratedMainCategory())
-                    .isCategoryIncluded(summaryInitiateRequest.getIsCategoryIncluded())
-                    .categoryId(summaryInitiateRequest.getCategoryId())
-                    .build());
-        } else {
-            messageService.sendVideoUrlToQueue(new VideoSummaryInitiateMessage(summaryInitiateRequest.getUrl(), videoCode, platform));
-
-            summaryStatusCacheRepository.save(VideoSummaryStatusCache.builder()
-                    .videoCode(videoCode)
-                    .videoSummaryId(-1L)
-                    .status("PROCESSING")
-                    .userId(userId)
-                    .isCategoryIncluded(summaryInitiateRequest.getIsCategoryIncluded())
-                    .categoryId(summaryInitiateRequest.getCategoryId())
-                    .build());
+            summaryStatusCacheRepository.save(VideoSummaryStatusCache.of(summaryInitiateRequest, userId, videoSummary));
+            return new VideoSummaryInitiateResponse(videoCode);
         }
 
+        messageService.sendVideoUrlToQueue(new VideoSummaryInitiateMessage(summaryInitiateRequest.getUrl(), videoCode, platform));
+
+        summaryStatusCacheRepository.save(VideoSummaryStatusCache.of(summaryInitiateRequest, userId, videoCode));
         return new VideoSummaryInitiateResponse(videoCode);
+    }
+
+    private static VideoSummaryStatusCache of(VideoSummaryInitiateRequest summaryInitiateRequest, String videoCode, Long userId) {
+        return VideoSummaryStatusCache.builder()
+                .videoCode(videoCode)
+                .videoSummaryId(-1L)
+                .status("PROCESSING")
+                .userId(userId)
+                .isCategoryIncluded(summaryInitiateRequest.getIsCategoryIncluded())
+                .categoryId(summaryInitiateRequest.getCategoryId())
+                .build();
     }
 
     public VideoSummaryDto getVideoSummaryById(Long videoSummaryId) {

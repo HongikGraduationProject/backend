@@ -1,5 +1,7 @@
 package com.hongik.graduationproject.domain.entity.cache;
 
+import com.hongik.graduationproject.domain.dto.video.VideoSummaryInitiateRequest;
+import com.hongik.graduationproject.domain.entity.VideoSummary;
 import com.hongik.graduationproject.eum.MainCategory;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
@@ -39,15 +41,38 @@ public class VideoSummaryStatusCache {
         }
     }
 
-    public static VideoSummaryStatusCache clone(VideoSummaryStatusCache statusCache, Long userId) {
+    public static VideoSummaryStatusCache of(VideoSummaryInitiateRequest summaryInitiateRequest, Long userId, VideoSummaryStatusCache statusCache) {
         return VideoSummaryStatusCache.builder()
                 .videoCode(statusCache.getVideoCode())
                 .userId(userId)
                 .videoSummaryId(statusCache.getVideoSummaryId())
                 .status(statusCache.getStatus())
                 .generatedMainCategory(statusCache.getGeneratedMainCategory())
-                .isCategoryIncluded(statusCache.getIsCategoryIncluded())
-                .categoryId(statusCache.getCategoryId())
+                .isCategoryIncluded(summaryInitiateRequest.getIsCategoryIncluded())
+                .categoryId(summaryInitiateRequest.getCategoryId())
+                .build();
+    }
+
+    public static VideoSummaryStatusCache of(VideoSummaryInitiateRequest summaryInitiateRequest, Long userId, VideoSummary videoSummary) {
+        return VideoSummaryStatusCache.builder()
+                .videoCode(videoSummary.getVideoCode())
+                .videoSummaryId(videoSummary.getId())
+                .status("COMPLETE")
+                .userId(userId)
+                .generatedMainCategory(videoSummary.getGeneratedMainCategory())
+                .isCategoryIncluded(summaryInitiateRequest.getIsCategoryIncluded())
+                .categoryId(summaryInitiateRequest.getCategoryId())
+                .build();
+    }
+
+    public static VideoSummaryStatusCache of(VideoSummaryInitiateRequest summaryInitiateRequest, Long userId, String videoCode) {
+        return VideoSummaryStatusCache.builder()
+                .videoCode(videoCode)
+                .videoSummaryId(-1L)
+                .status("PROCESSING")
+                .userId(userId)
+                .isCategoryIncluded(summaryInitiateRequest.getIsCategoryIncluded())
+                .categoryId(summaryInitiateRequest.getCategoryId())
                 .build();
     }
 
