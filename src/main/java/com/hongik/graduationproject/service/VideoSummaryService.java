@@ -60,17 +60,6 @@ public class VideoSummaryService {
         return new VideoSummaryInitiateResponse(videoCode);
     }
 
-    private static VideoSummaryStatusCache of(VideoSummaryInitiateRequest summaryInitiateRequest, String videoCode, Long userId) {
-        return VideoSummaryStatusCache.builder()
-                .videoCode(videoCode)
-                .videoSummaryId(-1L)
-                .status("PROCESSING")
-                .userId(userId)
-                .isCategoryIncluded(summaryInitiateRequest.getIsCategoryIncluded())
-                .categoryId(summaryInitiateRequest.getCategoryId())
-                .build();
-    }
-
     public VideoSummaryDto getVideoSummaryById(Long videoSummaryId) {
         Optional<VideoSummary> videoSummary = videoSummaryRepository.findById(videoSummaryId);
         return VideoSummaryDto.from(videoSummary.get());
