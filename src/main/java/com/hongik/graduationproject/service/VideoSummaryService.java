@@ -54,7 +54,7 @@ public class VideoSummaryService {
                     .status("COMPLETE")
                     .userId(userId)
                     .generatedMainCategory(videoSummary.getGeneratedMainCategory())
-                    .isCategoryIncluded(summaryInitiateRequest.isCategoryIncluded())
+                    .isCategoryIncluded(summaryInitiateRequest.getIsCategoryIncluded())
                     .categoryId(summaryInitiateRequest.getCategoryId())
                     .build());
         } else {
@@ -65,7 +65,7 @@ public class VideoSummaryService {
                     .videoSummaryId(-1L)
                     .status("PROCESSING")
                     .userId(userId)
-                    .isCategoryIncluded(summaryInitiateRequest.isCategoryIncluded())
+                    .isCategoryIncluded(summaryInitiateRequest.getIsCategoryIncluded())
                     .categoryId(summaryInitiateRequest.getCategoryId())
                     .build());
         }
