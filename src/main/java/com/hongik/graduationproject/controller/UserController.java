@@ -14,7 +14,7 @@ public class UserController {
     private final AuthService authService;
 
     @PostMapping("/auth/kakao/sign-up")
-    public Response<?> getLogin(@RequestBody KaKaoRequestDto kaKaoRequestDto){
+    public Response<?> signUp(@RequestBody KaKaoRequestDto kaKaoRequestDto){
         return authService.loginUser(kaKaoRequestDto);
     }
 
