@@ -1,22 +1,21 @@
 package com.hongik.graduationproject.service.auth;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hongik.graduationproject.domain.dto.auth.oauth.OauthToken;
-import com.hongik.graduationproject.domain.dto.Response;
 import com.hongik.graduationproject.domain.dto.AuthRequestDto;
-import com.hongik.graduationproject.domain.dto.KaKaoResponseDto;
-import com.hongik.graduationproject.domain.entity.User;
 import com.hongik.graduationproject.domain.dto.KaKaoRequestDto;
+import com.hongik.graduationproject.domain.dto.KaKaoResponseDto;
+import com.hongik.graduationproject.domain.dto.Response;
 import com.hongik.graduationproject.domain.dto.auth.oauth.KaKaoProfile;
+import com.hongik.graduationproject.domain.entity.User;
 import com.hongik.graduationproject.jwt.TokenProvider;
 import com.hongik.graduationproject.repository.UserRepository;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -28,7 +27,6 @@ public class KakaoAuthService implements AuthService {
 
     private final UserRepository userRepository;
     private final TokenProvider tokenProvider;
-    private final ObjectMapper objectMapper;
 
     @Override
     public Response<?> loginUser(AuthRequestDto authRequestDto) {
@@ -60,36 +58,6 @@ public class KakaoAuthService implements AuthService {
 
         KaKaoResponseDto kaKaoResponseDto = new KaKaoResponseDto(newAccessToken, refreshToken, exprTime, user);
         return Response.createSuccess(kaKaoResponseDto);
-    }
-
-    private OauthToken getAccessToken(String accessToken) {
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
-
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("grant_type", "authorization_code");
-        params.add("client_id", "{8f7f711ce205744c2b26973c36d44708}"); //내가 발급해서 넣음
-        params.add("redirect_uri", "{http://127.0.0.1:8080/account/sign-in/kakao/callback}"); //임의 생성
-
-        HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest =
-                new HttpEntity<>(params, headers);
-
-        ResponseEntity<String> accessTokenResponse = restTemplate.exchange(
-                "https://kauth.kakao.com/oauth/token",
-                HttpMethod.POST,
-                kakaoTokenRequest,
-                String.class
-        );
-
-        OauthToken oauthToken = null;
-        try {
-            oauthToken = objectMapper.readValue(accessTokenResponse.getBody(), OauthToken.class);
-        } catch (JsonProcessingException e) {
-            log.error("Failed to parse access token response: {}", e.getMessage());
-        }
-
-        return oauthToken;
     }
 
     private KaKaoProfile getKaKaoProfile(String token) {
