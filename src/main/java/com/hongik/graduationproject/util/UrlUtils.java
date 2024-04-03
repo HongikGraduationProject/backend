@@ -1,6 +1,8 @@
 package com.hongik.graduationproject.util;
 
 import com.hongik.graduationproject.eum.Platform;
+import com.hongik.graduationproject.exception.AppException;
+import com.hongik.graduationproject.exception.ErrorCode;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -9,44 +11,48 @@ import static com.hongik.graduationproject.eum.Platform.INSTAGRAM;
 import static com.hongik.graduationproject.eum.Platform.YOUTUBE;
 
 public class UrlUtils {
-    public static String getVideoId(String url, Platform platform) {
-        String idExtractRegex;
-        int idIndex;
+    private static final String INSTAGRAM_ID_REGEX = "(?:https?:\\/\\/)?(?:www\\.)?instagram\\.com\\/?([a-zA-Z0-9\\.\\_\\-]+)?\\/([p]+)?([reel]+)?([tv]+)?([stories]+)?\\/([a-zA-Z0-9\\-\\_\\.]+)\\/?([0-9]+)?";
+    private static final String YOUTUBE_ID_REGEX = "(youtu.*be.*)\\/(watch\\?v=|embed\\/|v|shorts|)(.*?((?=[&#?])|$))";
+    private static final String INSTAGRAM_VALIDATION_REGEX = "https?:\\/\\/(?:www.)?instagram.com\\/reels?\\/([^\\/?#&]+).*";
+    private static final String YOUTUBE_VALIDATION_REGEX = "^((?:https?:)?\\/\\/)?((?:www|m)\\.)?((?:youtube(-nocookie)?\\.com|youtu.be))(\\/(?:[\\w\\-]+\\?v=|embed\\/|live\\/|v\\/)?)([\\w\\-]+)(\\S+)?$";
 
+    public static String getVideoId(String url, Platform platform) {
         switch (platform) {
             case YOUTUBE:
-                idExtractRegex = "(youtu.*be.*)\\/(watch\\?v=|embed\\/|v|shorts|)(.*?((?=[&#?])|$))";
-                idIndex = 3;
-                break;
+                return extractYoutubeId(url);
             case INSTAGRAM:
-                idExtractRegex = "(?:https?:\\/\\/)?(?:www\\.)?instagram\\.com\\/?([a-zA-Z0-9\\.\\_\\-]+)?\\/([p]+)?([reel]+)?([tv]+)?([stories]+)?\\/([a-zA-Z0-9\\-\\_\\.]+)\\/?([0-9]+)?";
-                idIndex = 6;
-                break;
-            default:
-                throw new RuntimeException();
+                return extractInstagramId(url);
         }
-
-        Pattern pattern = Pattern.compile(idExtractRegex);
-        Matcher matcher = pattern.matcher(url);
-        if (matcher.find()) {
-            return matcher.group(idIndex);
-        } else {
-            // TODO : 예외처리 요망
-            throw new RuntimeException();
-
-        }
+        throw new AppException(ErrorCode.FAILED_TO_EXTRACT_EXTRACT_ID);
     }
 
     public static Platform getVideoPlatform(String url) {
-        String youtubeValidationRegex = "^((?:https?:)?\\/\\/)?((?:www|m)\\.)?((?:youtube(-nocookie)?\\.com|youtu.be))(\\/(?:[\\w\\-]+\\?v=|embed\\/|live\\/|v\\/)?)([\\w\\-]+)(\\S+)?$";
-        String instagramValidationRegex = "https?:\\/\\/(?:www.)?instagram.com\\/reels?\\/([^\\/?#&]+).*";
-        if (url.matches(youtubeValidationRegex)) {
+        if (url.matches(YOUTUBE_VALIDATION_REGEX)) {
             return YOUTUBE;
-        } else if (url.matches(instagramValidationRegex)) {
+        } else if (url.matches(INSTAGRAM_VALIDATION_REGEX)) {
             return INSTAGRAM;
         } else {
-            // TODO: 예외 처리 요망
-            throw new RuntimeException();
+            throw new AppException(ErrorCode.INVALID_VIDEO_URL);
+        }
+    }
+
+    private static String extractYoutubeId(String url) {
+        Pattern pattern = Pattern.compile(YOUTUBE_ID_REGEX);
+        Matcher matcher = pattern.matcher(url);
+        if (matcher.find()) {
+            return matcher.group(3);
+        } else {
+            throw new AppException(ErrorCode.FAILED_TO_EXTRACT_EXTRACT_ID);
+        }
+    }
+
+    private static String extractInstagramId(String url) {
+        Pattern pattern = Pattern.compile(INSTAGRAM_ID_REGEX);
+        Matcher matcher = pattern.matcher(url);
+        if (matcher.find()) {
+            return matcher.group(6);
+        } else {
+            throw new AppException(ErrorCode.FAILED_TO_EXTRACT_EXTRACT_ID);
         }
     }
 }
