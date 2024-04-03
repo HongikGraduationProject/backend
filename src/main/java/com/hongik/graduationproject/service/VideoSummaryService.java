@@ -6,6 +6,8 @@ import com.hongik.graduationproject.domain.entity.VideoSummary;
 import com.hongik.graduationproject.domain.entity.VideoSummaryCategory;
 import com.hongik.graduationproject.domain.entity.cache.VideoSummaryStatusCache;
 import com.hongik.graduationproject.eum.Platform;
+import com.hongik.graduationproject.exception.AppException;
+import com.hongik.graduationproject.exception.ErrorCode;
 import com.hongik.graduationproject.repository.CategoryRepository;
 import com.hongik.graduationproject.repository.VideoSummaryCategoryRepository;
 import com.hongik.graduationproject.repository.VideoSummaryRepository;
@@ -35,7 +37,7 @@ public class VideoSummaryService {
         Long userId = summaryInitiateRequest.getUserId();
 
         if (summaryStatusCacheRepository.existsByVideoCodeAndUserId(videoCode, userId)) {
-            return new VideoSummaryInitiateResponse("해당 유저가 이미 요약 중인 영상입니다. 요약이 완료된 후 재요청 바랍니다.");
+            throw new AppException(ErrorCode.ALREADY_REQUESTED_SUMMARIZING);
         }
 
         Optional<VideoSummaryStatusCache> statusCache = summaryStatusCacheRepository.findFirstByVideoCode(videoCode);
