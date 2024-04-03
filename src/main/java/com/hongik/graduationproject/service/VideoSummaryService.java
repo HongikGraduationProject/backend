@@ -44,11 +44,12 @@ public class VideoSummaryService {
             return new VideoSummaryInitiateResponse(videoCode);
         }
 
-        if (videoSummaryRepository.existsByVideoCode(videoCode)) {
-            VideoSummary videoSummary = videoSummaryRepository.findByVideoCode(videoCode).get();
+        Optional<VideoSummary> mayBeVideoSummary = videoSummaryRepository.findByVideoCode(videoCode);
+        if (mayBeVideoSummary.isPresent()) {
+            VideoSummary videoSummary = mayBeVideoSummary.get();
 
             summaryStatusCacheRepository.save(VideoSummaryStatusCache.builder()
-                    .videoCode(videoCode)
+                    .videoCode(videoSummary.getVideoCode())
                     .videoSummaryId(videoSummary.getId())
                     .status("COMPLETE")
                     .userId(userId)
