@@ -1,6 +1,7 @@
 package com.hongik.graduationproject.service.auth;
 
 import com.hongik.graduationproject.domain.dto.auth.AuthRequest;
+import com.hongik.graduationproject.domain.dto.auth.AuthResponse;
 import com.hongik.graduationproject.domain.dto.auth.KaKaoRequest;
 import com.hongik.graduationproject.domain.dto.auth.KaKaoResponse;
 import com.hongik.graduationproject.domain.dto.Response;
@@ -29,7 +30,7 @@ public class KakaoAuthService implements AuthService {
     private final TokenProvider tokenProvider;
 
     @Override
-    public Response<?> loginUser(AuthRequest authRequest) {
+    public Response<AuthResponse> loginUser(AuthRequest authRequest) {
 
         KaKaoRequest kakaoRequest = (KaKaoRequest) authRequest;
         KaKaoProfile kakaoProfile = getKaKaoProfile(kakaoRequest.getAccessToken());
