@@ -45,18 +45,17 @@ public class KakaoAuthService implements AuthService {
             return Response.createError("User already exists");
         }
 
-        User user = User.builder()
+        User savedUser = userRepository.save(User.builder()
                 .kakaoId(kakaoProfile.getId())
                 .kakaoNickname(kakaoProfile.getKakaoAccount().getProfile().getNickname())
                 .email(kakaoProfile.getKakaoAccount().getEmail())
-                .build();
-        User savedUser = userRepository.save(user);
+                .build());
 
         String newAccessToken = tokenProvider.create(savedUser.getId());
         String refreshToken = tokenProvider.refresh(newAccessToken);
         int exprTime = 3600000;
 
-        KaKaoResponseDto kaKaoResponseDto = new KaKaoResponseDto(newAccessToken, refreshToken, exprTime, user);
+        KaKaoResponseDto kaKaoResponseDto = new KaKaoResponseDto(newAccessToken, refreshToken, exprTime, savedUser);
         return Response.createSuccess(kaKaoResponseDto);
     }
 
