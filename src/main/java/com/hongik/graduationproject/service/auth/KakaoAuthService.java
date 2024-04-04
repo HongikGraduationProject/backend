@@ -39,7 +39,8 @@ public class KakaoAuthService implements AuthService {
             return Response.createError("Failed to retrieve Kakao profile or account information");
         }
 
-        Optional<User> optionalUser = userRepository.findByEmail(kakaoProfile.getKakaoAccount().getEmail());
+        String email = kakaoProfile.getKakaoAccount().getEmail();
+        Optional<User> optionalUser = userRepository.findByEmail(email);
 
         if (optionalUser.isPresent()) {
             return Response.createError("User already exists");
