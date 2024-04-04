@@ -34,16 +34,16 @@ public class KakaoAuthService implements AuthService {
         KaKaoRequest kakaoRequest = (KaKaoRequest) authRequest;
         KaKaoProfile kakaoProfile = getKaKaoProfile(kakaoRequest.getAccessToken());
 
-        if (kakaoProfile == null || kakaoProfile.getKakaoAccount() == null) {   // TODO: 예외 처리 리팩토링
+        if (kakaoProfile == null || kakaoProfile.getKakaoAccount() == null) {
             log.error("Failed to retrieve Kakao profile or account information");
-            return Response.createError("Failed to retrieve Kakao profile or account information");
+            throw new RuntimeException(); //TODO: 예외 처리 요망
         }
 
         String email = kakaoProfile.getKakaoAccount().getEmail();
         Optional<User> optionalUser = userRepository.findByEmail(email);
 
         if (optionalUser.isPresent()) {
-            return Response.createError("User already exists");
+            throw new RuntimeException(); //TODO: 예외 처리 요망
         }
 
         User savedUser = userRepository.save(User.of(kakaoProfile));
@@ -85,14 +85,14 @@ public class KakaoAuthService implements AuthService {
 
         if (userId == null) {
             log.error("Failed to retrieve user information");
-            return Response.createError("Failed to retrieve user information");
+            throw new RuntimeException(); //TODO: 예외 처리 요망
         }
 
         Optional<User> optionalUser = userRepository.findById(userId);
 
         if (optionalUser.isEmpty()) {
             log.error("User not found");
-            return Response.createError("User not found");
+            throw new RuntimeException(); //TODO: 예외 처리 요망
         }
 
         User user = optionalUser.get();
