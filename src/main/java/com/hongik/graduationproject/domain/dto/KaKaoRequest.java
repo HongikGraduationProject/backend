@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class KaKaoRequestDto extends AuthRequestDto {
+public class KaKaoRequest extends AuthRequest {
 
     String accessToken;
     String refreshToken;

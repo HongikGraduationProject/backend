@@ -1,8 +1,8 @@
 package com.hongik.graduationproject.service.auth;
 
-import com.hongik.graduationproject.domain.dto.AuthRequestDto;
-import com.hongik.graduationproject.domain.dto.KaKaoRequestDto;
-import com.hongik.graduationproject.domain.dto.KaKaoResponseDto;
+import com.hongik.graduationproject.domain.dto.AuthRequest;
+import com.hongik.graduationproject.domain.dto.KaKaoRequest;
+import com.hongik.graduationproject.domain.dto.KaKaoResponse;
 import com.hongik.graduationproject.domain.dto.Response;
 import com.hongik.graduationproject.domain.dto.auth.oauth.KaKaoProfile;
 import com.hongik.graduationproject.domain.entity.User;
@@ -29,10 +29,10 @@ public class KakaoAuthService implements AuthService {
     private final TokenProvider tokenProvider;
 
     @Override
-    public Response<?> loginUser(AuthRequestDto authRequestDto) {
+    public Response<?> loginUser(AuthRequest authRequest) {
 
-        KaKaoRequestDto kakaoRequestDto = (KaKaoRequestDto) authRequestDto;
-        KaKaoProfile kakaoProfile = getKaKaoProfile(kakaoRequestDto.getAccessToken());
+        KaKaoRequest kakaoRequest = (KaKaoRequest) authRequest;
+        KaKaoProfile kakaoProfile = getKaKaoProfile(kakaoRequest.getAccessToken());
 
         if (kakaoProfile == null || kakaoProfile.getKakaoAccount() == null) {
             log.error("Failed to retrieve Kakao profile or account information");
@@ -52,8 +52,8 @@ public class KakaoAuthService implements AuthService {
         String refreshToken = tokenProvider.refresh(newAccessToken);
         int exprTime = 3600000;
 
-        KaKaoResponseDto kaKaoResponseDto = new KaKaoResponseDto(newAccessToken, refreshToken, exprTime, savedUser);
-        return Response.createSuccess(kaKaoResponseDto);
+        KaKaoResponse kaKaoResponse = new KaKaoResponse(newAccessToken, refreshToken, exprTime, savedUser);
+        return Response.createSuccess(kaKaoResponse);
     }
 
     private KaKaoProfile getKaKaoProfile(String token) {
@@ -80,8 +80,8 @@ public class KakaoAuthService implements AuthService {
     }
 
     @Override
-    public Response<?> reissueToken(KaKaoRequestDto kaKaoRequestDto) {
-        Long userId = tokenProvider.getUserId(kaKaoRequestDto.getAccessToken());
+    public Response<?> reissueToken(KaKaoRequest kaKaoRequest) {
+        Long userId = tokenProvider.getUserId(kaKaoRequest.getAccessToken());
 
         if (userId == null) {
             log.error("Failed to retrieve user information");
@@ -98,10 +98,10 @@ public class KakaoAuthService implements AuthService {
         User user = optionalUser.get();
 
         String newAccessToken = tokenProvider.create(userId);
-        String newRefreshToken = tokenProvider.refresh(kaKaoRequestDto.getRefreshToken());
+        String newRefreshToken = tokenProvider.refresh(kaKaoRequest.getRefreshToken());
         int exprTime = 3600000;
 
-        KaKaoResponseDto kaKaoResponseDto = new KaKaoResponseDto(newAccessToken, newRefreshToken, exprTime, user);
-        return Response.createSuccess(kaKaoResponseDto);
+        KaKaoResponse kaKaoResponse = new KaKaoResponse(newAccessToken, newRefreshToken, exprTime, user);
+        return Response.createSuccess(kaKaoResponse);
     }
 }

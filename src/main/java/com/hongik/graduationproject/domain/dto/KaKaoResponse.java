@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class KaKaoResponseDto {
+public class KaKaoResponse {
 
     String accessToken;
     String refreshToken;
