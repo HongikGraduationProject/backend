@@ -1,5 +1,6 @@
 package com.hongik.graduationproject.domain.entity;
 
+import com.hongik.graduationproject.domain.dto.auth.oauth.KaKaoProfile;
 import com.hongik.graduationproject.domain.entity.global.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -22,4 +23,12 @@ public class User extends BaseTimeEntity {
     private String kakaoNickname;
     private Long kakaoId;
     private String email;
+
+    public static User of(KaKaoProfile kakaoProfile) {
+        return User.builder()
+                .kakaoId(kakaoProfile.getId())
+                .kakaoNickname(kakaoProfile.getKakaoAccount().getProfile().getNickname())
+                .email(kakaoProfile.getKakaoAccount().getEmail())
+                .build();
+    }
 }
