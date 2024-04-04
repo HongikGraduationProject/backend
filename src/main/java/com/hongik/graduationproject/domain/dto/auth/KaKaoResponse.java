@@ -1,4 +1,4 @@
-package com.hongik.graduationproject.domain.dto;
+package com.hongik.graduationproject.domain.dto.auth;
 
 import com.hongik.graduationproject.domain.entity.User;
 import lombok.AllArgsConstructor;

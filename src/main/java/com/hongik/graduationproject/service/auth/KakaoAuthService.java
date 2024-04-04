@@ -1,8 +1,8 @@
 package com.hongik.graduationproject.service.auth;
 
-import com.hongik.graduationproject.domain.dto.AuthRequest;
-import com.hongik.graduationproject.domain.dto.KaKaoRequest;
-import com.hongik.graduationproject.domain.dto.KaKaoResponse;
+import com.hongik.graduationproject.domain.dto.auth.AuthRequest;
+import com.hongik.graduationproject.domain.dto.auth.KaKaoRequest;
+import com.hongik.graduationproject.domain.dto.auth.KaKaoResponse;
 import com.hongik.graduationproject.domain.dto.Response;
 import com.hongik.graduationproject.domain.dto.auth.oauth.KaKaoProfile;
 import com.hongik.graduationproject.domain.entity.User;
@@ -34,7 +34,7 @@ public class KakaoAuthService implements AuthService {
         KaKaoRequest kakaoRequest = (KaKaoRequest) authRequest;
         KaKaoProfile kakaoProfile = getKaKaoProfile(kakaoRequest.getAccessToken());
 
-        if (kakaoProfile == null || kakaoProfile.getKakaoAccount() == null) {
+        if (kakaoProfile == null || kakaoProfile.getKakaoAccount() == null) {   // TODO: 예외 처리 리팩토링
             log.error("Failed to retrieve Kakao profile or account information");
             return Response.createError("Failed to retrieve Kakao profile or account information");
         }
