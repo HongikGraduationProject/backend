@@ -10,36 +10,36 @@ import lombok.NoArgsConstructor;
 public class KaKaoProfile {
 
     public Long id;
-    public String connectedAt;
+    public String connected_at;
     public KakaoProperties properties;
-    public KakaoAccount kakaoAccount;
+    public KakaoAccount kakao_account;
 
     @Data
     public static class KakaoProperties {
 
-        public String profileImage;
-        public String thumbnailImage;
+        public String profile_image;
+        public String thumbnail_image;
     }
 
     @Data
     public static class KakaoAccount {
 
-        public Boolean profileNicknameNeedsAgreement;
-        public Boolean profileImageNeedsAgreement;
+        public Boolean profile_nickname_needs_agreement;
+        public Boolean profile_image_needs_agreement;
         public Profile profile;
-        public Boolean hasEmail;
-        public Boolean emailNeedsAgreement;
-        public Boolean isEmailValid;
-        public Boolean isEmailVerified;
+        public Boolean has_email;
+        public Boolean email_needs_agreement;
+        public Boolean is_email_valid;
+        public Boolean is_email_verified;
         public String email;
 
         @Data
         public static class Profile {
 
             public String nickname;
-            public String thumbnailImageUrl;
-            public String profileImageUrl;
-            public Boolean isDefaultImage;
+            public String thumbnail_image_url;
+            public String profile_image_url;
+            public Boolean is_default_image;
         }
     }
 }
