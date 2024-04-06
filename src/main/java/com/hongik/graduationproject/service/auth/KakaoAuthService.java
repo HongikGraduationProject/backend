@@ -35,12 +35,12 @@ public class KakaoAuthService implements AuthService {
         KaKaoRequest kakaoRequest = (KaKaoRequest) authRequest;
         KaKaoProfile kakaoProfile = getKaKaoProfile(kakaoRequest.getAccessToken());
 
-        if (kakaoProfile == null || kakaoProfile.getKakaoAccount() == null) {
+        if (kakaoProfile == null || kakaoProfile.getKakao_account() == null) {
             log.error("Failed to retrieve Kakao profile or account information");
             throw new RuntimeException(); //TODO: 예외 처리 요망
         }
 
-        String email = kakaoProfile.getKakaoAccount().getEmail();
+        String email = kakaoProfile.getKakao_account().getEmail();
         Optional<User> optionalUser = userRepository.findByEmail(email);
 
         if (optionalUser.isPresent()) {
