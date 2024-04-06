@@ -61,8 +61,8 @@ public class VideoSummaryService {
     }
 
     public VideoSummaryDto getVideoSummaryById(Long videoSummaryId) {
-        Optional<VideoSummary> videoSummary = videoSummaryRepository.findById(videoSummaryId);
-        return VideoSummaryDto.from(videoSummary.get());
+        VideoSummary videoSummary = videoSummaryRepository.findById(videoSummaryId).orElseThrow(() -> new AppException(ErrorCode.VIDEO_SUMMARY_NOT_FOUND));
+        return VideoSummaryDto.from(videoSummary);
     }
 
     @Transactional
