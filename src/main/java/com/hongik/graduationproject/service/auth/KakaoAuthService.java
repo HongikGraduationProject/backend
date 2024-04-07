@@ -50,8 +50,8 @@ public class KakaoAuthService implements AuthService {
 
         User savedUser = userRepository.save(User.of(kakaoProfile));
 
-        String newAccessToken = tokenProvider.create(savedUser.getId());
-        String refreshToken = tokenProvider.refresh(newAccessToken);
+        String newAccessToken = tokenProvider.createAccessToken(savedUser.getId());
+        String refreshToken = tokenProvider.createRefreshToken(newAccessToken);
         int exprTime = 3600000;
 
         KaKaoResponse kaKaoResponse = new KaKaoResponse(newAccessToken, refreshToken, exprTime, savedUser);
@@ -99,10 +99,9 @@ public class KakaoAuthService implements AuthService {
 
        // User user = optionalUser.get();
 
-        String newAccessToken = tokenProvider.create(userId);
-        String newRefreshToken = tokenProvider.refresh(reissueRequest.getRefreshToken());
+        String newAccessToken = tokenProvider.createAccessToken(userId);
+        String newRefreshToken = tokenProvider.createRefreshToken(reissueRequest.getRefreshToken());
         int exprTime = 3600000;
-
 
         ReissueResponse reissueResponse = new ReissueResponse(newAccessToken, newRefreshToken, exprTime);
         return reissueResponse;
