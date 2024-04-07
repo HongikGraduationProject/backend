@@ -1,0 +1,26 @@
+package com.hongik.graduationproject.domain.dto.video;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.hongik.graduationproject.eum.Platform;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class VideoSummaryMessage {
+    @JsonProperty("video_code")
+    String videoCode;
+    String title;
+    String description;
+    List<String> keywords;
+    String url;
+    String summary;
+    String address;
+    Platform platform;
+    @JsonProperty("category")
+    String generatedMainCategoryName;
+}

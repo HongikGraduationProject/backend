@@ -1,11 +1,12 @@
 package com.hongik.graduationproject.service;
 
-import com.hongik.graduationproject.domain.dto.video.VideoSummaryInitiateRequest;
-import com.hongik.graduationproject.domain.dto.video.VideoSummaryDto;
+import com.hongik.graduationproject.domain.dto.video.VideoSummaryInitiateMessage;
+import com.hongik.graduationproject.domain.dto.video.VideoSummaryMessage;
+import com.hongik.graduationproject.domain.entity.Category;
 import com.hongik.graduationproject.domain.entity.VideoSummary;
 import com.hongik.graduationproject.domain.entity.cache.VideoSummaryStatusCache;
-import com.hongik.graduationproject.repository.VideoSummaryRepository;
-import com.hongik.graduationproject.repository.VideoSummaryStatusCacheRepository;
+import com.hongik.graduationproject.eum.MainCategory;
+import com.hongik.graduationproject.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -13,6 +14,9 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -23,31 +27,34 @@ public class MessageService {
     @Value("${rabbitmq.url.routing.key}")
     private String urlRoutingKey;
     private final RabbitTemplate rabbitTemplate;
-    private final VideoSummaryRepository videoSummaryRepository;
     private final VideoSummaryStatusCacheRepository videoSummaryStatusCacheRepository;
+    private final VideoSummaryRepository videoSummaryRepository;
 
-    public void sendVideoUrlToQueue(VideoSummaryInitiateRequest videoSummaryInitiateRequest) {
-        log.info("Sent url: {}, videoCode: {}", videoSummaryInitiateRequest.getUrl(), videoSummaryInitiateRequest.getVideoCode());
-        rabbitTemplate.convertAndSend(exchangeName, urlRoutingKey, videoSummaryInitiateRequest);
+    public void sendVideoUrlToQueue(VideoSummaryInitiateMessage videoSummaryInitiateMessage) {
+        log.info("Sent url: {}, videoCode: {}", videoSummaryInitiateMessage.getUrl(), videoSummaryInitiateMessage.getVideoCode());
+        rabbitTemplate.convertAndSend(exchangeName, urlRoutingKey, videoSummaryInitiateMessage);
     }
 
     @RabbitListener(queues = "${rabbitmq.summary.queue.name}")
     @Transactional
-    public void receiveVideoUrlFromQueue(VideoSummaryDto videoSummaryDto) {
-        log.info("Received message: {}", videoSummaryDto.toString());
+    public void receiveVideoUrlFromQueue(VideoSummaryMessage videoSummaryMessage) {
+        log.info("Received message: {}", videoSummaryMessage.toString());
 
-        VideoSummary savedVideoSummary = videoSummaryRepository.save(VideoSummary.of(videoSummaryDto));
+        VideoSummary savedVideoSummary = videoSummaryRepository.save(VideoSummary.of(videoSummaryMessage));
 
-        updateStatusCache(videoSummaryDto, savedVideoSummary);
+        updateStatusCache(videoSummaryMessage, savedVideoSummary);
     }
 
-    private void updateStatusCache(VideoSummaryDto videoSummaryDto, VideoSummary savedVideoSummary) {
-        VideoSummaryStatusCache statusCache = videoSummaryStatusCacheRepository.findById(videoSummaryDto.getVideoCode()).get();
+    private void updateStatusCache(VideoSummaryMessage videoSummaryMessage, VideoSummary savedVideoSummary) {
+        List<VideoSummaryStatusCache> statusCacheList = videoSummaryStatusCacheRepository.findAllByVideoCode(videoSummaryMessage.getVideoCode());
 
-        statusCache.updateStatus("COMPLETE");
-        statusCache.updateVideoSummaryId(savedVideoSummary.getId());
+        statusCacheList.forEach(cache -> {
+            cache.updateStatus("COMPLETE");
+            cache.updateVideoSummaryId(savedVideoSummary.getId());
+            cache.updateGeneratedMainCategory(MainCategory.find(videoSummaryMessage.getGeneratedMainCategoryName()));
+        });
 
-        videoSummaryStatusCacheRepository.save(statusCache);
+        videoSummaryStatusCacheRepository.saveAll(statusCacheList);
     }
 
 }

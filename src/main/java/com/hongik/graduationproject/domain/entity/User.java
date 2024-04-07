@@ -7,11 +7,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import java.time.LocalDateTime;
+import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
 
 @Getter
 @Entity
 @Table(name = "user")
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
 public class User extends BaseTimeEntity {

@@ -1,19 +1,18 @@
 package com.hongik.graduationproject.domain.entity;
 
-import com.hongik.graduationproject.domain.dto.video.VideoSummaryDto;
+import com.hongik.graduationproject.domain.dto.video.VideoSummaryMessage;
 import com.hongik.graduationproject.domain.entity.global.BaseTimeEntity;
+import com.hongik.graduationproject.eum.MainCategory;
+import com.hongik.graduationproject.eum.Platform;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
 @Getter
 @Entity
 @Table(name = "video_summary")
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
 public class VideoSummary extends BaseTimeEntity {
@@ -30,17 +29,23 @@ public class VideoSummary extends BaseTimeEntity {
     private String summary;
     private String address;
     private String videoCode;
+    @Enumerated(EnumType.STRING)
+    private Platform platform;
+    @Enumerated(EnumType.STRING)
+    private MainCategory generatedMainCategory;
 
-    public static VideoSummary of(VideoSummaryDto videoSummaryDto) {
+    public static VideoSummary of(VideoSummaryMessage videoSummaryMessage) {
         return VideoSummary
                 .builder()
-                .videoCode(videoSummaryDto.getVideoCode())
-                .title(videoSummaryDto.getTitle())
-                .description(videoSummaryDto.getDescription())
-                .keywords(listToString(videoSummaryDto.getKeywords()))
-                .url(videoSummaryDto.getUrl())
-                .summary(videoSummaryDto.getSummary())
-                .address(videoSummaryDto.getAddress())
+                .videoCode(videoSummaryMessage.getVideoCode())
+                .title(videoSummaryMessage.getTitle())
+                .description(videoSummaryMessage.getDescription())
+                .keywords(listToString(videoSummaryMessage.getKeywords()))
+                .url(videoSummaryMessage.getUrl())
+                .summary(videoSummaryMessage.getSummary())
+                .address(videoSummaryMessage.getAddress())
+                .platform(videoSummaryMessage.getPlatform())
+                .generatedMainCategory(MainCategory.find(videoSummaryMessage.getGeneratedMainCategoryName()))
                 .build();
     }
 
