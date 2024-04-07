@@ -82,8 +82,8 @@ public class KakaoAuthService implements AuthService {
     }
 
     @Override
-    public Response<?> reissueToken(KaKaoRequest kaKaoRequest) {
-        Long userId = tokenProvider.getUserId(kaKaoRequest.getAccessToken());
+    public ReissueResponse reissueToken(ReissueRequest reissueRequest) {
+        Long userId = tokenProvider.getUserId(reissueRequest.getAccessToken());
 
         if (userId == null) {
             log.error("Failed to retrieve user information");
@@ -97,13 +97,14 @@ public class KakaoAuthService implements AuthService {
             throw new RuntimeException(); //TODO: 예외 처리 요망
         }
 
-        User user = optionalUser.get();
+       // User user = optionalUser.get();
 
         String newAccessToken = tokenProvider.create(userId);
-        String newRefreshToken = tokenProvider.refresh(kaKaoRequest.getRefreshToken());
+        String newRefreshToken = tokenProvider.refresh(reissueRequest.getRefreshToken());
         int exprTime = 3600000;
 
-        KaKaoResponse kaKaoResponse = new KaKaoResponse(newAccessToken, newRefreshToken, exprTime, user);
-        return Response.createSuccess(kaKaoResponse);
+
+        ReissueResponse reissueResponse = new ReissueResponse(newAccessToken, newRefreshToken, exprTime);
+        return reissueResponse;
     }
 }
