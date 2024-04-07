@@ -59,6 +59,7 @@ public class KakaoAuthService implements AuthService {
     }
 
     private KaKaoProfile getKaKaoProfile(String token) {
+
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + token);
@@ -83,6 +84,7 @@ public class KakaoAuthService implements AuthService {
 
     @Override
     public ReissueResponse reissueToken(ReissueRequest reissueRequest) {
+
         Long userId = tokenProvider.getUserId(reissueRequest.getAccessToken());
 
         if (userId == null) {
@@ -97,7 +99,7 @@ public class KakaoAuthService implements AuthService {
             throw new RuntimeException(); //TODO: 예외 처리 요망
         }
 
-       // User user = optionalUser.get();
+        tokenProvider.validate(reissueRequest.getAccessToken());
 
         String newAccessToken = tokenProvider.createAccessToken(userId);
         String newRefreshToken = tokenProvider.createRefreshToken(reissueRequest.getRefreshToken());
