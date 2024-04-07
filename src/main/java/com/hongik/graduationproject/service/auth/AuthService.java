@@ -1,11 +1,12 @@
 package com.hongik.graduationproject.service.auth;
 
-import com.hongik.graduationproject.domain.dto.KaKaoRequest;
-import com.hongik.graduationproject.domain.dto.Response;
-import com.hongik.graduationproject.domain.dto.AuthRequest;
+import com.hongik.graduationproject.domain.dto.auth.AuthRequest;
+import com.hongik.graduationproject.domain.dto.auth.AuthResponse;
+import com.hongik.graduationproject.domain.dto.auth.ReissueRequest;
+import com.hongik.graduationproject.domain.dto.auth.ReissueResponse;
 
 public interface AuthService {
 
-    Response<?> loginUser(AuthRequest authRequest);
-    Response<?> reissueToken(KaKaoRequest kaKaoRequest);
+    AuthResponse loginUser(AuthRequest authRequest);
+    ReissueResponse reissueToken(ReissueRequest reissueRequest);
 }

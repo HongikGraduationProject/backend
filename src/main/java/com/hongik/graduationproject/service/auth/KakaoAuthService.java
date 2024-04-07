@@ -4,7 +4,8 @@ import com.hongik.graduationproject.domain.dto.auth.AuthRequest;
 import com.hongik.graduationproject.domain.dto.auth.AuthResponse;
 import com.hongik.graduationproject.domain.dto.auth.KaKaoRequest;
 import com.hongik.graduationproject.domain.dto.auth.KaKaoResponse;
-import com.hongik.graduationproject.domain.dto.Response;
+import com.hongik.graduationproject.domain.dto.auth.ReissueRequest;
+import com.hongik.graduationproject.domain.dto.auth.ReissueResponse;
 import com.hongik.graduationproject.domain.dto.auth.oauth.KaKaoProfile;
 import com.hongik.graduationproject.domain.entity.User;
 import com.hongik.graduationproject.jwt.TokenProvider;
@@ -30,7 +31,7 @@ public class KakaoAuthService implements AuthService {
     private final TokenProvider tokenProvider;
 
     @Override
-    public Response<AuthResponse> loginUser(AuthRequest authRequest) {
+    public AuthResponse loginUser(AuthRequest authRequest) {
 
         KaKaoRequest kakaoRequest = (KaKaoRequest) authRequest;
         KaKaoProfile kakaoProfile = getKaKaoProfile(kakaoRequest.getAccessToken());
@@ -54,7 +55,7 @@ public class KakaoAuthService implements AuthService {
         int exprTime = 3600000;
 
         KaKaoResponse kaKaoResponse = new KaKaoResponse(newAccessToken, refreshToken, exprTime, savedUser);
-        return Response.createSuccess(kaKaoResponse);
+        return kaKaoResponse;
     }
 
     private KaKaoProfile getKaKaoProfile(String token) {
