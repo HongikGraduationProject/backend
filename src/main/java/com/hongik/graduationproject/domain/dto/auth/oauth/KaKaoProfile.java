@@ -1,8 +1,12 @@
-package com.hongik.graduationproject.domain.auth.oauth;
+package com.hongik.graduationproject.domain.dto.auth.oauth;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class KaKaoProfile {
 
     public Long id;
@@ -11,14 +15,15 @@ public class KaKaoProfile {
     public KakaoAccount kakao_account;
 
     @Data
-    public class KakaoProperties {
-        public String nickname;
-        public String profile_image; // 이미지 경로 필드1
+    public static class KakaoProperties {
+
+        public String profile_image;
         public String thumbnail_image;
     }
 
     @Data
-    public class KakaoAccount {
+    public static class KakaoAccount {
+
         public Boolean profile_nickname_needs_agreement;
         public Boolean profile_image_needs_agreement;
         public Profile profile;
@@ -29,7 +34,7 @@ public class KaKaoProfile {
         public String email;
 
         @Data
-        public class Profile {
+        public static class Profile {
 
             public String nickname;
             public String thumbnail_image_url;

@@ -1,6 +1,5 @@
-package com.hongik.graduationproject.domain.auth.oauth;
+package com.hongik.graduationproject.domain.dto.auth;
 
-import com.hongik.graduationproject.domain.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,10 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserResponseDto {
+public class ReissueRequest {
 
     private String accessToken;
     private String refreshToken;
-    private int exprTime;
-    User user;
 }
