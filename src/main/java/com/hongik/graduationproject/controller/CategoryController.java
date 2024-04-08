@@ -7,10 +7,8 @@ import com.hongik.graduationproject.eum.MainCategory;
 import com.hongik.graduationproject.service.CategoryService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CategoryController {
     private final CategoryService categoryService;
 
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/categories")
     public Response<SubCategoryListResponse> getSubCategoryList(@RequestParam MainCategory mainCategory) {
         return Response.createSuccess(categoryService.getSubCategoryList(mainCategory));
