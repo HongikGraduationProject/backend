@@ -2,6 +2,7 @@ package com.hongik.graduationproject.domain.dto.video;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hongik.graduationproject.domain.entity.VideoSummary;
+import com.hongik.graduationproject.eum.MainCategory;
 import com.hongik.graduationproject.eum.Platform;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,6 +28,7 @@ public class VideoSummaryDto {
     String address;
     LocalDateTime createdAt;
     Platform platform;
+    String mainCategory;
 
 
     public static VideoSummaryDto from(VideoSummary videoSummary) {
@@ -40,6 +42,7 @@ public class VideoSummaryDto {
                 .address(videoSummary.getAddress())
                 .createdAt(videoSummary.getCreatedAt().minusHours(9))
                 .platform(videoSummary.getPlatform())
+                .mainCategory(videoSummary.getGeneratedMainCategory().getName())
                 .build();
     }
 
