@@ -53,9 +53,11 @@ public class VideoSummaryController {
         return Response.createSuccess(videoSummaryService.getVideoSummaryById(videoSummaryId));
     }
 
+    @Operation(summary = "영상 요약 목록 조회", description = "categoryId로 영상 요약 목록 조회를 위한 메소드")
+    @ApiResponse(content = @Content(schema = @Schema(implementation = VideoSummaryListResponse.class)))
     @GetMapping("/summaries")
     @ResponseStatus(HttpStatus.OK)
-    public Response<VideoSummaryListResponse> getAllSummariesByCategoryId(@RequestParam Long categoryId) {
+    public Response<VideoSummaryListResponse> getAllSummariesByCategoryId(@Parameter(required = true) @RequestParam Long categoryId) {
         return Response.createSuccess(videoSummaryService.getAllSummariesByCategoryId(categoryId));
     }
 
