@@ -9,23 +9,17 @@ import java.util.List;
 
 public record VideoSummaryResponse(
         String title,
-        String description,
         List<String> keywords,
         String url,
-        String summary,
         String address,
-        LocalDateTime createdAt,
         Platform platform
 ) {
     public VideoSummaryResponse(VideoSummary videoSummary) {
         this(
                 videoSummary.getTitle(),
-                videoSummary.getDescription(),
                 Arrays.stream(videoSummary.getKeywords().split(",")).toList(),
                 videoSummary.getUrl(),
-                videoSummary.getSummary(),
                 videoSummary.getAddress(),
-                videoSummary.getCreatedAt(),
                 videoSummary.getPlatform()
         );
     }
