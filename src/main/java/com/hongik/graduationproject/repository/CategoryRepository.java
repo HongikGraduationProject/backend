@@ -1,13 +1,18 @@
 package com.hongik.graduationproject.repository;
 
 import com.hongik.graduationproject.domain.entity.Category;
+import com.hongik.graduationproject.domain.entity.User;
 import com.hongik.graduationproject.eum.MainCategory;
+import jakarta.validation.constraints.Min;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
     @Query("select c from Category c where c.user.id = :userId and c.mainCategory = :mainCategory and c.subCategory = '기타'")
     Optional<Category> findDefaultCategoryByUserIdAndMainCategory(Long userId, MainCategory mainCategory);
+
+    List<Category> findAllByMainCategoryAndUser(MainCategory mainCategory, User user);
 }
