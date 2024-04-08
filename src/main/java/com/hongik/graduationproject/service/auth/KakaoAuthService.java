@@ -8,6 +8,8 @@ import com.hongik.graduationproject.domain.dto.auth.ReissueRequest;
 import com.hongik.graduationproject.domain.dto.auth.ReissueResponse;
 import com.hongik.graduationproject.domain.dto.auth.oauth.KaKaoProfile;
 import com.hongik.graduationproject.domain.entity.User;
+import com.hongik.graduationproject.exception.AppException;
+import com.hongik.graduationproject.exception.ErrorCode;
 import com.hongik.graduationproject.jwt.TokenProvider;
 import com.hongik.graduationproject.repository.UserRepository;
 import java.util.Optional;
@@ -38,14 +40,14 @@ public class KakaoAuthService implements AuthService {
 
         if (kakaoProfile == null || kakaoProfile.getKakao_account() == null) {
             log.error("Failed to retrieve Kakao profile or account information");
-            throw new RuntimeException(); //TODO: 예외 처리 요망
+            throw new AppException(ErrorCode.FAILED_TO_RETRIEVE_USER_INFORMATION);
         }
 
         String email = kakaoProfile.getKakao_account().getEmail();
         Optional<User> optionalUser = userRepository.findByEmail(email);
 
         if (optionalUser.isPresent()) {
-            throw new RuntimeException(); //TODO: 예외 처리 요망
+            throw new AppException(ErrorCode.USER_DUPLICATED);
         }
 
         User savedUser = userRepository.save(User.of(kakaoProfile));
@@ -77,7 +79,7 @@ public class KakaoAuthService implements AuthService {
             return response.getBody();
         } catch (HttpClientErrorException e) {
             log.error("Failed to get Kakao profile: {}", e.getMessage());
-            return null;
+            throw new AppException(ErrorCode.FAILED_TO_RETRIEVE_USER_INFORMATION);
         }
     }
 
@@ -88,14 +90,14 @@ public class KakaoAuthService implements AuthService {
 
         if (userId == null) {
             log.error("Failed to retrieve user information");
-            throw new RuntimeException(); //TODO: 예외 처리 요망
+            throw new AppException(ErrorCode.FAILED_TO_RETRIEVE_USER_INFORMATION);
         }
 
         Optional<User> optionalUser = userRepository.findById(userId);
 
         if (optionalUser.isEmpty()) {
             log.error("User not found");
-            throw new RuntimeException(); //TODO: 예외 처리 요망
+            throw new AppException(ErrorCode.USER_NOT_FOUND);
         }
 
         tokenProvider.validate(reissueRequest.getAccessToken());

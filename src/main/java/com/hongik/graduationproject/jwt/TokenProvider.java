@@ -1,5 +1,7 @@
 package com.hongik.graduationproject.jwt;
 
+import com.hongik.graduationproject.exception.AppException;
+import com.hongik.graduationproject.exception.ErrorCode;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -7,7 +9,6 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -15,7 +16,7 @@ public class TokenProvider implements InitializingBean {
 
     private static final long REFRESH_TOKEN_EXPIRATION = 604800000;
 
-    private static final String SECURITY_KEY = "jwtseckey!@";
+    private static final String SECURITY_KEY = "jwtseckey!@"; //숨기기
 
     public String createAccessToken(Long id){
         Date exprTime = Date.from(Instant.now().plus(1, ChronoUnit.HOURS));
@@ -49,7 +50,7 @@ public class TokenProvider implements InitializingBean {
                     .signWith(SignatureAlgorithm.HS512, SECURITY_KEY)
                     .compact();
         } catch (Exception e) {
-            throw new BadCredentialsException("Token refresh failed", e);
+            throw new AppException(ErrorCode.REFRESH_TOKEN_CREATE_FAILED);
         }
     }
 
@@ -59,14 +60,14 @@ public class TokenProvider implements InitializingBean {
             validateExpiration(claims);
             return claims.getSubject();
         } catch (Exception e) {
-            throw new BadCredentialsException("JWT validation failed", e);
+            throw new AppException(ErrorCode.TOKEN_VALIDATION_FAILED);
         }
     }
 
     private void validateExpiration(Claims claims) {
         Date expiration = claims.getExpiration();
         if (expiration != null && expiration.before(new Date())) {
-            throw new BadCredentialsException("JWT has expired");
+            throw new AppException(ErrorCode.TOKEN_EXPIRED);
         }
     }
 
