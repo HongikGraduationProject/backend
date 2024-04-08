@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -78,5 +79,13 @@ public class VideoSummaryService {
                     .build());
         }
         return VideoSummaryStatusResponse.from(statusCache);
+    }
+
+    public VideoSummaryListResponse getAllSummariesByCategoryId(Long categoryId) {
+        Category category = categoryRepository.getReferenceById(categoryId);
+        List<VideoSummaryResponse> videoSummaryResponseList = videoSummaryCategoryRepository.findAllByCategory(category).stream()
+                .map(videoSummaryCategory -> new VideoSummaryResponse(videoSummaryCategory.getVideoSummary()))
+                .toList();
+        return new VideoSummaryListResponse(videoSummaryResponseList);
     }
 }

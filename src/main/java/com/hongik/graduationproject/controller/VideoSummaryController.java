@@ -1,10 +1,7 @@
 package com.hongik.graduationproject.controller;
 
 import com.hongik.graduationproject.domain.dto.Response;
-import com.hongik.graduationproject.domain.dto.video.VideoSummaryDto;
-import com.hongik.graduationproject.domain.dto.video.VideoSummaryInitiateRequest;
-import com.hongik.graduationproject.domain.dto.video.VideoSummaryInitiateResponse;
-import com.hongik.graduationproject.domain.dto.video.VideoSummaryStatusResponse;
+import com.hongik.graduationproject.domain.dto.video.*;
 import com.hongik.graduationproject.service.VideoSummaryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -39,8 +36,8 @@ public class VideoSummaryController {
     @GetMapping("/summaries/status/{videoCode}")
     @ResponseStatus(HttpStatus.OK)
     public Response<VideoSummaryStatusResponse> getSummarizeStatus(@PathVariable(name = "videoCode")
-                                                                       @Parameter(name = "videoCode", description = "영상 요약 요청에서 응답받은 비디오 코드", example = "INSTAGRAM_C4kWXhEuQpD")
-                                                                       String videoCode) {
+                                                                   @Parameter(name = "videoCode", description = "영상 요약 요청에서 응답받은 비디오 코드", example = "INSTAGRAM_C4kWXhEuQpD")
+                                                                   String videoCode) {
         log.info("summarize status request videoCode = {}", videoCode);
         return Response.createSuccess(videoSummaryService.getStatus(videoCode));
     }
@@ -50,9 +47,17 @@ public class VideoSummaryController {
     @GetMapping("/summaries/{videoSummaryId}")
     @ResponseStatus(HttpStatus.OK)
     public Response<VideoSummaryDto> getSummaryByVideoSummaryId(@PathVariable(name = "videoSummaryId")
-                                                                    @Parameter(name = "videoSummaryId", description = "영상 요약 상태에서 응답받은 videoSummaryId", example = "3")
-                                                                    Long videoSummaryId) {
+                                                                @Parameter(name = "videoSummaryId", description = "영상 요약 상태에서 응답받은 videoSummaryId", example = "3")
+                                                                Long videoSummaryId) {
         log.info("summary requested videoSummaryId = {}", videoSummaryId);
         return Response.createSuccess(videoSummaryService.getVideoSummaryById(videoSummaryId));
     }
+
+    @GetMapping("/summaries")
+    @ResponseStatus(HttpStatus.OK)
+    public Response<VideoSummaryListResponse> getAllSummariesByCategoryId(@RequestParam Long categoryId) {
+        return Response.createSuccess(videoSummaryService.getAllSummariesByCategoryId(categoryId));
+    }
+
+
 }
