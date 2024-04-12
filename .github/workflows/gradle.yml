@@ -36,7 +36,7 @@ jobs:
     - name: docker login
       uses: docker/login-action@v2
       with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        username: ${{ secrets.DOCKERHUB_EMAIL }}
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
     # 5. Docker Hub 이미지 푸시
@@ -46,3 +46,16 @@ jobs:
     # 6. gradlew 권한 설정
     - name: Add permission
       run: chmod +x gradlew
+      
+    # 7. docker compose up
+    - name: executing remote ssh commands using password
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ubuntu
+        key: ${{ secrets.EC2_PEM_KEY }}
+        script: |
+          sudo docker rm -f $(docker ps -qa)
+          docker-compose pull
+          docker-compose up -d
+          docker image prune -f
