@@ -42,3 +42,7 @@ jobs:
     # 5. Docker Hub 이미지 푸시
     - name: docker Hub push
       run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/graduation-spring:1.0.2
+
+    # 6. gradlew 권한 설정
+    - name: Add permission
+      run: chmod +x gradlew
