@@ -22,12 +22,18 @@ public enum MainCategory {
     private final String name;
 
     public static MainCategory find(String name) {
-        if (name == null) {
-            return MainCategory.OTHER;
+        for (MainCategory categoryName : MainCategory.values()) {
+            if(categoryName.name.equals(name)){
+                return categoryName;
+            }
         }
-        return Arrays.stream(values())
-                .filter(accountStatus -> accountStatus.name.equals(name))
-                .findAny()
-                .orElseThrow(RuntimeException::new);
+        return OTHER;
+//        if (name == null) {
+//            return MainCategory.OTHER;
+//        }
+//        return Arrays.stream(values())
+//                .filter(accountStatus -> accountStatus.name.equals(name))
+//                .findAny()
+//                .orElseThrow(RuntimeException::new);
     }
 }
