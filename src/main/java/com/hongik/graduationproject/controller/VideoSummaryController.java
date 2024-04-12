@@ -39,8 +39,8 @@ public class VideoSummaryController {
     @GetMapping("/summaries/status/{videoCode}")
     @ResponseStatus(HttpStatus.OK)
     public Response<VideoSummaryStatusResponse> getSummarizeStatus(@PathVariable(name = "videoCode")
-                                                                       @Parameter(name = "videoCode", description = "영상 요약 요청에서 응답받은 비디오 코드", example = "INSTAGRAM_C4kWXhEuQpD")
-                                                                       String videoCode) {
+                                                                   @Parameter(name = "videoCode", description = "영상 요약 요청에서 응답받은 비디오 코드", example = "INSTAGRAM_C4kWXhEuQpD")
+                                                                   String videoCode) {
         log.info("summarize status request videoCode = {}", videoCode);
         return Response.createSuccess(videoSummaryService.getStatus(videoCode));
     }
@@ -50,9 +50,14 @@ public class VideoSummaryController {
     @GetMapping("/summaries/{videoSummaryId}")
     @ResponseStatus(HttpStatus.OK)
     public Response<VideoSummaryDto> getSummaryByVideoSummaryId(@PathVariable(name = "videoSummaryId")
-                                                                    @Parameter(name = "videoSummaryId", description = "영상 요약 상태에서 응답받은 videoSummaryId", example = "3")
-                                                                    Long videoSummaryId) {
+                                                                @Parameter(name = "videoSummaryId", description = "영상 요약 상태에서 응답받은 videoSummaryId", example = "3")
+                                                                Long videoSummaryId) {
         log.info("summary requested videoSummaryId = {}", videoSummaryId);
         return Response.createSuccess(videoSummaryService.getVideoSummaryById(videoSummaryId));
+    }
+
+    @GetMapping("/hi")
+    public Response<String> hi() {
+        return Response.createSuccess("hi");
     }
 }
