@@ -1,23 +1,23 @@
 package com.hongik.graduationproject.service.auth;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hongik.graduationproject.domain.auth.oauth.OauthToken;
-import com.hongik.graduationproject.domain.dto.Response;
-import com.hongik.graduationproject.domain.dto.AuthRequestDto;
-import com.hongik.graduationproject.domain.dto.KaKaoResponseDto;
+import com.hongik.graduationproject.domain.dto.auth.AuthRequest;
+import com.hongik.graduationproject.domain.dto.auth.AuthResponse;
+import com.hongik.graduationproject.domain.dto.auth.KaKaoRequest;
+import com.hongik.graduationproject.domain.dto.auth.KaKaoResponse;
+import com.hongik.graduationproject.domain.dto.auth.ReissueRequest;
+import com.hongik.graduationproject.domain.dto.auth.ReissueResponse;
+import com.hongik.graduationproject.domain.dto.auth.oauth.KaKaoProfile;
 import com.hongik.graduationproject.domain.entity.User;
-import com.hongik.graduationproject.domain.dto.KaKaoRequestDto;
-import com.hongik.graduationproject.domain.auth.oauth.KaKaoProfile;
 import com.hongik.graduationproject.jwt.TokenProvider;
 import com.hongik.graduationproject.repository.UserRepository;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -29,70 +29,32 @@ public class KakaoAuthService implements AuthService {
 
     private final UserRepository userRepository;
     private final TokenProvider tokenProvider;
-    private final Logger logger = LoggerFactory.getLogger(KakaoAuthService.class);
-    private final ObjectMapper objectMapper;
 
     @Override
-    public Response<?> loginUser(AuthRequestDto authRequestDto) {
+    public AuthResponse loginUser(AuthRequest authRequest) {
 
-        KaKaoRequestDto kakaoRequestDto = (KaKaoRequestDto) authRequestDto;
-        KaKaoProfile kakaoProfile = getKaKaoProfile(kakaoRequestDto.getAccessToken());
+        KaKaoRequest kakaoRequest = (KaKaoRequest) authRequest;
+        KaKaoProfile kakaoProfile = getKaKaoProfile(kakaoRequest.getAccessToken());
 
         if (kakaoProfile == null || kakaoProfile.getKakao_account() == null) {
-            logger.error("Kakao profile or account information is null");
-            return Response.createError("Failed to retrieve Kakao profile or account information");
+            log.error("Failed to retrieve Kakao profile or account information");
+            throw new RuntimeException(); //TODO: 예외 처리 요망
         }
 
-        User user = userRepository.findByEmail(kakaoProfile.getKakao_account().getEmail());
+        String email = kakaoProfile.getKakao_account().getEmail();
+        Optional<User> optionalUser = userRepository.findByEmail(email);
 
-        if (user == null) {
-            user = User.builder()
-                    .kakaoId(kakaoProfile.getId())
-                    .kakaoNickname(kakaoProfile.getKakao_account().getProfile().getNickname())
-                    .email(kakaoProfile.getKakao_account().getEmail())
-                    .build();
-            User savedUser = userRepository.save(user);
-
-            String newAccessToken = tokenProvider.create(savedUser.getId());
-            String refreshToken = tokenProvider.refresh(newAccessToken);
-            int exprTime = 3600000;
-
-            KaKaoResponseDto kaKaoResponseDto = new KaKaoResponseDto(newAccessToken, refreshToken, exprTime, user);
-            return Response.createSuccess(kaKaoResponseDto);
+        if (optionalUser.isPresent()) {
+            throw new RuntimeException(); //TODO: 예외 처리 요망
         }
 
-        return Response.createError("User already exists");
-    }
+        User savedUser = userRepository.save(User.of(kakaoProfile));
 
-    private OauthToken getAccessToken(String accessToken) {
+        String newAccessToken = tokenProvider.createAccessToken(savedUser.getId());
+        String refreshToken = tokenProvider.createRefreshToken(newAccessToken);
+        int exprTime = 3600000;
 
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
-
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("grant_type", "authorization_code");
-        params.add("client_id", "{8f7f711ce205744c2b26973c36d44708}"); //내가 발급해서 넣음
-        params.add("redirect_uri", "{http://127.0.0.1:8080/account/sign-in/kakao/callback}"); //임의 생성
-
-        HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest =
-                new HttpEntity<>(params, headers);
-
-        ResponseEntity<String> accessTokenResponse = restTemplate.exchange(
-                "https://kauth.kakao.com/oauth/token",
-                HttpMethod.POST,
-                kakaoTokenRequest,
-                String.class
-        );
-
-        OauthToken oauthToken = null;
-        try {
-            oauthToken = objectMapper.readValue(accessTokenResponse.getBody(), OauthToken.class);
-        } catch (JsonProcessingException e) {
-            logger.error("Failed to parse access token response: {}", e.getMessage());
-        }
-
-        return oauthToken;
+        return new KaKaoResponse(newAccessToken, refreshToken, exprTime, savedUser);
     }
 
     private KaKaoProfile getKaKaoProfile(String token) {
@@ -114,8 +76,34 @@ public class KakaoAuthService implements AuthService {
             );
             return response.getBody();
         } catch (HttpClientErrorException e) {
-            logger.error("Failed to get Kakao profile: {}", e.getMessage());
+            log.error("Failed to get Kakao profile: {}", e.getMessage());
             return null;
         }
+    }
+
+    @Override
+    public ReissueResponse reissueToken(ReissueRequest reissueRequest) {
+
+        Long userId = tokenProvider.getUserId(reissueRequest.getAccessToken());
+
+        if (userId == null) {
+            log.error("Failed to retrieve user information");
+            throw new RuntimeException(); //TODO: 예외 처리 요망
+        }
+
+        Optional<User> optionalUser = userRepository.findById(userId);
+
+        if (optionalUser.isEmpty()) {
+            log.error("User not found");
+            throw new RuntimeException(); //TODO: 예외 처리 요망
+        }
+
+        tokenProvider.validate(reissueRequest.getAccessToken());
+
+        String newAccessToken = tokenProvider.createAccessToken(userId);
+        String newRefreshToken = tokenProvider.createRefreshToken(reissueRequest.getRefreshToken());
+        int exprTime = 3600000;
+
+        return new ReissueResponse(newAccessToken, newRefreshToken, exprTime);
     }
 }

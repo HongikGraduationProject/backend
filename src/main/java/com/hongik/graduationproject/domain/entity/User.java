@@ -1,18 +1,23 @@
 package com.hongik.graduationproject.domain.entity;
 
+import com.hongik.graduationproject.domain.dto.auth.oauth.KaKaoProfile;
+import com.hongik.graduationproject.domain.entity.global.BaseTimeEntity;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
-
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
 @Getter
 @Entity
-@Builder
+@Table(name = "user")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Table(name = "user")
-public class User {
+@Builder
+public class User extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
@@ -21,8 +26,12 @@ public class User {
     private String kakaoNickname;
     private Long kakaoId;
     private String email;
-    private String nickname;
 
-    @CreatedDate
-    private LocalDateTime createAt;
+    public static User of(KaKaoProfile kakaoProfile) {
+        return User.builder()
+                .kakaoId(kakaoProfile.getId())
+                .kakaoNickname(kakaoProfile.getKakao_account().getProfile().getNickname())
+                .email(kakaoProfile.getKakao_account().getEmail())
+                .build();
+    }
 }

@@ -61,5 +61,8 @@ public class VideoSummaryController {
         return Response.createSuccess(videoSummaryService.getAllSummariesByCategoryId(categoryId));
     }
 
-
+    @GetMapping("/hi")
+    public Response<String> hi() {
+        return Response.createSuccess("hi");
+    }
 }
