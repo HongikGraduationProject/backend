@@ -1,10 +1,7 @@
 package com.hongik.graduationproject.controller;
 
 import com.hongik.graduationproject.domain.dto.Response;
-import com.hongik.graduationproject.domain.dto.video.VideoSummaryDto;
-import com.hongik.graduationproject.domain.dto.video.VideoSummaryInitiateRequest;
-import com.hongik.graduationproject.domain.dto.video.VideoSummaryInitiateResponse;
-import com.hongik.graduationproject.domain.dto.video.VideoSummaryStatusResponse;
+import com.hongik.graduationproject.domain.dto.video.*;
 import com.hongik.graduationproject.service.VideoSummaryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -25,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 public class VideoSummaryController {
     private final VideoSummaryService videoSummaryService;
 
-    @Operation(summary = "카테고리 미지정 영상 요약 요청", description = "영상 요약 요청을 위한 메소드")
+    @Operation(summary = "영상 요약 요청", description = "영상 요약 요청을 위한 메소드")
     @ApiResponse(content = @Content(schema = @Schema(implementation = VideoSummaryInitiateResponse.class)))
     @PostMapping("/summaries/initiate")
     @ResponseStatus(HttpStatus.ACCEPTED)
@@ -54,6 +51,14 @@ public class VideoSummaryController {
                                                                 Long videoSummaryId) {
         log.info("summary requested videoSummaryId = {}", videoSummaryId);
         return Response.createSuccess(videoSummaryService.getVideoSummaryById(videoSummaryId));
+    }
+
+    @Operation(summary = "영상 요약 목록 조회", description = "categoryId로 영상 요약 목록 조회를 위한 메소드")
+    @ApiResponse(content = @Content(schema = @Schema(implementation = VideoSummaryListResponse.class)))
+    @GetMapping("/summaries")
+    @ResponseStatus(HttpStatus.OK)
+    public Response<VideoSummaryListResponse> getAllSummariesByCategoryId(@Parameter(required = true) @RequestParam Long categoryId) {
+        return Response.createSuccess(videoSummaryService.getAllSummariesByCategoryId(categoryId));
     }
 
     @GetMapping("/hi")

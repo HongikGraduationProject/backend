@@ -55,7 +55,7 @@ public class VideoSummary extends BaseTimeEntity {
             for (String keyword : keywords) {
                 sb.append(keyword).append(',');
             }
-            return sb.substring(0, sb.length() - 2);
+            return sb.substring(0, sb.length() - 1);
         } else {
             return "";
         }

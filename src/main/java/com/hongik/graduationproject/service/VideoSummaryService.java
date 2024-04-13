@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -60,20 +61,9 @@ public class VideoSummaryService {
         return new VideoSummaryInitiateResponse(videoCode);
     }
 
-    private static VideoSummaryStatusCache of(VideoSummaryInitiateRequest summaryInitiateRequest, String videoCode, Long userId) {
-        return VideoSummaryStatusCache.builder()
-                .videoCode(videoCode)
-                .videoSummaryId(-1L)
-                .status("PROCESSING")
-                .userId(userId)
-                .isCategoryIncluded(summaryInitiateRequest.getIsCategoryIncluded())
-                .categoryId(summaryInitiateRequest.getCategoryId())
-                .build();
-    }
-
     public VideoSummaryDto getVideoSummaryById(Long videoSummaryId) {
-        Optional<VideoSummary> videoSummary = videoSummaryRepository.findById(videoSummaryId);
-        return VideoSummaryDto.from(videoSummary.get());
+        VideoSummary videoSummary = videoSummaryRepository.findById(videoSummaryId).orElseThrow(() -> new AppException(ErrorCode.VIDEO_SUMMARY_NOT_FOUND));
+        return VideoSummaryDto.from(videoSummary);
     }
 
     @Transactional
@@ -89,5 +79,13 @@ public class VideoSummaryService {
                     .build());
         }
         return VideoSummaryStatusResponse.from(statusCache);
+    }
+
+    public VideoSummaryListResponse getAllSummariesByCategoryId(Long categoryId) {
+        Category category = categoryRepository.getReferenceById(categoryId);
+        List<VideoSummaryResponse> videoSummaryResponseList = videoSummaryCategoryRepository.findAllByCategory(category).stream()
+                .map(videoSummaryCategory -> new VideoSummaryResponse(videoSummaryCategory.getVideoSummary()))
+                .toList();
+        return new VideoSummaryListResponse(videoSummaryResponseList);
     }
 }
