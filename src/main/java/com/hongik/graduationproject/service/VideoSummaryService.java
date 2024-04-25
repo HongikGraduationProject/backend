@@ -77,6 +77,7 @@ public class VideoSummaryService {
                     .category(category)
                     .videoSummary(videoSummary)
                     .build());
+            summaryStatusCacheRepository.delete(statusCache);
         }
         return VideoSummaryStatusResponse.from(statusCache);
     }
