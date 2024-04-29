@@ -1,11 +1,10 @@
 package com.hongik.graduationproject.jwt;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.util.Date;
 
@@ -36,14 +35,16 @@ public class TokenProvider {
                 .compact();
     }
 
-    public String validate(String token) {
-        try {
-            Claims claims = Jwts.parser().setSigningKey(jwtSecretKey).parseClaimsJws(token).getBody();
-            validateExpiration(claims);
-            return claims.getSubject();
-        } catch (Exception e) {
-            throw new BadCredentialsException("JWT validation failed", e);
+    public boolean validateToken(String token) {
+        if (!StringUtils.hasText(token)) {
+            throw new RuntimeException();
         }
+        try {
+            Jwts.parser().setSigningKey(jwtSecretKey).parseClaimsJws(token).getBody();
+        } catch (SignatureException | ExpiredJwtException e) {
+            throw new RuntimeException();
+        }
+        return true;
     }
 
     public Long parseUserId(String token) {
