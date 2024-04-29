@@ -46,14 +46,7 @@ public class TokenProvider {
         }
     }
 
-    private void validateExpiration(Claims claims) {
-        Date expiration = claims.getExpiration();
-        if (expiration != null && expiration.before(new Date())) {
-            throw new BadCredentialsException("JWT has expired");
-        }
-    }
-
-    public Long getUserId(String token) {
+    public Long parseUserId(String token) {
         Claims claims = Jwts.parser().setSigningKey(jwtSecretKey).parseClaimsJws(token).getBody();
         return claims.get("id", Long.class);
     }
