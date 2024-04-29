@@ -11,5 +11,4 @@ public class ReissueResponse {
 
     String accessToken;
     String refreshToken;
-    int exprTime;
 }

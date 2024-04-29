@@ -93,24 +93,11 @@ public class KakaoAuthService implements AuthService {
 
         Long userId = tokenProvider.getUserId(reissueRequest.getAccessToken());
 
-        if (userId == null) {
-            log.error("Failed to retrieve user information");
-            throw new RuntimeException(); //TODO: 예외 처리 요망
-        }
-
-        Optional<User> optionalUser = userRepository.findById(userId);
-
-        if (optionalUser.isEmpty()) {
-            log.error("User not found");
-            throw new RuntimeException(); //TODO: 예외 처리 요망
-        }
-
         tokenProvider.validate(reissueRequest.getAccessToken());
 
         String newAccessToken = tokenProvider.createAccessToken(userId);
         String newRefreshToken = tokenProvider.createRefreshToken(userId);
-        int exprTime = 3600000;
 
-        return new ReissueResponse(newAccessToken, newRefreshToken, exprTime);
+        return new ReissueResponse(newAccessToken, newRefreshToken);
     }
 }
