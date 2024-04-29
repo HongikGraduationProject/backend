@@ -12,6 +12,4 @@ public class KaKaoResponse extends AuthResponse{
 
     String accessToken;
     String refreshToken;
-    int exprTime;
-    User user;
 }

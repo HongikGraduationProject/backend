@@ -36,25 +36,32 @@ public class KakaoAuthService implements AuthService {
         KaKaoRequest kakaoRequest = (KaKaoRequest) authRequest;
         KaKaoProfile kakaoProfile = getKaKaoProfile(kakaoRequest.getAccessToken());
 
+        checkInvalidProfile(kakaoProfile);
+
+        checkDuplicateUser(kakaoProfile);
+
+        User savedUser = userRepository.save(User.of(kakaoProfile));
+
+        String accessToken = tokenProvider.createAccessToken(savedUser.getId());
+        String refreshToken = tokenProvider.createRefreshToken(savedUser.getId());
+
+        return new KaKaoResponse(accessToken, refreshToken);
+    }
+
+    private void checkInvalidProfile(KaKaoProfile kakaoProfile) {
         if (kakaoProfile == null || kakaoProfile.getKakao_account() == null) {
             log.error("Failed to retrieve Kakao profile or account information");
             throw new RuntimeException(); //TODO: 예외 처리 요망
         }
+    }
 
+    private void checkDuplicateUser(KaKaoProfile kakaoProfile) {
         String email = kakaoProfile.getKakao_account().getEmail();
         Optional<User> optionalUser = userRepository.findByEmail(email);
 
         if (optionalUser.isPresent()) {
             throw new RuntimeException(); //TODO: 예외 처리 요망
         }
-
-        User savedUser = userRepository.save(User.of(kakaoProfile));
-
-        String newAccessToken = tokenProvider.createAccessToken(savedUser.getId());
-        String refreshToken = tokenProvider.createRefreshToken(newAccessToken);
-        int exprTime = 3600000;
-
-        return new KaKaoResponse(newAccessToken, refreshToken, exprTime, savedUser);
     }
 
     private KaKaoProfile getKaKaoProfile(String token) {
