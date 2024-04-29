@@ -91,9 +91,7 @@ public class KakaoAuthService implements AuthService {
     @Override
     public ReissueResponse reissueToken(ReissueRequest reissueRequest) {
 
-        Long userId = tokenProvider.getUserId(reissueRequest.getAccessToken());
-
-        tokenProvider.validate(reissueRequest.getAccessToken());
+        tokenProvider.validateToken(reissueRequest.getRefreshToken());
 
         String newAccessToken = tokenProvider.createAccessToken(userId);
         String newRefreshToken = tokenProvider.createRefreshToken(userId);
