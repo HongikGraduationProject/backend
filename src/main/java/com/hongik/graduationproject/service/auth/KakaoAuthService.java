@@ -101,7 +101,7 @@ public class KakaoAuthService implements AuthService {
         tokenProvider.validate(reissueRequest.getAccessToken());
 
         String newAccessToken = tokenProvider.createAccessToken(userId);
-        String newRefreshToken = tokenProvider.createRefreshToken(reissueRequest.getRefreshToken());
+        String newRefreshToken = tokenProvider.createRefreshToken(userId);
         int exprTime = 3600000;
 
         return new ReissueResponse(newAccessToken, newRefreshToken, exprTime);

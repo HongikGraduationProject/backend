@@ -19,33 +19,23 @@ public class TokenProvider implements InitializingBean {
     private long accessTokenTime;
     @Value("${jwt.refresh-token-time}")
     private long refreshTokenTime;
+
     public String createAccessToken(Long userId){
         return createToken(userId, accessTokenTime);
     }
 
-    public String createRefreshToken(String accessToken){
-        try {
-            Claims claims = Jwts.parser().setSigningKey(SECURITY_KEY).parseClaimsJws(accessToken).getBody();
+    public String createRefreshToken(Long userId){
+        return createToken(userId, refreshTokenTime);
+    }
 
-            validateExpiration(claims);
-
-            Date newExpirationTime = Date.from(Instant.now().plus(REFRESH_TOKEN_EXPIRATION, ChronoUnit.MILLIS));
-
-            String refreshToken = Jwts.builder()
-                    .setExpiration(newExpirationTime)
-                    .signWith(SignatureAlgorithm.HS512, SECURITY_KEY)
-                    .compact();
-
-            claims.put("refreshToken", refreshToken);
-
-            return Jwts.builder()
-                    .setClaims(claims)
-                    .setExpiration(newExpirationTime)
-                    .signWith(SignatureAlgorithm.HS512, SECURITY_KEY)
-                    .compact();
-        } catch (Exception e) {
-            throw new BadCredentialsException("Token refresh failed", e);
-        }
+    private String createToken(Long userId, long validTime) {
+        Date now = new Date();
+        return Jwts.builder()
+                .signWith(SignatureAlgorithm.HS512, jwtSecretKey)
+                .setIssuedAt(now)
+                .setExpiration(new Date(now.getTime() + accessTokenTime))
+                .claim("userId", userId)
+                .compact();
     }
 
     public String validate(String token) {
