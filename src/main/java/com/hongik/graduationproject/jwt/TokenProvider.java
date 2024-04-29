@@ -9,23 +9,18 @@ import java.util.Date;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Value;
 
 @Component
 public class TokenProvider implements InitializingBean {
-
-    private static final long REFRESH_TOKEN_EXPIRATION = 604800000;
-
-    private static final String SECURITY_KEY = "jwtseckey!@";
-
-    public String createAccessToken(Long id){
-        Date exprTime = Date.from(Instant.now().plus(1, ChronoUnit.HOURS));
-
-        return Jwts.builder()
-                .signWith(SignatureAlgorithm.HS512, SECURITY_KEY)
-                .setIssuedAt(new Date())
-                .setExpiration(exprTime)
-                .claim("id", id)
-                .compact();
+    @Value("${jwt.secret}")
+    private String jwtSecretKey;
+    @Value("${jwt.access-token-time}")
+    private long accessTokenTime;
+    @Value("${jwt.refresh-token-time}")
+    private long refreshTokenTime;
+    public String createAccessToken(Long userId){
+        return createToken(userId, accessTokenTime);
     }
 
     public String createRefreshToken(String accessToken){
@@ -55,7 +50,7 @@ public class TokenProvider implements InitializingBean {
 
     public String validate(String token) {
         try{
-            Claims claims = Jwts.parser().setSigningKey(SECURITY_KEY).parseClaimsJws(token).getBody();
+            Claims claims = Jwts.parser().setSigningKey(jwtSecretKey).parseClaimsJws(token).getBody();
             validateExpiration(claims);
             return claims.getSubject();
         } catch (Exception e) {
@@ -76,7 +71,7 @@ public class TokenProvider implements InitializingBean {
     }
 
     public Long getUserId(String token){
-        Claims claims = Jwts.parser().setSigningKey(SECURITY_KEY).parseClaimsJws(token).getBody();
+        Claims claims = Jwts.parser().setSigningKey(jwtSecretKey).parseClaimsJws(token).getBody();
         return claims.get("id", Long.class);
     }
 }
