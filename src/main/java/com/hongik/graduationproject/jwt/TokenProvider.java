@@ -49,6 +49,6 @@ public class TokenProvider {
 
     public Long parseUserId(String token) {
         Claims claims = Jwts.parser().setSigningKey(jwtSecretKey).parseClaimsJws(token).getBody();
-        return claims.get("id", Long.class);
+        return claims.get("userId", Long.class);
     }
 }
