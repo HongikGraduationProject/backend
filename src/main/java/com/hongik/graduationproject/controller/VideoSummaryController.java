@@ -12,7 +12,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.nio.file.attribute.UserPrincipal;
+import java.security.Principal;
 
 @Tag(name = "영상", description = "영상 또는 요약과 관련된 api")
 @RestController
@@ -22,13 +28,20 @@ import org.springframework.web.bind.annotation.*;
 public class VideoSummaryController {
     private final VideoSummaryService videoSummaryService;
 
+    @GetMapping("/test")
+    public Response<String> test(@AuthenticationPrincipal Long principal) {
+        System.out.println("principal = "+ principal);
+        return Response.createSuccess("TEST");
+    }
+
     @Operation(summary = "영상 요약 요청", description = "영상 요약 요청을 위한 메소드")
     @ApiResponse(content = @Content(schema = @Schema(implementation = VideoSummaryInitiateResponse.class)))
     @PostMapping("/summaries/initiate")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public Response<VideoSummaryInitiateResponse> initiateSummarizing(@RequestBody VideoSummaryInitiateRequest videoSummaryInitiateRequest) {
+    public Response<VideoSummaryInitiateResponse> initiateSummarizing(@RequestBody VideoSummaryInitiateRequest videoSummaryInitiateRequest,
+                                                                      @AuthenticationPrincipal Long userId) {
         log.info("summarize initiate video url={}", videoSummaryInitiateRequest.getUrl());
-        return Response.createSuccess(videoSummaryService.initiateSummarizing(videoSummaryInitiateRequest));
+        return Response.createSuccess(videoSummaryService.initiateSummarizing(videoSummaryInitiateRequest, userId));
     }
 
     @Operation(summary = "영상 요약 상태", description = "영상 요약 상태 확인을 위한 메소드")
@@ -37,9 +50,10 @@ public class VideoSummaryController {
     @ResponseStatus(HttpStatus.OK)
     public Response<VideoSummaryStatusResponse> getSummarizeStatus(@PathVariable(name = "videoCode")
                                                                    @Parameter(name = "videoCode", description = "영상 요약 요청에서 응답받은 비디오 코드", example = "INSTAGRAM_C4kWXhEuQpD")
-                                                                   String videoCode) {
+                                                                   String videoCode,
+                                                                   @AuthenticationPrincipal Long userId) {
         log.info("summarize status request videoCode = {}", videoCode);
-        return Response.createSuccess(videoSummaryService.getStatus(videoCode));
+        return Response.createSuccess(videoSummaryService.getStatus(videoCode, userId));
     }
 
     @Operation(summary = "영상 요약 조회", description = "영상 요약 조회를 위한 메소드")
