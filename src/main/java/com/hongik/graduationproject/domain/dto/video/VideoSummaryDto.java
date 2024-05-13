@@ -2,6 +2,7 @@ package com.hongik.graduationproject.domain.dto.video;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hongik.graduationproject.domain.entity.VideoSummary;
+import com.hongik.graduationproject.domain.entity.VideoSummaryCategory;
 import com.hongik.graduationproject.eum.MainCategory;
 import com.hongik.graduationproject.eum.Platform;
 import lombok.AllArgsConstructor;
@@ -29,7 +30,7 @@ public class VideoSummaryDto {
     LocalDateTime createdAt;
     Platform platform;
     String mainCategory;
-
+    String subCategory;
 
     public static VideoSummaryDto from(VideoSummary videoSummary) {
         return VideoSummaryDto.builder()
@@ -46,4 +47,19 @@ public class VideoSummaryDto {
                 .build();
     }
 
+    public static VideoSummaryDto from(VideoSummaryCategory videoSummaryCategory) {
+        return VideoSummaryDto.builder()
+                .videoCode(videoSummaryCategory.getVideoSummary().getVideoCode())
+                .title(videoSummaryCategory.getVideoSummary().getTitle())
+                .description(videoSummaryCategory.getVideoSummary().getDescription())
+                .keywords(Arrays.stream(videoSummaryCategory.getVideoSummary().getKeywords().split(",")).toList())
+                .url(videoSummaryCategory.getVideoSummary().getUrl())
+                .summary(videoSummaryCategory.getVideoSummary().getSummary())
+                .address(videoSummaryCategory.getVideoSummary().getAddress())
+                .createdAt(videoSummaryCategory.getVideoSummary().getCreatedAt().minusHours(9))
+                .platform(videoSummaryCategory.getVideoSummary().getPlatform())
+                .mainCategory(videoSummaryCategory.getVideoSummary().getGeneratedMainCategory().getName())
+                .subCategory(videoSummaryCategory.getCategory().getSubCategory())
+                .build();
+    }
 }
