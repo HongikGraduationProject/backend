@@ -8,18 +8,19 @@ import java.util.Arrays;
 @AllArgsConstructor
 @Getter
 public enum MainCategory {
-    SCIENCE_TECHNOLOGY("과학/기술"),
-    FASHION_BEAUTY("패션/뷰티"),
-    COOK("요리"),
-    LIVING("리빙"),
-    HEALTH("건강"),
-    TRAVEL("여행"),
-    ART("예술"),
-    NEWS("뉴스"),
-    ENTERTAINMENT("엔터테인먼트"),
-    OTHER("기타");
+    SCIENCE_TECHNOLOGY("과학/기술", 0),
+    FASHION_BEAUTY("패션/뷰티", 1),
+    COOK("요리", 2),
+    LIVING("리빙", 3),
+    HEALTH("건강", 4),
+    TRAVEL("여행", 5),
+    ART("예술", 6),
+    NEWS("뉴스", 7),
+    ENTERTAINMENT("엔터테인먼트", 8),
+    OTHER("기타", 9);
 
     private final String name;
+    private final int index;
 
     public static MainCategory find(String name) {
         for (MainCategory categoryName : MainCategory.values()) {

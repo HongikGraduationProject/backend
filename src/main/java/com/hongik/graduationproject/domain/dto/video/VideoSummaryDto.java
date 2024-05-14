@@ -28,9 +28,10 @@ public class VideoSummaryDto {
     String address;
     LocalDateTime createdAt;
     Platform platform;
-    String mainCategoryKr;
-    String mainCategoryEng;
+    String mainCategory;
+    int mainCategoryIndex;
     String subCategory;
+    Long subCategoryId;
 
     public static VideoSummaryDto from(VideoSummary videoSummary) {
         return VideoSummaryDto.builder()
@@ -43,8 +44,7 @@ public class VideoSummaryDto {
                 .address(videoSummary.getAddress())
                 .createdAt(videoSummary.getCreatedAt().minusHours(9))
                 .platform(videoSummary.getPlatform())
-                .mainCategoryKr(videoSummary.getGeneratedMainCategory().getName())
-                .mainCategoryEng(videoSummary.getGeneratedMainCategory().toString())
+                .mainCategory(videoSummary.getGeneratedMainCategory().getName())
                 .build();
     }
 
@@ -59,9 +59,10 @@ public class VideoSummaryDto {
                 .address(videoSummaryCategory.getVideoSummary().getAddress())
                 .createdAt(videoSummaryCategory.getVideoSummary().getCreatedAt().minusHours(9))
                 .platform(videoSummaryCategory.getVideoSummary().getPlatform())
-                .mainCategoryKr(videoSummaryCategory.getVideoSummary().getGeneratedMainCategory().getName())
-                .mainCategoryEng(videoSummaryCategory.getVideoSummary().getGeneratedMainCategory().toString())
+                .mainCategory(videoSummaryCategory.getVideoSummary().getGeneratedMainCategory().getName())
+                .mainCategoryIndex(videoSummaryCategory.getVideoSummary().getGeneratedMainCategory().getIndex())
                 .subCategory(videoSummaryCategory.getCategory().getSubCategory())
+                .subCategoryId(videoSummaryCategory.getCategory().getId())
                 .build();
     }
 }
