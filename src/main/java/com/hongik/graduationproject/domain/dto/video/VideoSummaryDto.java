@@ -3,7 +3,6 @@ package com.hongik.graduationproject.domain.dto.video;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hongik.graduationproject.domain.entity.VideoSummary;
 import com.hongik.graduationproject.domain.entity.VideoSummaryCategory;
-import com.hongik.graduationproject.eum.MainCategory;
 import com.hongik.graduationproject.eum.Platform;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,7 +28,8 @@ public class VideoSummaryDto {
     String address;
     LocalDateTime createdAt;
     Platform platform;
-    String mainCategory;
+    String mainCategoryKr;
+    String mainCategoryEng;
     String subCategory;
 
     public static VideoSummaryDto from(VideoSummary videoSummary) {
@@ -43,7 +43,8 @@ public class VideoSummaryDto {
                 .address(videoSummary.getAddress())
                 .createdAt(videoSummary.getCreatedAt().minusHours(9))
                 .platform(videoSummary.getPlatform())
-                .mainCategory(videoSummary.getGeneratedMainCategory().getName())
+                .mainCategoryKr(videoSummary.getGeneratedMainCategory().getName())
+                .mainCategoryEng(videoSummary.getGeneratedMainCategory().toString())
                 .build();
     }
 
@@ -58,7 +59,8 @@ public class VideoSummaryDto {
                 .address(videoSummaryCategory.getVideoSummary().getAddress())
                 .createdAt(videoSummaryCategory.getVideoSummary().getCreatedAt().minusHours(9))
                 .platform(videoSummaryCategory.getVideoSummary().getPlatform())
-                .mainCategory(videoSummaryCategory.getVideoSummary().getGeneratedMainCategory().getName())
+                .mainCategoryKr(videoSummaryCategory.getVideoSummary().getGeneratedMainCategory().getName())
+                .mainCategoryEng(videoSummaryCategory.getVideoSummary().getGeneratedMainCategory().toString())
                 .subCategory(videoSummaryCategory.getCategory().getSubCategory())
                 .build();
     }
