@@ -8,8 +8,8 @@ import java.util.Arrays;
 @AllArgsConstructor
 @Getter
 public enum MainCategory {
-    SCIENCE_TECHNOLOGY("과학/기술", 0),
-    FASHION_BEAUTY("패션/뷰티", 1),
+    TECHNOLOGY("기술", 0),
+    BEAUTY("뷰티", 1),
     COOK("요리", 2),
     LIVING("리빙", 3),
     HEALTH("건강", 4),
