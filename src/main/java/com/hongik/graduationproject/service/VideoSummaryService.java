@@ -61,6 +61,7 @@ public class VideoSummaryService {
         return new VideoSummaryInitiateResponse(videoCode);
     }
 
+    // 무조건 중복허용이 안되는 로직
     public VideoSummaryDto getVideoSummaryById(Long videoSummaryId) {
         VideoSummary videoSummary = videoSummaryRepository.getReferenceById(videoSummaryId);
         VideoSummaryCategory videoSummaryCategory = videoSummaryCategoryRepository.findByVideoSummary(videoSummary);
@@ -77,11 +78,14 @@ public class VideoSummaryService {
             Category category = categoryRepository.findDefaultCategoryByUserIdAndMainCategory(1L, statusCache.getGeneratedMainCategory()).get();
             VideoSummary videoSummary = videoSummaryRepository.getReferenceById(statusCache.getVideoSummaryId());
 
-            videoSummaryCategoryRepository.save(VideoSummaryCategory.builder()
-                    .category(category)
-                    .videoSummary(videoSummary)
-                    .build());
+            if (!videoSummaryCategoryRepository.existsByCategoryAndVideoSummary(category,videoSummary)) {
+                videoSummaryCategoryRepository.save(VideoSummaryCategory.builder()
+                        .category(category)
+                        .videoSummary(videoSummary)
+                        .build());
+            }
             summaryStatusCacheRepository.delete(statusCache);
+
         }
         return VideoSummaryStatusResponse.from(statusCache);
     }
