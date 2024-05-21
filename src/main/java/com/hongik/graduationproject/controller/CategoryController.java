@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,7 +24,8 @@ public class CategoryController {
     @ApiResponse(content = @Content(schema = @Schema(implementation = SubCategoryListResponse.class)))
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/categories")
-    public Response<SubCategoryListResponse> getSubCategoryList(@RequestParam MainCategory mainCategory) {
-        return Response.createSuccess(categoryService.getSubCategoryList(mainCategory));
+    public Response<SubCategoryListResponse> getSubCategoryList(@RequestParam MainCategory mainCategory,
+                                                                @AuthenticationPrincipal Long userId) {
+        return Response.createSuccess(categoryService.getSubCategoryList(mainCategory, userId));
     }
 }
