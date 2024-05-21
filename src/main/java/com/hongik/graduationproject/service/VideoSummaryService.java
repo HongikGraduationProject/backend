@@ -35,7 +35,7 @@ public class VideoSummaryService {
 
         String videoCode = platform.name() + '_' + videoId;
 
-//        userId = summaryInitiateRequest.getUserId();
+        userId = summaryInitiateRequest.getUserId();
 
         if (summaryStatusCacheRepository.existsByVideoCodeAndUserId(videoCode, userId)) {
             throw new AppException(ErrorCode.ALREADY_REQUESTED_SUMMARIZING);
@@ -70,8 +70,8 @@ public class VideoSummaryService {
     public VideoSummaryStatusResponse getStatus(String videoCode, Long userId) {
         VideoSummaryStatusCache statusCache = summaryStatusCacheRepository.findByVideoCode(videoCode).get();
         if (statusCache.getStatus().equals("COMPLETE")) {
-            Category category = categoryRepository.findDefaultCategoryByUserIdAndMainCategory(userId, statusCache.getGeneratedMainCategory()).get();
-//            Category category = categoryRepository.findDefaultCategoryByUserIdAndMainCategory(1L, statusCache.getGeneratedMainCategory()).get();
+//            Category category = categoryRepository.findDefaultCategoryByUserIdAndMainCategory(userId, statusCache.getGeneratedMainCategory()).get();
+            Category category = categoryRepository.findDefaultCategoryByUserIdAndMainCategory(1L, statusCache.getGeneratedMainCategory()).get();
             VideoSummary videoSummary = videoSummaryRepository.getReferenceById(statusCache.getVideoSummaryId());
 
             videoSummaryCategoryRepository.save(VideoSummaryCategory.builder()

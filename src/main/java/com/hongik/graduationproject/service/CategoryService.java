@@ -20,8 +20,8 @@ public class CategoryService {
     private final UserRepository userRepository;
 
     public SubCategoryListResponse getSubCategoryList(MainCategory mainCategory, Long userId) {
-        User user = userRepository.getReferenceById(userId);
-//        User user = userRepository.getReferenceById(1L);
+//        User user = userRepository.getReferenceById(userId);
+        User user = userRepository.getReferenceById(1L);
 
         List<SubCategoryResponse> subCategoryList = categoryRepository.findAllByMainCategoryAndUser(mainCategory, user).stream()
                 .map(category -> new SubCategoryResponse(category.getSubCategory(), category.getId()))
