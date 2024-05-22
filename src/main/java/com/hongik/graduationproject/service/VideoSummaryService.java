@@ -73,7 +73,9 @@ public class VideoSummaryService {
 
     @Transactional
     public VideoSummaryStatusResponse getStatus(String videoCode) {
-        VideoSummaryStatusCache statusCache = summaryStatusCacheRepository.findByVideoCode(videoCode).get();
+        VideoSummaryStatusCache statusCache = summaryStatusCacheRepository.findByVideoCode(videoCode)
+                .orElseThrow(() -> new AppException(ErrorCode.VIDEO_SUMMARY_NOT_FOUND));
+
         if (statusCache.getStatus().equals("COMPLETE")) {
             Category category = categoryRepository.findDefaultCategoryByUserIdAndMainCategory(1L, statusCache.getGeneratedMainCategory()).get();
             VideoSummary videoSummary = videoSummaryRepository.getReferenceById(statusCache.getVideoSummaryId());
