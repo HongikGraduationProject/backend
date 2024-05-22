@@ -1,4 +1,4 @@
-package com.hongik.graduationproject.eum;
+package com.hongik.graduationproject.enums;
 
 import lombok.Getter;
 

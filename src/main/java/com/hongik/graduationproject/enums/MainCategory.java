@@ -1,9 +1,7 @@
-package com.hongik.graduationproject.eum;
+package com.hongik.graduationproject.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-
-import java.util.Arrays;
 
 @AllArgsConstructor
 @Getter
