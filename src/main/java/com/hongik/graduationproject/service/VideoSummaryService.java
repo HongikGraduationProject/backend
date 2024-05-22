@@ -41,9 +41,9 @@ public class VideoSummaryService {
             throw new AppException(ErrorCode.ALREADY_REQUESTED_SUMMARIZING);
         }
 
-        Optional<VideoSummaryStatusCache> statusCache = summaryStatusCacheRepository.findFirstByVideoCode(videoCode);
-        if (statusCache.isPresent()) {
-            summaryStatusCacheRepository.save(VideoSummaryStatusCache.of(summaryInitiateRequest, userId, statusCache.get()));
+        Optional<VideoSummaryStatusCache> mayBeStatusCache = summaryStatusCacheRepository.findFirstByVideoCode(videoCode);
+        if (mayBeStatusCache.isPresent()) {
+            summaryStatusCacheRepository.save(VideoSummaryStatusCache.of(summaryInitiateRequest, userId, mayBeStatusCache.get()));
             return new VideoSummaryInitiateResponse(videoCode);
         }
 
