@@ -3,6 +3,7 @@ package com.hongik.graduationproject.domain.entity;
 import com.hongik.graduationproject.domain.entity.global.BaseTimeEntity;
 import com.hongik.graduationproject.enums.MainCategory;
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import lombok.*;
 
 @Getter
@@ -22,4 +23,15 @@ public class Category extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private MainCategory mainCategory;
     private String subCategory;
+
+    private Integer summaryCount;
+    private LocalDateTime updateAt;
+
+    public void updateSummaryCount(int count) {
+        this.summaryCount = count;
+    }
+
+    public void updateUpdateAt(LocalDateTime updateAt) {
+        this.updateAt = updateAt;
+    }
 }
