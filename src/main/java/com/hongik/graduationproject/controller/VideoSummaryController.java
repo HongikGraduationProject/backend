@@ -58,6 +58,7 @@ public class VideoSummaryController {
     @GetMapping("/summaries")
     @ResponseStatus(HttpStatus.OK)
     public Response<VideoSummaryListResponse> getAllSummariesByCategoryId(@Parameter(required = true) @RequestParam Long categoryId) {
+        log.info("get all summaries for categoryId = {}", categoryId);
         return Response.createSuccess(videoSummaryService.getAllSummariesByCategoryId(categoryId));
     }
 
