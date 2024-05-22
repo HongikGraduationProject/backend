@@ -2,8 +2,7 @@ package com.hongik.graduationproject.repository;
 
 import com.hongik.graduationproject.domain.entity.Category;
 import com.hongik.graduationproject.domain.entity.User;
-import com.hongik.graduationproject.eum.MainCategory;
-import jakarta.validation.constraints.Min;
+import com.hongik.graduationproject.enums.MainCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
