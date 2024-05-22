@@ -37,7 +37,7 @@ public class VideoSummaryService {
 
         userId = summaryInitiateRequest.getUserId();
 
-        if (summaryStatusCacheRepository.existsByVideoCodeAndUserId(videoCode, userId)) {
+        if (checkDuplicateSummarizing(videoCode, userId)) {
             throw new AppException(ErrorCode.ALREADY_REQUESTED_SUMMARIZING);
         }
 
@@ -59,6 +59,11 @@ public class VideoSummaryService {
 
         summaryStatusCacheRepository.save(VideoSummaryStatusCache.of(summaryInitiateRequest, userId, videoCode));
         return new VideoSummaryInitiateResponse(videoCode);
+    }
+
+    private boolean checkDuplicateSummarizing(String videoCode, Long userId) {
+        return videoSummaryCategoryRepository.existsByVideoCodeAndUserId(videoCode, userId) ||
+                summaryStatusCacheRepository.existsByVideoCodeAndUserId(videoCode, userId);
     }
 
     // 무조건 중복허용이 안되는 로직
