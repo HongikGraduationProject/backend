@@ -9,8 +9,7 @@ import java.util.Optional;
 
 public interface VideoSummaryStatusCacheRepository extends CrudRepository<VideoSummaryStatusCache, String> {
     Optional<VideoSummaryStatusCache> findFirstByVideoCode(String videoCode);
-
-    boolean existsByVideoCode(String videoCode);
-
+    List<VideoSummaryStatusCache> findAllByVideoCode(String videoCode);
+    Optional<VideoSummaryStatusCache> findByVideoCodeAndUserId(String videoCode, Long userId);
     boolean existsByVideoCodeAndUserId(String videoCode, Long userId);
 }

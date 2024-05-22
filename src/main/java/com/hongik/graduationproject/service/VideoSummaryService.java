@@ -6,6 +6,7 @@ import com.hongik.graduationproject.domain.entity.VideoSummary;
 import com.hongik.graduationproject.domain.entity.VideoSummaryCategory;
 import com.hongik.graduationproject.domain.entity.cache.VideoSummaryStatusCache;
 import com.hongik.graduationproject.eum.Platform;
+import com.hongik.graduationproject.eum.SummaryStatus;
 import com.hongik.graduationproject.exception.AppException;
 import com.hongik.graduationproject.exception.ErrorCode;
 import com.hongik.graduationproject.repository.CategoryRepository;
@@ -19,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+
+import static com.hongik.graduationproject.eum.SummaryStatus.*;
 
 @Service
 @RequiredArgsConstructor
@@ -78,8 +81,10 @@ public class VideoSummaryService {
 
     @Transactional
     public VideoSummaryStatusResponse getStatus(String videoCode, Long userId) {
-        VideoSummaryStatusCache statusCache = summaryStatusCacheRepository.findByVideoCode(videoCode).get();
-        if (statusCache.getStatus().equals("COMPLETE")) {
+        VideoSummaryStatusCache statusCache = summaryStatusCacheRepository.findByVideoCodeAndUserId(videoCode, userId)
+                .orElseThrow(()-> new AppException(ErrorCode.SUMMARIZING_STATUS_NOT_EXIST));
+
+        if (statusCache.getStatus().equals(PROCESSING.name())) {
 //            Category category = categoryRepository.findDefaultCategoryByUserIdAndMainCategory(userId, statusCache.getGeneratedMainCategory()).get();
             Category category = categoryRepository.findDefaultCategoryByUserIdAndMainCategory(1L, statusCache.getGeneratedMainCategory()).get();
             VideoSummary videoSummary = videoSummaryRepository.getReferenceById(statusCache.getVideoSummaryId());
