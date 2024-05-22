@@ -4,7 +4,7 @@ import com.hongik.graduationproject.domain.dto.category.SubCategoryListRequest;
 import com.hongik.graduationproject.domain.dto.category.SubCategoryListResponse;
 import com.hongik.graduationproject.domain.dto.category.SubCategoryResponse;
 import com.hongik.graduationproject.domain.entity.User;
-import com.hongik.graduationproject.eum.MainCategory;
+import com.hongik.graduationproject.enums.MainCategory;
 import com.hongik.graduationproject.repository.CategoryRepository;
 import com.hongik.graduationproject.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

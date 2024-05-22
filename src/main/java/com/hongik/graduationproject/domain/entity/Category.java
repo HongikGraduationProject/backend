@@ -1,7 +1,7 @@
 package com.hongik.graduationproject.domain.entity;
 
 import com.hongik.graduationproject.domain.entity.global.BaseTimeEntity;
-import com.hongik.graduationproject.eum.MainCategory;
+import com.hongik.graduationproject.enums.MainCategory;
 import jakarta.persistence.*;
 import lombok.*;
 

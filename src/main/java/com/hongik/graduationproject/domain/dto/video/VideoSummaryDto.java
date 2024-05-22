@@ -3,7 +3,7 @@ package com.hongik.graduationproject.domain.dto.video;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hongik.graduationproject.domain.entity.VideoSummary;
 import com.hongik.graduationproject.domain.entity.VideoSummaryCategory;
-import com.hongik.graduationproject.eum.Platform;
+import com.hongik.graduationproject.enums.Platform;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -1,6 +1,6 @@
 package com.hongik.graduationproject.domain.dto.video;
 
-import com.hongik.graduationproject.eum.Platform;
+import com.hongik.graduationproject.enums.Platform;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
