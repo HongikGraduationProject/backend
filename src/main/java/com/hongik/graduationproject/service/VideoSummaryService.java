@@ -82,21 +82,20 @@ public class VideoSummaryService {
     @Transactional
     public VideoSummaryStatusResponse getStatus(String videoCode, Long userId) {
         VideoSummaryStatusCache statusCache = summaryStatusCacheRepository.findByVideoCodeAndUserId(videoCode, userId)
-                .orElseThrow(()-> new AppException(ErrorCode.SUMMARIZING_STATUS_NOT_EXIST));
+                .orElseThrow(() -> new AppException(ErrorCode.SUMMARIZING_STATUS_NOT_EXIST));
 
-        if (statusCache.getStatus().equals(PROCESSING.name())) {
+        if (statusCache.getStatus().equals(COMPLETE.name())) {
 //            Category category = categoryRepository.findDefaultCategoryByUserIdAndMainCategory(userId, statusCache.getGeneratedMainCategory()).get();
-            Category category = categoryRepository.findDefaultCategoryByUserIdAndMainCategory(1L, statusCache.getGeneratedMainCategory()).get();
+            Category category = categoryRepository.findDefaultCategoryByUserIdAndMainCategory(1L, statusCache.getGeneratedMainCategory())
+                    .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXIST));
             VideoSummary videoSummary = videoSummaryRepository.getReferenceById(statusCache.getVideoSummaryId());
 
-            if (!videoSummaryCategoryRepository.existsByCategoryAndVideoSummary(category,videoSummary)) {
-                videoSummaryCategoryRepository.save(VideoSummaryCategory.builder()
-                        .category(category)
-                        .videoSummary(videoSummary)
-                        .build());
-            }
-            summaryStatusCacheRepository.delete(statusCache);
+            videoSummaryCategoryRepository.save(VideoSummaryCategory.builder()
+                    .category(category)
+                    .videoSummary(videoSummary)
+                    .build());
 
+            summaryStatusCacheRepository.delete(statusCache);
         }
         return VideoSummaryStatusResponse.from(statusCache);
     }
