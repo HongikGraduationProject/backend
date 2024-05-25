@@ -6,6 +6,7 @@ import com.hongik.graduationproject.domain.entity.VideoSummary;
 import com.hongik.graduationproject.domain.entity.VideoSummaryCategory;
 import com.hongik.graduationproject.domain.entity.cache.VideoSummaryStatusCache;
 import com.hongik.graduationproject.eum.Platform;
+import com.hongik.graduationproject.eum.SummaryStatus;
 import com.hongik.graduationproject.exception.AppException;
 import com.hongik.graduationproject.exception.ErrorCode;
 import com.hongik.graduationproject.repository.CategoryRepository;
@@ -19,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+
+import static com.hongik.graduationproject.eum.SummaryStatus.*;
 
 @Service
 @RequiredArgsConstructor
@@ -37,13 +40,13 @@ public class VideoSummaryService {
 
         userId = summaryInitiateRequest.getUserId();
 
-        if (summaryStatusCacheRepository.existsByVideoCodeAndUserId(videoCode, userId)) {
+        if (checkDuplicateSummarizing(videoCode, userId)) {
             throw new AppException(ErrorCode.ALREADY_REQUESTED_SUMMARIZING);
         }
 
-        Optional<VideoSummaryStatusCache> statusCache = summaryStatusCacheRepository.findFirstByVideoCode(videoCode);
-        if (statusCache.isPresent()) {
-            summaryStatusCacheRepository.save(VideoSummaryStatusCache.of(summaryInitiateRequest, userId, statusCache.get()));
+        Optional<VideoSummaryStatusCache> mayBeStatusCache = summaryStatusCacheRepository.findFirstByVideoCode(videoCode);
+        if (mayBeStatusCache.isPresent()) {
+            summaryStatusCacheRepository.save(VideoSummaryStatusCache.of(summaryInitiateRequest, userId, mayBeStatusCache.get()));
             return new VideoSummaryInitiateResponse(videoCode);
         }
 
@@ -61,6 +64,11 @@ public class VideoSummaryService {
         return new VideoSummaryInitiateResponse(videoCode);
     }
 
+    private boolean checkDuplicateSummarizing(String videoCode, Long userId) {
+        return videoSummaryCategoryRepository.existsByVideoCodeAndUserId(videoCode, userId) ||
+                summaryStatusCacheRepository.existsByVideoCodeAndUserId(videoCode, userId);
+    }
+
     // 무조건 중복허용이 안되는 로직
     public VideoSummaryDto getVideoSummaryById(Long videoSummaryId) {
         VideoSummary videoSummary = videoSummaryRepository.getReferenceById(videoSummaryId);
@@ -73,20 +81,21 @@ public class VideoSummaryService {
 
     @Transactional
     public VideoSummaryStatusResponse getStatus(String videoCode, Long userId) {
-        VideoSummaryStatusCache statusCache = summaryStatusCacheRepository.findByVideoCode(videoCode).get();
-        if (statusCache.getStatus().equals("COMPLETE")) {
+        VideoSummaryStatusCache statusCache = summaryStatusCacheRepository.findByVideoCodeAndUserId(videoCode, userId)
+                .orElseThrow(() -> new AppException(ErrorCode.SUMMARIZING_STATUS_NOT_EXIST));
+
+        if (statusCache.getStatus().equals(COMPLETE.name())) {
 //            Category category = categoryRepository.findDefaultCategoryByUserIdAndMainCategory(userId, statusCache.getGeneratedMainCategory()).get();
-            Category category = categoryRepository.findDefaultCategoryByUserIdAndMainCategory(1L, statusCache.getGeneratedMainCategory()).get();
+            Category category = categoryRepository.findDefaultCategoryByUserIdAndMainCategory(1L, statusCache.getGeneratedMainCategory())
+                    .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXIST));
             VideoSummary videoSummary = videoSummaryRepository.getReferenceById(statusCache.getVideoSummaryId());
 
-            if (!videoSummaryCategoryRepository.existsByCategoryAndVideoSummary(category,videoSummary)) {
-                videoSummaryCategoryRepository.save(VideoSummaryCategory.builder()
-                        .category(category)
-                        .videoSummary(videoSummary)
-                        .build());
-            }
-            summaryStatusCacheRepository.delete(statusCache);
+            videoSummaryCategoryRepository.save(VideoSummaryCategory.builder()
+                    .category(category)
+                    .videoSummary(videoSummary)
+                    .build());
 
+            summaryStatusCacheRepository.delete(statusCache);
         }
         return VideoSummaryStatusResponse.from(statusCache);
     }
