@@ -13,7 +13,11 @@ public enum ErrorCode {
     VIDEO_SUMMARY_NOT_FOUND(HttpStatus.NOT_FOUND,"영상 요약 정보를 찾을 수 없습니다"),
     MAIN_CATEGORY_NOT_EXISTS(HttpStatus.BAD_REQUEST,"해당 메인 카테고리가 존재하지 않습니다."),
     SUMMARIZING_STATUS_NOT_EXIST(HttpStatus.NOT_FOUND, "요약 정보를 찾을 수 없습니다."),
-    CATEGORY_NOT_EXIST(HttpStatus.NOT_FOUND, "카테고리를 찾을 수 없습니다.");
+    CATEGORY_NOT_EXIST(HttpStatus.NOT_FOUND, "카테고리를 찾을 수 없습니다."),
+    USER_ALREADY_EXISTS(HttpStatus.CONFLICT, "이미 가입한 사용자입니다."),
+    JWT_NOT_EXISTS(HttpStatus.BAD_REQUEST, "요청에 JWT가 존재하지 않습니다."),
+    INVALID_JWT(HttpStatus.BAD_REQUEST, "유효하지 않은 JWT입니다.");
+
     private final HttpStatus httpStatus;
     private final String message;
 }

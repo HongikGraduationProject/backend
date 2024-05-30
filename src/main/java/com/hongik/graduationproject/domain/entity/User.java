@@ -26,6 +26,7 @@ public class User extends BaseTimeEntity {
     private String kakaoNickname;
     private Long kakaoId;
     private String email;
+    private String imei;
 
     public static User of(KaKaoProfile kakaoProfile) {
         return User.builder()

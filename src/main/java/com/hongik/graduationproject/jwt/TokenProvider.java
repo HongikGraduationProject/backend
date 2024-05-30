@@ -1,5 +1,7 @@
 package com.hongik.graduationproject.jwt;
 
+import com.hongik.graduationproject.exception.AppException;
+import com.hongik.graduationproject.exception.ErrorCode;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -37,12 +39,12 @@ public class TokenProvider {
 
     public boolean validateToken(String token) {
         if (!StringUtils.hasText(token)) {
-            throw new RuntimeException();
+            throw new AppException(ErrorCode.JWT_NOT_EXISTS);
         }
         try {
             Jwts.parser().setSigningKey(jwtSecretKey).parseClaimsJws(token).getBody();
         } catch (SignatureException | ExpiredJwtException e) {
-            throw new RuntimeException();
+            throw new AppException(ErrorCode.INVALID_JWT);
         }
         return true;
     }
