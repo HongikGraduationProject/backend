@@ -6,7 +6,7 @@ import com.hongik.graduationproject.domain.dto.auth.ReissueRequest;
 import com.hongik.graduationproject.domain.dto.auth.ReissueResponse;
 import com.hongik.graduationproject.domain.entity.Category;
 import com.hongik.graduationproject.domain.entity.User;
-import com.hongik.graduationproject.eum.MainCategory;
+import com.hongik.graduationproject.enums.MainCategory;
 import com.hongik.graduationproject.exception.AppException;
 import com.hongik.graduationproject.exception.ErrorCode;
 import com.hongik.graduationproject.jwt.TokenProvider;
