@@ -1,7 +1,7 @@
 package com.hongik.graduationproject.domain.dto.video;
 
 import com.hongik.graduationproject.domain.entity.VideoSummary;
-import com.hongik.graduationproject.eum.Platform;
+import com.hongik.graduationproject.enums.Platform;
 
 import java.util.Arrays;
 import java.util.List;

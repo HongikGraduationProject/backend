@@ -1,7 +1,7 @@
 package com.hongik.graduationproject.domain.dto.video;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.hongik.graduationproject.eum.Platform;
+import com.hongik.graduationproject.enums.Platform;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

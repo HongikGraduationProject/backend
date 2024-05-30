@@ -5,8 +5,7 @@ import com.hongik.graduationproject.domain.entity.Category;
 import com.hongik.graduationproject.domain.entity.VideoSummary;
 import com.hongik.graduationproject.domain.entity.VideoSummaryCategory;
 import com.hongik.graduationproject.domain.entity.cache.VideoSummaryStatusCache;
-import com.hongik.graduationproject.eum.Platform;
-import com.hongik.graduationproject.eum.SummaryStatus;
+import com.hongik.graduationproject.enums.Platform;
 import com.hongik.graduationproject.exception.AppException;
 import com.hongik.graduationproject.exception.ErrorCode;
 import com.hongik.graduationproject.repository.CategoryRepository;
@@ -21,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-import static com.hongik.graduationproject.eum.SummaryStatus.*;
+import static com.hongik.graduationproject.enums.SummaryStatus.*;
 
 @Service
 @RequiredArgsConstructor
@@ -96,6 +95,7 @@ public class VideoSummaryService {
                     .build());
 
             summaryStatusCacheRepository.delete(statusCache);
+
         }
         return VideoSummaryStatusResponse.from(statusCache);
     }

@@ -28,12 +28,6 @@ import java.security.Principal;
 public class VideoSummaryController {
     private final VideoSummaryService videoSummaryService;
 
-    @GetMapping("/test")
-    public Response<String> test(@AuthenticationPrincipal Long principal) {
-        System.out.println("principal = "+ principal);
-        return Response.createSuccess("TEST");
-    }
-
     @Operation(summary = "영상 요약 요청", description = "영상 요약 요청을 위한 메소드")
     @ApiResponse(content = @Content(schema = @Schema(implementation = VideoSummaryInitiateResponse.class)))
     @PostMapping("/summaries/initiate")
@@ -72,6 +66,7 @@ public class VideoSummaryController {
     @GetMapping("/summaries")
     @ResponseStatus(HttpStatus.OK)
     public Response<VideoSummaryListResponse> getAllSummariesByCategoryId(@Parameter(required = true) @RequestParam Long categoryId) {
+        log.info("get all summaries for categoryId = {}", categoryId);
         return Response.createSuccess(videoSummaryService.getAllSummariesByCategoryId(categoryId));
     }
 

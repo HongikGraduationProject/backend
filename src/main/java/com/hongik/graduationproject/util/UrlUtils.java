@@ -1,14 +1,14 @@
 package com.hongik.graduationproject.util;
 
-import com.hongik.graduationproject.eum.Platform;
+import com.hongik.graduationproject.enums.Platform;
 import com.hongik.graduationproject.exception.AppException;
 import com.hongik.graduationproject.exception.ErrorCode;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.hongik.graduationproject.eum.Platform.INSTAGRAM;
-import static com.hongik.graduationproject.eum.Platform.YOUTUBE;
+import static com.hongik.graduationproject.enums.Platform.INSTAGRAM;
+import static com.hongik.graduationproject.enums.Platform.YOUTUBE;
 
 public class UrlUtils {
     private static final String INSTAGRAM_ID_REGEX = "(?:https?:\\/\\/)?(?:www\\.)?instagram\\.com\\/?([a-zA-Z0-9\\.\\_\\-]+)?\\/([p]+)?([reel]+)?([tv]+)?([stories]+)?\\/([a-zA-Z0-9\\-\\_\\.]+)\\/?([0-9]+)?";

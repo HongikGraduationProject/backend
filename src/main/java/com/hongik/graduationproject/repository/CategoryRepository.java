@@ -1,9 +1,9 @@
 package com.hongik.graduationproject.repository;
 
+import com.hongik.graduationproject.domain.dto.category.SubCategoryResponse;
 import com.hongik.graduationproject.domain.entity.Category;
 import com.hongik.graduationproject.domain.entity.User;
-import com.hongik.graduationproject.eum.MainCategory;
-import jakarta.validation.constraints.Min;
+import com.hongik.graduationproject.enums.MainCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -14,5 +14,10 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     @Query("select c from Category c where c.user.id = :userId and c.mainCategory = :mainCategory and c.subCategory = '기타'")
     Optional<Category> findDefaultCategoryByUserIdAndMainCategory(Long userId, MainCategory mainCategory);
 
-    List<Category> findAllByMainCategoryAndUser(MainCategory mainCategory, User user);
+    @Query("SELECT new com.hongik.graduationproject.domain.dto.category.SubCategoryResponse(" +
+            "c.subCategory, c.id, CAST(COUNT(v.id) AS integer), MAX(v.createdAt)) " +
+            "FROM Category c LEFT JOIN VideoSummaryCategory v ON c.id = v.category.id " +
+            "WHERE c.mainCategory = :mainCategory AND c.user = :user " +
+            "GROUP BY c.id, c.subCategory")
+    List<SubCategoryResponse> findAllByMainCategoryAndUser(MainCategory mainCategory, User user);
 }

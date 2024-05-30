@@ -2,8 +2,7 @@ package com.hongik.graduationproject.domain.entity.cache;
 
 import com.hongik.graduationproject.domain.dto.video.VideoSummaryInitiateRequest;
 import com.hongik.graduationproject.domain.entity.VideoSummary;
-import com.hongik.graduationproject.eum.MainCategory;
-import io.swagger.v3.oas.annotations.media.Schema;
+import com.hongik.graduationproject.enums.MainCategory;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;

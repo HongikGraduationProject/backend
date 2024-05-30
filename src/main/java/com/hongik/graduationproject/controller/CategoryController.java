@@ -2,8 +2,7 @@ package com.hongik.graduationproject.controller;
 
 import com.hongik.graduationproject.domain.dto.Response;
 import com.hongik.graduationproject.domain.dto.category.SubCategoryListResponse;
-import com.hongik.graduationproject.domain.dto.video.VideoSummaryListResponse;
-import com.hongik.graduationproject.eum.MainCategory;
+import com.hongik.graduationproject.enums.MainCategory;
 import com.hongik.graduationproject.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
