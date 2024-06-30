@@ -22,9 +22,11 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
+            System.out.println("필터 탐1 +++++++++++++++");
             filterChain.doFilter(request, response);
         } catch (AppException e) {
             setErrorResponse(request, response, e);
+            System.out.println("필터 탐2 +++++++++++++++");
         }
     }
 
@@ -32,6 +34,7 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
         final Map<String, Object> body = new HashMap<>();
         final ObjectMapper mapper = new ObjectMapper();
 
+        System.out.println(ex.getErrorCode().getMessage());
         body.put("result", "error");
         body.put("message", ex.getErrorCode().getMessage());
         body.put("data", null);

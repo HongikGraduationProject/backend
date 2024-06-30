@@ -1,12 +1,10 @@
 package com.hongik.graduationproject.controller;
 
 import com.hongik.graduationproject.domain.dto.Response;
-import com.hongik.graduationproject.domain.dto.auth.ImeiJoinRequest;
-import com.hongik.graduationproject.domain.dto.auth.ImeiJoinResponse;
+import com.hongik.graduationproject.domain.dto.auth.IssueRequest;
+import com.hongik.graduationproject.domain.dto.auth.IssueTokenResponse;
 import com.hongik.graduationproject.domain.dto.auth.ReissueRequest;
 import com.hongik.graduationproject.domain.dto.auth.ReissueResponse;
-import com.hongik.graduationproject.domain.dto.video.VideoSummaryInitiateResponse;
-import com.hongik.graduationproject.service.auth.AuthService;
 import com.hongik.graduationproject.service.auth.ImeiAuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -32,10 +30,10 @@ public class AuthController {
     }
 
 
-    @Operation(summary = "회원가입 요청", description = "imei를 사용한 회원가입을 위한 메소드")
-    @ApiResponse(content = @Content(schema = @Schema(implementation = ImeiJoinRequest.class)))
+    @Operation(summary = "토큰 발급 요청", description = "imei를 사용한 토큰 발급을 위한 메소드")
+    @ApiResponse(content = @Content(schema = @Schema(implementation = IssueTokenResponse.class)))
     @PostMapping("")
-    public Response<ImeiJoinResponse> joinUserWithImei(@RequestBody ImeiJoinRequest imeiJoinRequest) {
-        return Response.createSuccess(imeiAuthService.joinUserWithImei(imeiJoinRequest));
+    public Response<IssueTokenResponse> issueTokenByImei(@RequestBody IssueRequest issueRequest) {
+        return Response.createSuccess(imeiAuthService.issueTokenFromImei(issueRequest));
     }
 }

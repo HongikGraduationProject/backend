@@ -1,14 +1,12 @@
 package com.hongik.graduationproject.service.auth;
 
-import com.hongik.graduationproject.domain.dto.auth.ImeiJoinRequest;
-import com.hongik.graduationproject.domain.dto.auth.ImeiJoinResponse;
+import com.hongik.graduationproject.domain.dto.auth.IssueRequest;
+import com.hongik.graduationproject.domain.dto.auth.IssueTokenResponse;
 import com.hongik.graduationproject.domain.dto.auth.ReissueRequest;
 import com.hongik.graduationproject.domain.dto.auth.ReissueResponse;
 import com.hongik.graduationproject.domain.entity.Category;
 import com.hongik.graduationproject.domain.entity.User;
 import com.hongik.graduationproject.enums.MainCategory;
-import com.hongik.graduationproject.exception.AppException;
-import com.hongik.graduationproject.exception.ErrorCode;
 import com.hongik.graduationproject.jwt.TokenProvider;
 import com.hongik.graduationproject.repository.CategoryRepository;
 import com.hongik.graduationproject.repository.UserRepository;
@@ -28,19 +26,27 @@ public class ImeiAuthService {
     private final CategoryRepository categoryRepository;
     private final TokenProvider tokenProvider;
 
-    public ImeiJoinResponse joinUserWithImei(ImeiJoinRequest imeiJoinRequest) {
-        checkDuplicateUser(imeiJoinRequest);
+    public IssueTokenResponse issueTokenFromImei(IssueRequest issueRequest) {
+        User user;
+        if (!userRepository.existsByImei(issueRequest.imei())) {
+            user = createUser(issueRequest);
+        } else {
+            user = userRepository.findByImei(issueRequest.imei()).get();
+        }
 
-        User savedUser = userRepository.save(User.builder()
-                            .imei(imeiJoinRequest.imei())
-                            .build());
+        String accessToken = tokenProvider.createAccessToken(user.getId());
 
-        createCategories(savedUser);
+        return new IssueTokenResponse(accessToken);
+    }
 
-        String accessToken = tokenProvider.createAccessToken(savedUser.getId());
-        String refreshToken = tokenProvider.createRefreshToken(savedUser.getId());
+    private User createUser(IssueRequest issueRequest) {
+        User user;
+        user = userRepository.save(User.builder()
+                .imei(issueRequest.imei())
+                .build());
 
-        return new ImeiJoinResponse(accessToken, refreshToken);
+        createCategories(user);
+        return user;
     }
 
     public ReissueResponse reissueToken(ReissueRequest reissueRequest) {
@@ -58,19 +64,11 @@ public class ImeiAuthService {
         List<Category> categoryList = new ArrayList<>();
         for (MainCategory mainCategory : MainCategory.values()) {
             categoryList.add(Category.builder()
-                            .user(savedUser)
-                            .mainCategory(mainCategory)
-                            .subCategory("기타")
-                            .build());
+                    .user(savedUser)
+                    .mainCategory(mainCategory)
+                    .subCategory("기타")
+                    .build());
         }
         categoryRepository.saveAll(categoryList);
     }
-
-    private void checkDuplicateUser(ImeiJoinRequest imeiJoinRequest) {
-        if (userRepository.existsByImei(imeiJoinRequest.imei())) {
-            throw new AppException(ErrorCode.USER_ALREADY_EXISTS);
-        }
-    }
-
-
 }
