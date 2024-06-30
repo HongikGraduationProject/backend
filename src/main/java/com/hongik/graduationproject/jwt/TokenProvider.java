@@ -43,7 +43,7 @@ public class TokenProvider {
         }
         try {
             Jwts.parser().setSigningKey(jwtSecretKey).parseClaimsJws(token).getBody();
-        } catch (SignatureException | ExpiredJwtException e) {
+        } catch (SignatureException | ExpiredJwtException | MalformedJwtException e) {
             throw new AppException(ErrorCode.INVALID_JWT);
         }
         return true;
