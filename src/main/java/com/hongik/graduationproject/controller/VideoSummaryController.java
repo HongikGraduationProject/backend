@@ -56,9 +56,11 @@ public class VideoSummaryController {
     @ResponseStatus(HttpStatus.OK)
     public Response<VideoSummaryDto> getSummaryByVideoSummaryId(@PathVariable(name = "videoSummaryId")
                                                                 @Parameter(name = "videoSummaryId", description = "영상 요약 상태에서 응답받은 videoSummaryId", example = "3")
-                                                                Long videoSummaryId) {
+                                                                Long videoSummaryId,
+                                                                @AuthenticationPrincipal Long userId
+                                                                ) {
         log.info("summary requested videoSummaryId = {}", videoSummaryId);
-        return Response.createSuccess(videoSummaryService.getVideoSummaryById(videoSummaryId));
+        return Response.createSuccess(videoSummaryService.getVideoSummaryById(videoSummaryId, userId));
     }
 
     @Operation(summary = "영상 요약 목록 조회", description = "categoryId로 영상 요약 목록 조회를 위한 메소드")

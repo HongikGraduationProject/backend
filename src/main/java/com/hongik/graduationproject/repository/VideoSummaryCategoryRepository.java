@@ -1,6 +1,7 @@
 package com.hongik.graduationproject.repository;
 
 import com.hongik.graduationproject.domain.entity.Category;
+import com.hongik.graduationproject.domain.entity.User;
 import com.hongik.graduationproject.domain.entity.VideoSummary;
 import com.hongik.graduationproject.domain.entity.VideoSummaryCategory;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -11,8 +12,12 @@ import java.util.List;
 
 public interface VideoSummaryCategoryRepository extends JpaRepository<VideoSummaryCategory, Long> {
     List<VideoSummaryCategory> findAllByCategory(Category category);
-    VideoSummaryCategory findByVideoSummary(VideoSummary videoSummary);
-    boolean existsByCategoryAndVideoSummary(Category category, VideoSummary videoSummary);
+
+    @Query("select vsc " +
+            "from VideoSummaryCategory vsc " +
+            "where vsc.category.user = :user " +
+            "and vsc.videoSummary = :videoSummary")
+    VideoSummaryCategory findByVideoSummaryAndUser(VideoSummary videoSummary, User user);
 
     @EntityGraph(attributePaths = {"category", "category.user", "videoSummary"})
     @Query("SELECT COUNT(vsc) > 0 " +
