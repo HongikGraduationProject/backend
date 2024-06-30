@@ -20,14 +20,6 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return http
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests((authorizeRequests) -> authorizeRequests.anyRequest().permitAll())
-                .build();
-    }
-
-    @Bean
     protected SecurityFilterChain configure(HttpSecurity httpSecurity) throws Exception{
         httpSecurity
                 .cors(Customizer.withDefaults())
