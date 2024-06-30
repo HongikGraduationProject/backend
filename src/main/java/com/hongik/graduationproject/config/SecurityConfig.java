@@ -1,6 +1,7 @@
 package com.hongik.graduationproject.config;
 
 import com.hongik.graduationproject.jwt.JwtAuthenticationFilter;
+import com.hongik.graduationproject.jwt.JwtExceptionFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,19 +21,12 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return http
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests((authorizeRequests) -> authorizeRequests.anyRequest().permitAll())
-                .build();
-    }
-
-    @Bean
     protected SecurityFilterChain configure(HttpSecurity httpSecurity) throws Exception{
         httpSecurity
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
+                .formLogin(AbstractHttpConfigurer::disable)
                 .sessionManagement((sessionManagement) ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((authorizeHttpRequests) ->
@@ -40,10 +34,10 @@ public class SecurityConfig {
                                 .requestMatchers( "/api/auth/**").permitAll()
                                 .requestMatchers( "/v3/api-docs/**").permitAll()
                                 .requestMatchers( "/swagger-ui/**").permitAll()
-                                .anyRequest().authenticated());
+                                .anyRequest().hasRole("USER"));
 
         httpSecurity.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-
+        httpSecurity.addFilterBefore(new JwtExceptionFilter(), JwtAuthenticationFilter.class);
         return httpSecurity.build();
     }
 }
