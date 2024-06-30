@@ -22,14 +22,6 @@ public class AuthController {
 
     private final ImeiAuthService imeiAuthService;
 
-    @Operation(summary = "reissue 요청", description = "reissue를 위한 메소드")
-    @ApiResponse(content = @Content(schema = @Schema(implementation = ReissueRequest.class)))
-    @PostMapping("/reissue")
-    public  Response<ReissueResponse> reissueToken(@RequestBody ReissueRequest reissueRequest) {
-        return Response.createSuccess(imeiAuthService.reissueToken(reissueRequest));
-    }
-
-
     @Operation(summary = "토큰 발급 요청", description = "imei를 사용한 토큰 발급을 위한 메소드")
     @ApiResponse(content = @Content(schema = @Schema(implementation = IssueTokenResponse.class)))
     @PostMapping("")

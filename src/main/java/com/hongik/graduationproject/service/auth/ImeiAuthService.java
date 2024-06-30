@@ -21,7 +21,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class ImeiAuthService {
-
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final TokenProvider tokenProvider;
@@ -47,17 +46,6 @@ public class ImeiAuthService {
 
         createCategories(user);
         return user;
-    }
-
-    public ReissueResponse reissueToken(ReissueRequest reissueRequest) {
-        Long userId = tokenProvider.parseUserId(reissueRequest.getAccessToken());
-
-        tokenProvider.validateToken(reissueRequest.getRefreshToken());
-
-        String newAccessToken = tokenProvider.createAccessToken(userId);
-        String newRefreshToken = tokenProvider.createRefreshToken(userId);
-
-        return new ReissueResponse(newAccessToken, newRefreshToken);
     }
 
     private void createCategories(User savedUser) {
