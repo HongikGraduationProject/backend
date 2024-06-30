@@ -69,7 +69,7 @@ public class VideoSummaryService {
     // 무조건 중복허용이 안되는 로직
     public VideoSummaryDto getVideoSummaryById(Long videoSummaryId) {
         VideoSummary videoSummary = videoSummaryRepository.getReferenceById(videoSummaryId);
-        VideoSummaryCategory videoSummaryCategory = videoSummaryCategoryRepository.findByVideoSummary(videoSummary);
+        VideoSummaryCategory videoSummaryCategory = videoSummaryCategoryRepository.findFirstByVideoSummary(videoSummary);
 
         return VideoSummaryDto.from(videoSummaryCategory);
     }

@@ -12,6 +12,7 @@ import java.util.List;
 public interface VideoSummaryCategoryRepository extends JpaRepository<VideoSummaryCategory, Long> {
     List<VideoSummaryCategory> findAllByCategory(Category category);
     VideoSummaryCategory findByVideoSummary(VideoSummary videoSummary);
+    VideoSummaryCategory findFirstByVideoSummary(VideoSummary videoSummary);
     boolean existsByCategoryAndVideoSummary(Category category, VideoSummary videoSummary);
 
     @EntityGraph(attributePaths = {"category", "category.user", "videoSummary"})
