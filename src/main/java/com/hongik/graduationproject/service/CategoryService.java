@@ -23,4 +23,10 @@ public class CategoryService {
         List<SubCategoryResponse> subCategoryList = categoryRepository.findAllByMainCategoryAndUser(mainCategory, user);
         return new SubCategoryListResponse(subCategoryList);
     }
+
+    public SubCategoryListResponse getAllSubCategoryList(Long userId) {
+        User user = userRepository.getReferenceById(userId);
+        List<SubCategoryResponse> subCategoryList = categoryRepository.findAllSubCategoryByUser(user);
+        return new SubCategoryListResponse(subCategoryList);
+    }
 }
