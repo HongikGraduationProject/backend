@@ -102,4 +102,9 @@ public class VideoSummaryService {
                 .toList();
         return new VideoSummaryListResponse(videoSummaryResponseList);
     }
+
+    // 검색어를 포함하는 video id들을 조회하는 메서드
+    public List<Long> getAllVideoIdsBySearchWord(String searchWord) {
+        return videoSummaryRepository.getAllVideoIdsBySearchWord(searchWord);
+    }
 }
