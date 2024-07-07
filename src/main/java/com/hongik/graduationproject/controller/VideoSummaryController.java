@@ -9,16 +9,12 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import java.nio.file.attribute.UserPrincipal;
-import java.security.Principal;
 
 @Tag(name = "영상", description = "영상 또는 요약과 관련된 api")
 @RestController
@@ -72,4 +68,12 @@ public class VideoSummaryController {
         return Response.createSuccess(videoSummaryService.getAllSummariesByCategoryId(categoryId));
     }
 
+    @Operation(summary = "검색 결과 조회", description = "제목 또는 내용에서 검색어를 포함하는 숏폼 조회를 위한 API")
+    @ApiResponse(content = @Content(schema = @Schema(implementation = Response.class)))
+    @GetMapping("/summaries/search")
+    public List<Long> getAllVideoIdsBySearchWord(@Parameter(name = "searchWord", description = "검색어" ) String searchWord){
+        List<Long> videoIds = videoSummaryService.getAllVideoIdsBySearchWord(searchWord);
+        log.info("검색어 '{}' 에 대한 모든 videoIds 조회 결과: {}", searchWord, videoIds);
+        return Response.createSuccess(videoIds).getData();
+    }
 }
