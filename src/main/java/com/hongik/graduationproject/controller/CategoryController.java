@@ -1,6 +1,7 @@
 package com.hongik.graduationproject.controller;
 
 import com.hongik.graduationproject.domain.dto.Response;
+import com.hongik.graduationproject.domain.dto.category.SubCategoryCreateRequest;
 import com.hongik.graduationproject.domain.dto.category.SubCategoryListResponse;
 import com.hongik.graduationproject.enums.MainCategory;
 import com.hongik.graduationproject.service.CategoryService;
@@ -9,10 +10,12 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
@@ -23,12 +26,24 @@ public class CategoryController {
     @ApiResponse(content = @Content(schema = @Schema(implementation = SubCategoryListResponse.class)))
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/categories")
-    public Response<SubCategoryListResponse> getSubCategoryList(@RequestParam String mainCategory,
+    public Response<SubCategoryListResponse> getSubCategoryList(@RequestParam MainCategory mainCategory,
                                                                 @AuthenticationPrincipal Long userId) {
-        if ("ALL".equalsIgnoreCase(mainCategory)) {
+        if (mainCategory == MainCategory.ALL) {
             return Response.createSuccess(categoryService.getAllSubCategoryList(userId));
         } else {
-            return Response.createSuccess(categoryService.getSubCategoryList(MainCategory.find(mainCategory), userId));
+            return Response.createSuccess(categoryService.getSubCategoryList(mainCategory, userId));
         }
+    }
+
+    @Operation(summary = "새로운 서브 카테고리 생성", description = "사용자가 원하는 서브 카테고리를 생성하는 메소드")
+    @ApiResponse(content = @Content(schema = @Schema(implementation = Response.class)))
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/categories")
+    public Response<?> createSubCategory(@RequestParam MainCategory mainCategory,
+                                         @RequestBody SubCategoryCreateRequest request,
+                                         @AuthenticationPrincipal Long userId) {
+        categoryService.createSubCategory(mainCategory, request.subCategoryName(), userId);
+        log.info("새롭게 생성된 서브 카테고리 = {}", request.subCategoryName());
+        return Response.createSuccess("서브 카테고리 생성 완료");
     }
 }

@@ -28,4 +28,6 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
             "WHERE c.user = :user " +
             "GROUP BY c.subCategory, c.id")
     List<SubCategoryResponse> findAllSubCategoryByUser(User user);
+
+    boolean existsByMainCategoryAndSubCategory(MainCategory mainCategory, String subCategory);
 }

@@ -15,7 +15,8 @@ public enum MainCategory {
     ART("예술", 6),
     NEWS("뉴스", 7),
     ENTERTAINMENT("엔터테인먼트", 8),
-    OTHER("기타", 9);
+    OTHER("기타", 9),
+    ALL("전체",10);
 
     private final String name;
     private final int index;
