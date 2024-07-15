@@ -26,12 +26,12 @@ public class CategoryController {
     @ApiResponse(content = @Content(schema = @Schema(implementation = SubCategoryListResponse.class)))
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/categories")
-    public Response<SubCategoryListResponse> getSubCategoryList(@RequestParam String mainCategory,
+    public Response<SubCategoryListResponse> getSubCategoryList(@RequestParam MainCategory mainCategory,
                                                                 @AuthenticationPrincipal Long userId) {
-        if ("ALL".equalsIgnoreCase(mainCategory)) {
+        if (mainCategory == MainCategory.ALL) {
             return Response.createSuccess(categoryService.getAllSubCategoryList(userId));
         } else {
-            return Response.createSuccess(categoryService.getSubCategoryList(MainCategory.find(mainCategory), userId));
+            return Response.createSuccess(categoryService.getSubCategoryList(mainCategory, userId));
         }
     }
 
