@@ -5,6 +5,8 @@ import com.hongik.graduationproject.domain.dto.category.SubCategoryResponse;
 import com.hongik.graduationproject.domain.entity.Category;
 import com.hongik.graduationproject.domain.entity.User;
 import com.hongik.graduationproject.enums.MainCategory;
+import com.hongik.graduationproject.exception.AppException;
+import com.hongik.graduationproject.exception.ErrorCode;
 import com.hongik.graduationproject.repository.CategoryRepository;
 import com.hongik.graduationproject.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +36,12 @@ public class CategoryService {
 
     @Transactional
     public void createSubCategory(MainCategory mainCategory, String subCategoryName, Long userId) {
+
         User user = userRepository.getReferenceById(userId);
+
+        if (categoryRepository.existsByMainCategoryAndSubCategory(mainCategory, subCategoryName)) {
+            throw new AppException(ErrorCode.SUBCATEGORY_ALREADY_EXISTS);
+        }
 
         Category category = Category.builder()
                 .user(user)
