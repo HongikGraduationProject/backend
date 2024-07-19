@@ -107,4 +107,13 @@ public class VideoSummaryService {
     public List<Long> getAllVideoIdsBySearchWord(String searchWord) {
         return videoSummaryRepository.getAllVideoIdsBySearchWord(searchWord);
     }
+
+    @Transactional
+    public void deleteVideoSummary(Long videoSummaryId) {
+        VideoSummary videoSummary = videoSummaryRepository.findById(videoSummaryId)
+                .orElseThrow(() -> new AppException(ErrorCode.VIDEO_SUMMARY_NOT_FOUND));
+
+        videoSummary.markAsDeleted();
+        videoSummaryRepository.save(videoSummary);
+    }
 }

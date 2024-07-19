@@ -33,6 +33,8 @@ public class VideoSummary extends BaseTimeEntity {
     private Platform platform;
     @Enumerated(EnumType.STRING)
     private MainCategory generatedMainCategory;
+    @Column(name = "is_deleted")
+    private boolean isDeleted = false;
 
     public static VideoSummary of(VideoSummaryMessage videoSummaryMessage) {
         return VideoSummary
@@ -59,5 +61,9 @@ public class VideoSummary extends BaseTimeEntity {
         } else {
             return "";
         }
+    }
+
+    public void markAsDeleted() {
+        this.isDeleted = true;
     }
 }

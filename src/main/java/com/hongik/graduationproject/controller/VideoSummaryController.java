@@ -76,4 +76,14 @@ public class VideoSummaryController {
         log.info("검색어 '{}' 에 대한 모든 videoIds 조회 결과: {}", searchWord, videoIds);
         return Response.createSuccess(videoIds).getData();
     }
+
+    @Operation(summary = "숏폼 삭제", description = "사용자가 원하는 숏폼 삭제하는 메소드")
+    @ApiResponse(content = @Content(schema = @Schema(implementation = Response.class)))
+    @DeleteMapping("/summaries/{videoSummaryId}")
+    @ResponseStatus(HttpStatus.OK)
+    public Response<?> deleteVideoSummary(@PathVariable Long videoSummaryId) {
+        log.info("Deleting video summary with ID = {}", videoSummaryId);
+        videoSummaryService.deleteVideoSummary(videoSummaryId);
+        return Response.createSuccess("숏폼 삭제 완료");
+    }
 }
