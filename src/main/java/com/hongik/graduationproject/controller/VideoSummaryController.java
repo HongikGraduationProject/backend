@@ -86,4 +86,13 @@ public class VideoSummaryController {
         videoSummaryService.deleteVideoSummary(videoSummaryId);
         return Response.createSuccess("숏폼 삭제 완료");
     }
+
+    @Operation(summary = "삭제된 숏폼 목록 조회", description = "삭제된 모든 숏폼의 목록 조회를 위한 api")
+    @ApiResponse(content = @Content(schema = @Schema(implementation = VideoSummaryListResponse.class)))
+    @GetMapping("/summaries/deleted")
+    @ResponseStatus(HttpStatus.OK)
+    public Response<VideoSummaryListResponse> getAllDeletedVideoSummary() {
+        log.info("삭제된 숏폼 목록을 반환하는 중");
+        return Response.createSuccess(videoSummaryService.getAllDeletedVideoSummary());
+    }
 }

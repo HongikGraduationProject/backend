@@ -116,4 +116,13 @@ public class VideoSummaryService {
         videoSummary.markAsDeleted();
         videoSummaryRepository.save(videoSummary);
     }
+
+    @Transactional
+    public VideoSummaryListResponse getAllDeletedVideoSummary(){
+        List<VideoSummaryResponse> deletedSummaryList = videoSummaryRepository.findAllByIsDeletedTrue()
+                .stream()
+                .map(VideoSummaryResponse::new)
+                .toList();
+        return new VideoSummaryListResponse(deletedSummaryList);
+    }
 }

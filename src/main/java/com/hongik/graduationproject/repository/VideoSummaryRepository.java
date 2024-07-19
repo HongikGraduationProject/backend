@@ -19,4 +19,6 @@ public interface VideoSummaryRepository extends JpaRepository<VideoSummary, Long
             + "OR vs.summary LIKE CONCAT('%', :searchword, '%')"
             + "OR vs.keywords LIKE CONCAT('%', :searchword, '%')")
     List<Long> getAllVideoIdsBySearchWord(@Param("searchword") String searchWord);
+
+    List<VideoSummary> findAllByIsDeletedTrue();
 }
