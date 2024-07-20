@@ -79,7 +79,7 @@ public class VideoSummaryController {
 
     @Operation(summary = "숏폼 삭제", description = "사용자가 원하는 숏폼 삭제하는 메소드")
     @ApiResponse(content = @Content(schema = @Schema(implementation = Response.class)))
-    @DeleteMapping("/summaries/{videoSummaryId}")
+    @DeleteMapping("/summaries/delete/{videoSummaryId}")
     @ResponseStatus(HttpStatus.OK)
     public Response<?> deleteVideoSummary(@PathVariable Long videoSummaryId) {
         log.info("Deleting video summary with ID = {}", videoSummaryId);
@@ -98,7 +98,7 @@ public class VideoSummaryController {
 
     @Operation(summary = "삭제된 숏폼 복구", description = "삭제된 숏폼을 복구하는 메소드")
     @ApiResponse(content = @Content(schema = @Schema(implementation = Response.class)))
-    @PatchMapping("/summaries/{videoSummaryId}")
+    @PatchMapping("/summaries/restore/{videoSummaryId}")
     @ResponseStatus(HttpStatus.OK)
     public Response<?> restoreVideoSummary(@PathVariable Long videoSummaryId) {
         log.info("Restoring deleted video summary with ID = {}", videoSummaryId);
