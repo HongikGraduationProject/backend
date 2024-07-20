@@ -17,6 +17,7 @@ public enum ErrorCode {
     CATEGORY_NOT_EXIST(HttpStatus.NOT_FOUND, "카테고리를 찾을 수 없습니다."),
     USER_ALREADY_EXISTS(HttpStatus.CONFLICT, "이미 가입한 사용자입니다."),
     SUBCATEGORY_ALREADY_EXISTS(HttpStatus.CONFLICT, "이미 존재하는 서브 카테고리입니다."),
+    VIDEO_SUMMARY_ALREADY_DELETED(HttpStatus.BAD_REQUEST, "사용자가 이미 해당 영상을 삭제 요청했습니다."),
 
     // JWT 관련 에러
     JWT_NOT_EXISTS(HttpStatus.UNAUTHORIZED, "요청에 JWT가 존재하지 않습니다."),

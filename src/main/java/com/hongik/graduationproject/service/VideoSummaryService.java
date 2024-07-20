@@ -113,6 +113,10 @@ public class VideoSummaryService {
         VideoSummary videoSummary = videoSummaryRepository.findById(videoSummaryId)
                 .orElseThrow(() -> new AppException(ErrorCode.VIDEO_SUMMARY_NOT_FOUND));
 
+        if (videoSummary.isDeleted()) {
+            throw new AppException(ErrorCode.VIDEO_SUMMARY_ALREADY_DELETED);
+        }
+
         videoSummary.markAsDeleted();
         videoSummaryRepository.save(videoSummary);
     }
