@@ -11,6 +11,8 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface VideoSummaryCategoryRepository extends JpaRepository<VideoSummaryCategory, Long> {
+
+    @Query("SELECT vsc FROM VideoSummaryCategory vsc WHERE vsc.category = :category AND vsc.videoSummary.isDeleted = false")
     List<VideoSummaryCategory> findAllByCategory(Category category);
 
     @Query("select vsc " +
@@ -25,4 +27,5 @@ public interface VideoSummaryCategoryRepository extends JpaRepository<VideoSumma
             "WHERE vsc.category.user.id = :userId " +
             "AND vsc.videoSummary.videoCode = :videoCode")
     boolean existsByVideoCodeAndUserId(String videoCode, Long userId);
+
 }
