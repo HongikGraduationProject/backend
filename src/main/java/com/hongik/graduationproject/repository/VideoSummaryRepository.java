@@ -23,4 +23,7 @@ public interface VideoSummaryRepository extends JpaRepository<VideoSummary, Long
     List<Long> getAllVideoIdsBySearchWord(@Param("searchword") String searchWord);
 
     List<VideoSummary> findAllByIsDeletedTrue();
+
+    @Query("SELECT vs FROM VideoSummary vs WHERE vs.id = :videoSummaryId AND vs.isDeleted = true")
+    Optional<VideoSummary> findDeletedById(@Param("videoSummaryId") Long videoSummaryId);
 }

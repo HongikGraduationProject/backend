@@ -95,4 +95,14 @@ public class VideoSummaryController {
         log.info("삭제된 숏폼 목록을 반환하는 중");
         return Response.createSuccess(videoSummaryService.getAllDeletedVideoSummary());
     }
+
+    @Operation(summary = "삭제된 숏폼 복구", description = "삭제된 숏폼을 복구하는 메소드")
+    @ApiResponse(content = @Content(schema = @Schema(implementation = Response.class)))
+    @PatchMapping("/summaries/{videoSummaryId}")
+    @ResponseStatus(HttpStatus.OK)
+    public Response<?> restoreVideoSummary(@PathVariable Long videoSummaryId) {
+        log.info("Restoring deleted video summary with ID = {}", videoSummaryId);
+        videoSummaryService.restoreVideoSummary(videoSummaryId);
+        return Response.createSuccess("숏폼 복구 완료");
+    }
 }

@@ -129,4 +129,13 @@ public class VideoSummaryService {
                 .toList();
         return new VideoSummaryListResponse(deletedSummaryList);
     }
+
+    @Transactional
+    public void restoreVideoSummary(Long videoSummaryId) {
+        VideoSummary videoSummary = videoSummaryRepository.findDeletedById(videoSummaryId)
+                .orElseThrow(() -> new AppException(ErrorCode.VIDEO_SUMMARY_NOT_FOUND));
+
+        videoSummary.restore();
+        videoSummaryRepository.save(videoSummary);
+    }
 }
