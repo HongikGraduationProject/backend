@@ -66,7 +66,7 @@ public class VideoSummaryService {
     }
 
     // 무조건 중복허용이 안되는 로직
-    public VideoSummaryDto getVideoSummaryById(Long videoSummaryId, Long userId) {
+    public VideoSummaryDto getSummaryByVideoSummaryId(Long videoSummaryId, Long userId) {
         VideoSummary videoSummary = videoSummaryRepository.getReferenceById(videoSummaryId);
         User user = userRepository.getReferenceById(userId);
         VideoSummaryCategory videoSummaryCategory = videoSummaryCategoryRepository.findByVideoSummaryAndUser(videoSummary, user);

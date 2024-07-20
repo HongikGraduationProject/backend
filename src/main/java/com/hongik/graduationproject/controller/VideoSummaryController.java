@@ -56,7 +56,7 @@ public class VideoSummaryController {
                                                                 @AuthenticationPrincipal Long userId
                                                                 ) {
         log.info("summary requested videoSummaryId = {}", videoSummaryId);
-        return Response.createSuccess(videoSummaryService.getVideoSummaryById(videoSummaryId, userId));
+        return Response.createSuccess(videoSummaryService.getSummaryByVideoSummaryId(videoSummaryId, userId));
     }
 
     @Operation(summary = "영상 요약 목록 조회", description = "categoryId로 영상 요약 목록 조회를 위한 메소드")
