@@ -56,7 +56,7 @@ public class VideoSummaryController {
                                                                 @AuthenticationPrincipal Long userId
                                                                 ) {
         log.info("summary requested videoSummaryId = {}", videoSummaryId);
-        return Response.createSuccess(videoSummaryService.getVideoSummaryById(videoSummaryId, userId));
+        return Response.createSuccess(videoSummaryService.getSummaryByVideoSummaryId(videoSummaryId, userId));
     }
 
     @Operation(summary = "영상 요약 목록 조회", description = "categoryId로 영상 요약 목록 조회를 위한 메소드")
@@ -75,5 +75,34 @@ public class VideoSummaryController {
         List<Long> videoIds = videoSummaryService.getAllVideoIdsBySearchWord(searchWord);
         log.info("검색어 '{}' 에 대한 모든 videoIds 조회 결과: {}", searchWord, videoIds);
         return Response.createSuccess(videoIds).getData();
+    }
+
+    @Operation(summary = "숏폼 삭제", description = "사용자가 원하는 숏폼 삭제하는 메소드")
+    @ApiResponse(content = @Content(schema = @Schema(implementation = Response.class)))
+    @DeleteMapping("/summaries/delete/{videoSummaryId}")
+    @ResponseStatus(HttpStatus.OK)
+    public Response<?> deleteVideoSummary(@PathVariable Long videoSummaryId) {
+        log.info("Deleting video summary with ID = {}", videoSummaryId);
+        videoSummaryService.deleteVideoSummary(videoSummaryId);
+        return Response.createSuccess("숏폼 삭제 완료");
+    }
+
+    @Operation(summary = "삭제된 숏폼 목록 조회", description = "삭제된 모든 숏폼의 목록 조회를 위한 api")
+    @ApiResponse(content = @Content(schema = @Schema(implementation = VideoSummaryListResponse.class)))
+    @GetMapping("/summaries/deleted")
+    @ResponseStatus(HttpStatus.OK)
+    public Response<VideoSummaryListResponse> getAllDeletedVideoSummary() {
+        log.info("삭제된 숏폼 목록을 반환하는 중");
+        return Response.createSuccess(videoSummaryService.getAllDeletedVideoSummary());
+    }
+
+    @Operation(summary = "삭제된 숏폼 복구", description = "삭제된 숏폼을 복구하는 메소드")
+    @ApiResponse(content = @Content(schema = @Schema(implementation = Response.class)))
+    @PatchMapping("/summaries/restore/{videoSummaryId}")
+    @ResponseStatus(HttpStatus.OK)
+    public Response<?> restoreVideoSummary(@PathVariable Long videoSummaryId) {
+        log.info("Restoring deleted video summary with ID = {}", videoSummaryId);
+        videoSummaryService.restoreVideoSummary(videoSummaryId);
+        return Response.createSuccess("숏폼 복구 완료");
     }
 }

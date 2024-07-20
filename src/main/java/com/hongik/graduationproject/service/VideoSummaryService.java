@@ -66,7 +66,7 @@ public class VideoSummaryService {
     }
 
     // 무조건 중복허용이 안되는 로직
-    public VideoSummaryDto getVideoSummaryById(Long videoSummaryId, Long userId) {
+    public VideoSummaryDto getSummaryByVideoSummaryId(Long videoSummaryId, Long userId) {
         VideoSummary videoSummary = videoSummaryRepository.getReferenceById(videoSummaryId);
         User user = userRepository.getReferenceById(userId);
         VideoSummaryCategory videoSummaryCategory = videoSummaryCategoryRepository.findByVideoSummaryAndUser(videoSummary, user);
@@ -106,5 +106,36 @@ public class VideoSummaryService {
     // 검색어를 포함하는 video id들을 조회하는 메서드
     public List<Long> getAllVideoIdsBySearchWord(String searchWord) {
         return videoSummaryRepository.getAllVideoIdsBySearchWord(searchWord);
+    }
+
+    @Transactional
+    public void deleteVideoSummary(Long videoSummaryId) {
+        VideoSummary videoSummary = videoSummaryRepository.findById(videoSummaryId)
+                .orElseThrow(() -> new AppException(ErrorCode.VIDEO_SUMMARY_NOT_FOUND));
+
+        if (videoSummary.isDeleted()) {
+            throw new AppException(ErrorCode.VIDEO_SUMMARY_ALREADY_DELETED);
+        }
+
+        videoSummary.markAsDeleted();
+        videoSummaryRepository.save(videoSummary);
+    }
+
+    @Transactional
+    public VideoSummaryListResponse getAllDeletedVideoSummary(){
+        List<VideoSummaryResponse> deletedSummaryList = videoSummaryRepository.findAllByIsDeletedTrue()
+                .stream()
+                .map(VideoSummaryResponse::new)
+                .toList();
+        return new VideoSummaryListResponse(deletedSummaryList);
+    }
+
+    @Transactional
+    public void restoreVideoSummary(Long videoSummaryId) {
+        VideoSummary videoSummary = videoSummaryRepository.findDeletedById(videoSummaryId)
+                .orElseThrow(() -> new AppException(ErrorCode.VIDEO_SUMMARY_NOT_FOUND));
+
+        videoSummary.restore();
+        videoSummaryRepository.save(videoSummary);
     }
 }

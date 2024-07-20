@@ -5,6 +5,7 @@ import com.hongik.graduationproject.domain.entity.global.BaseTimeEntity;
 import com.hongik.graduationproject.enums.MainCategory;
 import com.hongik.graduationproject.enums.Platform;
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import lombok.*;
 
 import java.util.List;
@@ -33,6 +34,10 @@ public class VideoSummary extends BaseTimeEntity {
     private Platform platform;
     @Enumerated(EnumType.STRING)
     private MainCategory generatedMainCategory;
+    @Column(name = "is_deleted")
+    private boolean isDeleted = false;
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
 
     public static VideoSummary of(VideoSummaryMessage videoSummaryMessage) {
         return VideoSummary
@@ -59,5 +64,15 @@ public class VideoSummary extends BaseTimeEntity {
         } else {
             return "";
         }
+    }
+
+    public void markAsDeleted() {
+        this.isDeleted = true;
+        this.deletedAt = LocalDateTime.now();
+    }
+
+    public void restore() {
+        this.isDeleted = false;
+        this.deletedAt = null;
     }
 }
