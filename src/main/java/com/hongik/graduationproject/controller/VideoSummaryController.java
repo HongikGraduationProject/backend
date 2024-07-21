@@ -53,19 +53,21 @@ public class VideoSummaryController {
     public Response<VideoSummaryDto> getSummaryByVideoSummaryId(@PathVariable(name = "videoSummaryId")
                                                                 @Parameter(name = "videoSummaryId", description = "영상 요약 상태에서 응답받은 videoSummaryId", example = "3")
                                                                 Long videoSummaryId,
-                                                                @AuthenticationPrincipal Long userId
-                                                                ) {
+                                                                @AuthenticationPrincipal Long userId) {
         log.info("summary requested videoSummaryId = {}", videoSummaryId);
         return Response.createSuccess(videoSummaryService.getSummaryByVideoSummaryId(videoSummaryId, userId));
     }
 
     @Operation(summary = "영상 요약 목록 조회", description = "categoryId로 영상 요약 목록 조회를 위한 메소드")
     @ApiResponse(content = @Content(schema = @Schema(implementation = VideoSummaryListResponse.class)))
-    @GetMapping("/summaries")
+    @GetMapping("/summaries/list/{categoryId}")
     @ResponseStatus(HttpStatus.OK)
-    public Response<VideoSummaryListResponse> getAllSummariesByCategoryId(@Parameter(required = true) @RequestParam Long categoryId) {
+    public Response<VideoSummaryListResponse> getAllSummariesByCategoryId(@PathVariable(name = "categoryId")
+                                                                          @Parameter(name = "categoryId", description = "영상 요약 목록을 조회하려는 categoryId", example = "1")
+                                                                          Long categoryId,
+                                                                          @AuthenticationPrincipal Long userId) {
         log.info("get all summaries for categoryId = {}", categoryId);
-        return Response.createSuccess(videoSummaryService.getAllSummariesByCategoryId(categoryId));
+        return Response.createSuccess(videoSummaryService.getAllSummariesByCategoryId(categoryId, userId));
     }
 
     @Operation(summary = "검색 결과 조회", description = "제목 또는 내용에서 검색어를 포함하는 숏폼 조회를 위한 API")
