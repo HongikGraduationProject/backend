@@ -71,10 +71,10 @@ public class VideoSummaryController {
     @Operation(summary = "검색 결과 조회", description = "제목 또는 내용에서 검색어를 포함하는 숏폼 조회를 위한 API")
     @ApiResponse(content = @Content(schema = @Schema(implementation = Response.class)))
     @GetMapping("/summaries/search")
-    public List<Long> getAllVideoIdsBySearchWord(@Parameter(name = "searchWord", description = "검색어" ) String searchWord){
+    public Response<List<Long>> getAllVideoIdsBySearchWord(@Parameter(name = "searchWord", description = "검색어" ) String searchWord){
         List<Long> videoIds = videoSummaryService.getAllVideoIdsBySearchWord(searchWord);
         log.info("검색어 '{}' 에 대한 모든 videoIds 조회 결과: {}", searchWord, videoIds);
-        return Response.createSuccess(videoIds).getData();
+        return Response.createSuccess(videoIds);
     }
 
     @Operation(summary = "숏폼 삭제", description = "사용자가 원하는 숏폼 삭제하는 메소드")

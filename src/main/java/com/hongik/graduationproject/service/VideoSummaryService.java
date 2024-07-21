@@ -105,11 +105,7 @@ public class VideoSummaryService {
 
     // 검색어를 포함하는 video id들을 조회하는 메서드
     public List<Long> getAllVideoIdsBySearchWord(String searchWord) {
-        List<Long> videoIds = videoSummaryRepository.getAllVideoIdsBySearchWord(searchWord);
-        if (videoIds.isEmpty()) {
-            throw new AppException(ErrorCode.VIDEO_SUMMARY_NOT_FOUND_BY_SEARCH_WORD);
-        }
-        return videoIds;
+        return videoSummaryRepository.getAllVideoIdsBySearchWord(searchWord);
     }
 
     @Transactional
