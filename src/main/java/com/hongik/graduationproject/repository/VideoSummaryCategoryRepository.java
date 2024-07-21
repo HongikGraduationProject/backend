@@ -12,8 +12,12 @@ import java.util.List;
 
 public interface VideoSummaryCategoryRepository extends JpaRepository<VideoSummaryCategory, Long> {
 
-    @Query("SELECT vsc FROM VideoSummaryCategory vsc WHERE vsc.category = :category AND vsc.videoSummary.isDeleted = false")
-    List<VideoSummaryCategory> findAllByCategory(Category category);
+    @Query("SELECT vsc " +
+            "FROM VideoSummaryCategory vsc " +
+            "WHERE vsc.category = :category " +
+            "AND vsc.category.user = :user " +
+            "AND vsc.videoSummary.isDeleted = false")
+    List<VideoSummaryCategory> findAllByCategory(Category category, User user);
 
     @Query("select vsc " +
             "from VideoSummaryCategory vsc " +

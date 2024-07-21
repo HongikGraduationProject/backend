@@ -95,9 +95,10 @@ public class VideoSummaryService {
         return VideoSummaryStatusResponse.from(statusCache);
     }
 
-    public VideoSummaryListResponse getAllSummariesByCategoryId(Long categoryId) {
+    public VideoSummaryListResponse getAllSummariesByCategoryId(Long categoryId, Long userId) {
         Category category = categoryRepository.getReferenceById(categoryId);
-        List<VideoSummaryResponse> videoSummaryResponseList = videoSummaryCategoryRepository.findAllByCategory(category).stream()
+        User user = userRepository.getReferenceById(userId);
+        List<VideoSummaryResponse> videoSummaryResponseList = videoSummaryCategoryRepository.findAllByCategory(category,user).stream()
                 .map(videoSummaryCategory -> new VideoSummaryResponse(videoSummaryCategory.getVideoSummary()))
                 .toList();
         return new VideoSummaryListResponse(videoSummaryResponseList);
