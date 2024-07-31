@@ -139,4 +139,24 @@ public class VideoSummaryService {
         videoSummary.restore();
         videoSummaryRepository.save(videoSummary);
     }
+
+    @Transactional
+    public void changeCategory(Long videoSummaryId, Long newCategoryId) {
+        VideoSummary videoSummary = videoSummaryRepository.findById(videoSummaryId)
+                .orElseThrow(() -> new AppException(ErrorCode.VIDEO_SUMMARY_NOT_FOUND));
+
+        // 카테고리 찾기
+        Category category = categoryRepository.findById(newCategoryId)
+                .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXIST));
+
+        // 비디오 요약과 카테고리 매핑 찾기
+        VideoSummaryCategory videoSummaryCategory = videoSummaryCategoryRepository.findByVideoSummary(videoSummary);
+        if (videoSummaryCategory == null) {
+            throw new AppException(ErrorCode.VIDEO_SUMMARY_CATEGORY_NOT_FOUND);
+        }
+
+        // 카테고리 옮기기
+        VideoSummaryCategory updatedCategory = videoSummaryCategory.updateCategory(category);
+        videoSummaryCategoryRepository.save(updatedCategory);
+    }
 }
