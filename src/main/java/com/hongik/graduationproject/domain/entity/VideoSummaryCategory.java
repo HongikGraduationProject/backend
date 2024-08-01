@@ -23,4 +23,8 @@ public class VideoSummaryCategory extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "video_summary_id")
     VideoSummary videoSummary;
+
+    public void updateCategory(Category newCategory) {
+        this.category = newCategory;
+    }
 }

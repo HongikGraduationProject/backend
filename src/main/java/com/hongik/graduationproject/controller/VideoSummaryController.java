@@ -107,4 +107,18 @@ public class VideoSummaryController {
         videoSummaryService.restoreVideoSummary(videoSummaryId);
         return Response.createSuccess("숏폼 복구 완료");
     }
+
+    @Operation(summary = "숏폼 카테고리 옮기기", description = "숏폼의 카테고리 (메인, 서브)를 옮기는 메소드")
+    @ApiResponse(content = @Content(schema = @Schema(implementation = Response.class)))
+    @PatchMapping("/summaries/changeCategory/{videoSummaryId}")
+    @ResponseStatus(HttpStatus.OK)
+    public Response<?> changeCategory(@PathVariable Long videoSummaryId,
+                                      @AuthenticationPrincipal Long userId,
+                                      @RequestParam Long newCategoryId) {
+        log.info("Change category of video summary with ID = {}", videoSummaryId);
+        log.info("카테고리 옮기기를 요청한 userId = {}", userId);
+        log.info("옮기려는 카테고리 Id = {}", newCategoryId);
+        videoSummaryService.changeCategory(videoSummaryId, userId, newCategoryId);
+        return Response.createSuccess("숏폼 카테고리 옮기기 완료");
+    }
 }
