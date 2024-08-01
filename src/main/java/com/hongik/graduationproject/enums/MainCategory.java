@@ -28,12 +28,5 @@ public enum MainCategory {
             }
         }
         return OTHER;
-//        if (name == null) {
-//            return MainCategory.OTHER;
-//        }
-//        return Arrays.stream(values())
-//                .filter(accountStatus -> accountStatus.name.equals(name))
-//                .findAny()
-//                .orElseThrow(RuntimeException::new);
     }
 }
