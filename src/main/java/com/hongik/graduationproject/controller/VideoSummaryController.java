@@ -113,9 +113,12 @@ public class VideoSummaryController {
     @PatchMapping("/summaries/changeCategory/{videoSummaryId}")
     @ResponseStatus(HttpStatus.OK)
     public Response<?> changeCategory(@PathVariable Long videoSummaryId,
-                                      @RequestParam Long categoryId) {
+                                      @AuthenticationPrincipal Long userId,
+                                      @RequestParam Long newCategoryId) {
         log.info("Change category of video summary with ID = {}", videoSummaryId);
-        videoSummaryService.changeCategory(videoSummaryId, categoryId);
+        log.info("카테고리 옮기기를 요청한 userId = {}", userId);
+        log.info("옮기려는 카테고리 Id = {}", newCategoryId);
+        videoSummaryService.changeCategory(videoSummaryId, userId, newCategoryId);
         return Response.createSuccess("숏폼 카테고리 옮기기 완료");
     }
 }

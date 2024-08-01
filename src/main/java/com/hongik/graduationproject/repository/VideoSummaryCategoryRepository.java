@@ -25,11 +25,6 @@ public interface VideoSummaryCategoryRepository extends JpaRepository<VideoSumma
             "and vsc.videoSummary = :videoSummary")
     VideoSummaryCategory findByVideoSummaryAndUser(VideoSummary videoSummary, User user);
 
-    @Query("select vsc " +
-            "from VideoSummaryCategory vsc " +
-            "where vsc.videoSummary = :videoSummary ")
-    VideoSummaryCategory findByVideoSummary(VideoSummary videoSummary);
-
     @EntityGraph(attributePaths = {"category", "category.user", "videoSummary"})
     @Query("SELECT COUNT(vsc) > 0 " +
             "FROM VideoSummaryCategory vsc " +

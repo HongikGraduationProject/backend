@@ -24,12 +24,7 @@ public class VideoSummaryCategory extends BaseTimeEntity {
     @JoinColumn(name = "video_summary_id")
     VideoSummary videoSummary;
 
-
-    public VideoSummaryCategory updateCategory(Category newCategory) {
-        return VideoSummaryCategory.builder()
-                .id(this.id)
-                .category(newCategory)
-                .videoSummary(this.videoSummary)
-                .build();
+    public void updateCategory(Category newCategory) {
+        this.category = newCategory;
     }
 }
