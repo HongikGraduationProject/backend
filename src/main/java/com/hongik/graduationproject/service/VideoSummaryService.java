@@ -65,7 +65,6 @@ public class VideoSummaryService {
                 summaryStatusCacheRepository.existsByVideoCodeAndUserId(videoCode, userId);
     }
 
-    // 무조건 중복허용이 안되는 로직
     public VideoSummaryDto getSummaryByVideoSummaryId(Long videoSummaryId, Long userId) {
         VideoSummary videoSummary = videoSummaryRepository.getReferenceById(videoSummaryId);
         User user = userRepository.getReferenceById(userId);
