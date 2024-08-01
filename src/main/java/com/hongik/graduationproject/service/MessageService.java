@@ -1,8 +1,8 @@
 package com.hongik.graduationproject.service;
 
+import com.hongik.graduationproject.domain.dto.video.Coordinate;
 import com.hongik.graduationproject.domain.dto.video.VideoSummaryInitiateMessage;
 import com.hongik.graduationproject.domain.dto.video.VideoSummaryMessage;
-import com.hongik.graduationproject.domain.entity.Category;
 import com.hongik.graduationproject.domain.entity.VideoSummary;
 import com.hongik.graduationproject.domain.entity.cache.VideoSummaryStatusCache;
 import com.hongik.graduationproject.enums.MainCategory;
@@ -29,6 +29,7 @@ public class MessageService {
     private final RabbitTemplate rabbitTemplate;
     private final VideoSummaryStatusCacheRepository videoSummaryStatusCacheRepository;
     private final VideoSummaryRepository videoSummaryRepository;
+    private final GeocodeService geocodeService;
 
     public void sendVideoUrlToQueue(VideoSummaryInitiateMessage videoSummaryInitiateMessage) {
         log.info("Sent url: {}, videoCode: {}", videoSummaryInitiateMessage.getUrl(), videoSummaryInitiateMessage.getVideoCode());
@@ -41,6 +42,14 @@ public class MessageService {
         log.info("Received message: {}", videoSummaryMessage.toString());
 
         VideoSummary savedVideoSummary = videoSummaryRepository.save(VideoSummary.of(videoSummaryMessage));
+
+        Coordinate coordinate = null;
+        if (savedVideoSummary.getAddress() != null && !savedVideoSummary.getAddress().isEmpty()) {
+           coordinate = geocodeService.getCoordinateByAddress(savedVideoSummary.getAddress());
+            System.out.println("savedVideoSummary = " + savedVideoSummary.getAddress());
+        }
+        savedVideoSummary.updateLatitude(coordinate.getLatitude());
+        savedVideoSummary.updateLongitude(coordinate.getLongitude());
 
         updateStatusCache(videoSummaryMessage, savedVideoSummary);
     }

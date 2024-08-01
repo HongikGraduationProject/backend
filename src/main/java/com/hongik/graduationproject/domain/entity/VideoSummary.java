@@ -38,6 +38,8 @@ public class VideoSummary extends BaseTimeEntity {
     private boolean isDeleted = false;
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
+    private Double latitude;
+    private Double longitude;
 
     public static VideoSummary of(VideoSummaryMessage videoSummaryMessage) {
         return VideoSummary
@@ -74,5 +76,13 @@ public class VideoSummary extends BaseTimeEntity {
     public void restore() {
         this.isDeleted = false;
         this.deletedAt = null;
+    }
+
+    public void updateLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public void updateLongitude(Double longitude) {
+        this.longitude = longitude;
     }
 }

@@ -46,3 +46,9 @@ rabbitmq:
   url.routing.key: url.key
   summary.queue.name: summary.queue
   summary.routing.key: summary.key
+
+naver:
+  geocode:
+    url: https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode
+    id: ${X-NCP-APIGW-API-KEY-ID}
+    secret: ${X-NCP-APIGW-API-KEY}
