@@ -1,5 +1,6 @@
 package com.hongik.graduationproject.repository;
 
+import com.hongik.graduationproject.domain.dto.category.MainCategoryRankingResponse;
 import com.hongik.graduationproject.domain.dto.category.SubCategoryResponse;
 import com.hongik.graduationproject.domain.entity.Category;
 import com.hongik.graduationproject.domain.entity.User;
@@ -30,4 +31,14 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     List<SubCategoryResponse> findAllSubCategoryByUser(User user);
 
     boolean existsByMainCategoryAndSubCategory(MainCategory mainCategory, String subCategory);
+
+    @Query("SELECT new com.hongik.graduationproject.domain.dto.category.MainCategoryRankingResponse(" +
+            "c.mainCategory, " +
+            "ROUND((CAST(COUNT(v.id) AS double) / (SELECT COUNT(v1.id) FROM VideoSummaryCategory v1)) * 100, 1), " +
+            "CAST(COUNT(v.id) AS integer)) " +
+            "FROM Category c LEFT JOIN VideoSummaryCategory v ON c.id = v.category.id " +
+            "WHERE c.user = :user " +
+            "GROUP BY c.mainCategory " +
+            "ORDER BY COUNT(v.id) DESC LIMIT 2")
+    List<MainCategoryRankingResponse> findMainCategoryRankingByUser(User user);
 }

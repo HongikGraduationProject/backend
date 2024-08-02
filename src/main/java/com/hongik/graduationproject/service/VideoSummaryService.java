@@ -54,7 +54,7 @@ public class VideoSummaryService {
             return new VideoSummaryInitiateResponse(videoCode);
         }
 
-        messageService.sendVideoUrlToQueue(new VideoSummaryInitiateMessage(summaryInitiateRequest.getUrl(), videoCode, platform));
+        //messageService.sendVideoUrlToQueue(new VideoSummaryInitiateMessage(summaryInitiateRequest.getUrl(), videoCode, platform));
 
         summaryStatusCacheRepository.save(VideoSummaryStatusCache.of(summaryInitiateRequest, userId, videoCode));
         return new VideoSummaryInitiateResponse(videoCode);

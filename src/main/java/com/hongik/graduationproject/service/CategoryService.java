@@ -1,5 +1,7 @@
 package com.hongik.graduationproject.service;
 
+import com.hongik.graduationproject.domain.dto.category.MainCategoryRankingListResponse;
+import com.hongik.graduationproject.domain.dto.category.MainCategoryRankingResponse;
 import com.hongik.graduationproject.domain.dto.category.SubCategoryListResponse;
 import com.hongik.graduationproject.domain.dto.category.SubCategoryResponse;
 import com.hongik.graduationproject.domain.entity.Category;
@@ -53,5 +55,14 @@ public class CategoryService {
                 .build();
 
         categoryRepository.save(category);
+    }
+
+    @Transactional
+    public MainCategoryRankingListResponse getMainCategoryRanking(Long userId) {
+        User user = userRepository.getReferenceById(userId);
+        List<MainCategoryRankingResponse> rankingList = categoryRepository.findMainCategoryRankingByUser(user);
+
+        log.info("사용자 ID {}의 메인 카테고리 순위 조회", userId);
+        return new MainCategoryRankingListResponse(rankingList);
     }
 }
