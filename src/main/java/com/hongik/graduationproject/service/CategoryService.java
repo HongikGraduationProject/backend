@@ -11,6 +11,7 @@ import com.hongik.graduationproject.exception.AppException;
 import com.hongik.graduationproject.exception.ErrorCode;
 import com.hongik.graduationproject.repository.CategoryRepository;
 import com.hongik.graduationproject.repository.UserRepository;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -60,9 +61,25 @@ public class CategoryService {
     @Transactional
     public MainCategoryRankingListResponse getMainCategoryRanking(Long userId) {
         User user = userRepository.getReferenceById(userId);
-        List<MainCategoryRankingResponse> rankingList = categoryRepository.findMainCategoryRankingByUser(user);
+        List<Object[]> categoryCounts = categoryRepository.countMainCategoriesByUser(user);
+
+        int totalSummaries = categoryCounts.stream()
+                .mapToInt(count -> ((Long) count[1]).intValue())
+                .sum();
+
+        List<MainCategoryRankingResponse> rankingList = categoryCounts.stream()
+                .map(count -> createRankingResponse(count, totalSummaries))
+                .filter(ranking -> ranking.summaryCount() > 0)  // summaryCount가 0인 경우를 필터링
+                .collect(Collectors.toList());
 
         log.info("사용자 ID {}의 메인 카테고리 순위 조회", userId);
         return new MainCategoryRankingListResponse(rankingList);
+    }
+
+    private MainCategoryRankingResponse createRankingResponse(Object[] count, int totalSummaries) {
+        MainCategory mainCategory = (MainCategory) count[0];
+        int summaryCount = ((Long) count[1]).intValue();
+        double percentage = totalSummaries > 0 ? (summaryCount / (double) totalSummaries) * 100 : 0.0;
+        return new MainCategoryRankingResponse(mainCategory, percentage, summaryCount);
     }
 }
