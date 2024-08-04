@@ -36,5 +36,5 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
             "WHERE c.user = :user " +
             "GROUP BY c.mainCategory " +
             "ORDER BY COUNT(v.id) DESC LIMIT 2")
-    List<Object[]> countMainCategoriesByUser(User user);
+    List<Object[]> getSummaryCountOfMainCategoryByUser(User user);
 }

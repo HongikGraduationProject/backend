@@ -61,7 +61,7 @@ public class CategoryService {
     @Transactional
     public MainCategoryRankingListResponse getMainCategoryRanking(Long userId) {
         User user = userRepository.getReferenceById(userId);
-        List<Object[]> categoryCounts = categoryRepository.countMainCategoriesByUser(user);
+        List<Object[]> categoryCounts = categoryRepository.getSummaryCountOfMainCategoryByUser(user);
 
         int totalSummaries = categoryCounts.stream()
                 .mapToInt(count -> ((Long) count[1]).intValue())
