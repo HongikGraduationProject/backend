@@ -49,7 +49,7 @@ public class CategoryController {
     }
 
     @Operation(summary = "메인 카테고리 랭킹 가져오기", description = "숏폼이 많이 분류된 메인 카테고리 1,2위를 가져오는 메소드")
-    @ApiResponse(content = @Content(schema = @Schema(implementation = Response.class)))
+    @ApiResponse(content = @Content(schema = @Schema(implementation = MainCategoryRankingListResponse.class)))
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/categories/rankings")
     public Response<MainCategoryRankingListResponse> getMainCategoryRanking(@AuthenticationPrincipal Long userId) {
