@@ -159,4 +159,13 @@ public class VideoSummaryService {
         videoSummaryCategory.updateCategory(newCategory);
         videoSummaryCategoryRepository.save(videoSummaryCategory);
     }
+
+    public VideoSummaryMainPageListResponse getAllSummariesByUserId(Long userId) {
+        User user = userRepository.getReferenceById(userId);
+        List<VideoSummaryMainPageResponse> videoSummaryList = videoSummaryCategoryRepository.findAllByUser(user).stream()
+            .map(VideoSummaryMainPageResponse::of)
+            .toList();
+
+        return new VideoSummaryMainPageListResponse(videoSummaryList);
+    }
 }

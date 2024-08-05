@@ -32,4 +32,10 @@ public interface VideoSummaryCategoryRepository extends JpaRepository<VideoSumma
             "AND vsc.videoSummary.videoCode = :videoCode")
     boolean existsByVideoCodeAndUserId(String videoCode, Long userId);
 
+    @EntityGraph(attributePaths = {"category", "videoSummary"})
+    @Query("SELECT vsc "
+        + "FROM VideoSummaryCategory vsc "
+        + "WHERE vsc.category.user = :user "
+        + "ORDER BY vsc.createdAt DESC")
+    List<VideoSummaryCategory> findAllByUser(User user);
 }
