@@ -7,8 +7,10 @@ import com.hongik.graduationproject.domain.entity.VideoSummary;
 import com.hongik.graduationproject.domain.entity.cache.VideoSummaryStatusCache;
 import com.hongik.graduationproject.enums.MainCategory;
 import com.hongik.graduationproject.repository.*;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
@@ -22,48 +24,50 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Service
 public class MessageService {
-    @Value("${rabbitmq.exchange.name}")
-    private String exchangeName;
-    @Value("${rabbitmq.url.routing.key}")
-    private String urlRoutingKey;
-    private final RabbitTemplate rabbitTemplate;
-    private final VideoSummaryStatusCacheRepository videoSummaryStatusCacheRepository;
-    private final VideoSummaryRepository videoSummaryRepository;
-    private final GeocodeService geocodeService;
+	@Value("${rabbitmq.exchange.name}")
+	private String exchangeName;
+	@Value("${rabbitmq.url.routing.key}")
+	private String urlRoutingKey;
+	private final RabbitTemplate rabbitTemplate;
+	private final VideoSummaryStatusCacheRepository videoSummaryStatusCacheRepository;
+	private final VideoSummaryRepository videoSummaryRepository;
+	private final GeocodeService geocodeService;
 
-    public void sendVideoUrlToQueue(VideoSummaryInitiateMessage videoSummaryInitiateMessage) {
-        log.info("Sent url: {}, videoCode: {}", videoSummaryInitiateMessage.getUrl(), videoSummaryInitiateMessage.getVideoCode());
-        rabbitTemplate.convertAndSend(exchangeName, urlRoutingKey, videoSummaryInitiateMessage);
-    }
+	public void sendVideoUrlToQueue(VideoSummaryInitiateMessage videoSummaryInitiateMessage) {
+		log.info("Sent url: {}, videoCode: {}", videoSummaryInitiateMessage.getUrl(),
+			videoSummaryInitiateMessage.getVideoCode());
+		rabbitTemplate.convertAndSend(exchangeName, urlRoutingKey, videoSummaryInitiateMessage);
+	}
 
-    @RabbitListener(queues = "${rabbitmq.summary.queue.name}")
-    @Transactional
-    public void receiveVideoUrlFromQueue(VideoSummaryMessage videoSummaryMessage) {
-        log.info("Received message: {}", videoSummaryMessage.toString());
+	@RabbitListener(queues = "${rabbitmq.summary.queue.name}")
+	@Transactional
+	public void receiveVideoUrlFromQueue(VideoSummaryMessage videoSummaryMessage) {
+		log.info("Received message: {}", videoSummaryMessage.toString());
 
-        VideoSummary savedVideoSummary = videoSummaryRepository.save(VideoSummary.of(videoSummaryMessage));
+		VideoSummary savedVideoSummary = videoSummaryRepository.save(VideoSummary.of(videoSummaryMessage));
 
-        Coordinate coordinate = null;
-        if (savedVideoSummary.getAddress() != null && !savedVideoSummary.getAddress().isEmpty()) {
-           coordinate = geocodeService.getCoordinateByAddress(savedVideoSummary.getAddress());
-            System.out.println("savedVideoSummary = " + savedVideoSummary.getAddress());
-        }
-        savedVideoSummary.updateLatitude(coordinate.getLatitude());
-        savedVideoSummary.updateLongitude(coordinate.getLongitude());
+		Coordinate coordinate = null;
+		if (savedVideoSummary.getAddress() != null && !savedVideoSummary.getAddress().isEmpty()) {
+			coordinate = geocodeService.getCoordinateByAddress(savedVideoSummary.getAddress());
 
-        updateStatusCache(videoSummaryMessage, savedVideoSummary);
-    }
+			savedVideoSummary.updateLatitude(coordinate.getLatitude());
+			savedVideoSummary.updateLongitude(coordinate.getLongitude());
+		}
 
-    private void updateStatusCache(VideoSummaryMessage videoSummaryMessage, VideoSummary savedVideoSummary) {
-        List<VideoSummaryStatusCache> statusCacheList = videoSummaryStatusCacheRepository.findAllByVideoCode(videoSummaryMessage.getVideoCode());
+		updateStatusCache(videoSummaryMessage, savedVideoSummary);
+	}
 
-        statusCacheList.forEach(cache -> {
-            cache.updateStatus("COMPLETE");
-            cache.updateVideoSummaryId(savedVideoSummary.getId());
-            cache.updateGeneratedMainCategory(MainCategory.find(videoSummaryMessage.getGeneratedMainCategoryName()));
-        });
+	private void updateStatusCache(VideoSummaryMessage videoSummaryMessage, VideoSummary savedVideoSummary) {
+		List<VideoSummaryStatusCache> statusCacheList = videoSummaryStatusCacheRepository.findAllByVideoCode(
+			videoSummaryMessage.getVideoCode());
 
-        videoSummaryStatusCacheRepository.saveAll(statusCacheList);
-    }
+		statusCacheList.forEach(cache -> {
+			cache.updateStatus("COMPLETE");
+			cache.updateVideoSummaryId(savedVideoSummary.getId());
+			cache.updateGeneratedMainCategory(MainCategory.find(videoSummaryMessage.getGeneratedMainCategoryName()));
+		});
+
+		videoSummaryStatusCacheRepository.saveAll(statusCacheList);
+	}
 
 }
