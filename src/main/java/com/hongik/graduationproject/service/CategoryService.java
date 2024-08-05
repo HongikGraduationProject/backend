@@ -1,5 +1,6 @@
 package com.hongik.graduationproject.service;
 
+import com.hongik.graduationproject.domain.MainCategoryCount;
 import com.hongik.graduationproject.domain.dto.category.MainCategoryRankingListResponse;
 import com.hongik.graduationproject.domain.dto.category.MainCategoryRankingResponse;
 import com.hongik.graduationproject.domain.dto.category.SubCategoryListResponse;
@@ -60,11 +61,10 @@ public class CategoryService {
 
     @Transactional
     public MainCategoryRankingListResponse getMainCategoryRanking(Long userId) {
-        User user = userRepository.getReferenceById(userId);
-        List<Object[]> categoryCounts = categoryRepository.getSummaryCountOfMainCategoryByUser(user);
+        List<MainCategoryCount> categoryCounts = categoryRepository.getSummaryCountOfMainCategoryByUser(userId);
 
         int totalSummaries = categoryCounts.stream()
-                .mapToInt(count -> ((Long) count[1]).intValue())
+                .mapToInt(count -> count.getCount().intValue())
                 .sum();
 
         List<MainCategoryRankingResponse> rankingList = categoryCounts.stream()
@@ -76,9 +76,9 @@ public class CategoryService {
         return new MainCategoryRankingListResponse(rankingList);
     }
 
-    private MainCategoryRankingResponse createRankingResponse(Object[] count, int totalSummaries) {
-        MainCategory mainCategory = (MainCategory) count[0];
-        int summaryCount = ((Long) count[1]).intValue();
+    private MainCategoryRankingResponse createRankingResponse(MainCategoryCount count, int totalSummaries) {
+        MainCategory mainCategory = MainCategory.valueOf(count.getMainCategory());
+        int summaryCount = count.getCount().intValue();
         double percentage = totalSummaries > 0 ? (summaryCount / (double) totalSummaries) * 100 : 0.0;
         return new MainCategoryRankingResponse(mainCategory, percentage, summaryCount);
     }
