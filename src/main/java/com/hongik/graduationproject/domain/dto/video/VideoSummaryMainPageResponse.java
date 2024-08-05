@@ -14,12 +14,14 @@ public class VideoSummaryMainPageResponse {
 	private String title;
 	private MainCategory mainCategory;
 	private LocalDateTime createdAt;
+	private Long videoSummaryId;
 
 	public static VideoSummaryMainPageResponse of(VideoSummaryCategory videoSummaryCategory) {
 		return new VideoSummaryMainPageResponse(
 			videoSummaryCategory.getVideoSummary().getTitle(),
 			videoSummaryCategory.getCategory().getMainCategory(),
-			videoSummaryCategory.getCreatedAt()
+			videoSummaryCategory.getCreatedAt(),
+			videoSummaryCategory.getVideoSummary().getId()
 		);
 	}
 }
