@@ -1,5 +1,6 @@
 package com.hongik.graduationproject.repository;
 
+import com.hongik.graduationproject.domain.MainCategoryCount;
 import com.hongik.graduationproject.domain.dto.category.SubCategoryResponse;
 import com.hongik.graduationproject.domain.entity.Category;
 import com.hongik.graduationproject.domain.entity.User;
@@ -30,4 +31,12 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     List<SubCategoryResponse> findAllSubCategoryByUser(User user);
 
     boolean existsByMainCategoryAndSubCategory(MainCategory mainCategory, String subCategory);
+
+    @Query(value = "SELECT c.main_category AS mainCategory, COUNT(vsc.video_summary_category_id) AS count " +
+            "FROM category c LEFT JOIN video_summary_category vsc ON c.category_id = vsc.category_id " +
+            "WHERE c.user_id = :userId " +
+            "GROUP BY c.main_category " +
+            "ORDER BY COUNT(vsc.video_summary_category_id) DESC " +
+            "LIMIT 2", nativeQuery = true)
+    List<MainCategoryCount> getSummaryCountOfMainCategoryByUser(Long userId);
 }

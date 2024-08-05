@@ -1,6 +1,7 @@
 package com.hongik.graduationproject.controller;
 
 import com.hongik.graduationproject.domain.dto.Response;
+import com.hongik.graduationproject.domain.dto.category.MainCategoryRankingListResponse;
 import com.hongik.graduationproject.domain.dto.category.SubCategoryCreateRequest;
 import com.hongik.graduationproject.domain.dto.category.SubCategoryListResponse;
 import com.hongik.graduationproject.enums.MainCategory;
@@ -45,5 +46,14 @@ public class CategoryController {
         categoryService.createSubCategory(mainCategory, request.subCategoryName(), userId);
         log.info("새롭게 생성된 서브 카테고리 = {}", request.subCategoryName());
         return Response.createSuccess("서브 카테고리 생성 완료");
+    }
+
+    @Operation(summary = "메인 카테고리 랭킹 가져오기", description = "숏폼이 많이 분류된 메인 카테고리 1,2위를 가져오는 메소드")
+    @ApiResponse(content = @Content(schema = @Schema(implementation = MainCategoryRankingListResponse.class)))
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/categories/rankings")
+    public Response<MainCategoryRankingListResponse> getMainCategoryRanking(@AuthenticationPrincipal Long userId) {
+        MainCategoryRankingListResponse rankingList = categoryService.getMainCategoryRanking(userId);
+        return Response.createSuccess(rankingList);
     }
 }

@@ -1,5 +1,8 @@
 package com.hongik.graduationproject.service;
 
+import com.hongik.graduationproject.domain.MainCategoryCount;
+import com.hongik.graduationproject.domain.dto.category.MainCategoryRankingListResponse;
+import com.hongik.graduationproject.domain.dto.category.MainCategoryRankingResponse;
 import com.hongik.graduationproject.domain.dto.category.SubCategoryListResponse;
 import com.hongik.graduationproject.domain.dto.category.SubCategoryResponse;
 import com.hongik.graduationproject.domain.entity.Category;
@@ -9,6 +12,7 @@ import com.hongik.graduationproject.exception.AppException;
 import com.hongik.graduationproject.exception.ErrorCode;
 import com.hongik.graduationproject.repository.CategoryRepository;
 import com.hongik.graduationproject.repository.UserRepository;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -53,5 +57,29 @@ public class CategoryService {
                 .build();
 
         categoryRepository.save(category);
+    }
+
+    @Transactional
+    public MainCategoryRankingListResponse getMainCategoryRanking(Long userId) {
+        List<MainCategoryCount> categoryCounts = categoryRepository.getSummaryCountOfMainCategoryByUser(userId);
+
+        int totalSummaries = categoryCounts.stream()
+                .mapToInt(count -> count.getCount().intValue())
+                .sum();
+
+        List<MainCategoryRankingResponse> rankingList = categoryCounts.stream()
+                .map(count -> createRankingResponse(count, totalSummaries))
+                .filter(ranking -> ranking.summaryCount() > 0)  // summaryCount가 0인 경우를 필터링
+                .collect(Collectors.toList());
+
+        log.info("사용자 ID {}의 메인 카테고리 순위 조회", userId);
+        return new MainCategoryRankingListResponse(rankingList);
+    }
+
+    private MainCategoryRankingResponse createRankingResponse(MainCategoryCount count, int totalSummaries) {
+        MainCategory mainCategory = MainCategory.valueOf(count.getMainCategory());
+        int summaryCount = count.getCount().intValue();
+        double percentage = totalSummaries > 0 ? (summaryCount / (double) totalSummaries) * 100 : 0.0;
+        return new MainCategoryRankingResponse(mainCategory, percentage, summaryCount);
     }
 }
