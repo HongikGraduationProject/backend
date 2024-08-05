@@ -76,7 +76,7 @@ public class VideoSummaryController {
 	}
 
 	@Operation(summary = "영상 요약 목록 전체 조회", description = "메인 화면에서 모든 영상 요약을 보여주기 위한 API")
-	// @ApiResponse(content = @Content(schema = @Schema(implementation = VideoSummaryListResponse.class)))
+	@ApiResponse(content = @Content(schema = @Schema(implementation = VideoSummaryMainPageListResponse.class)))
 	@GetMapping("/summaries/list/all")
 	@ResponseStatus(HttpStatus.OK)
 	public Response<VideoSummaryMainPageListResponse> getAllSummaries(@AuthenticationPrincipal Long userId) {
