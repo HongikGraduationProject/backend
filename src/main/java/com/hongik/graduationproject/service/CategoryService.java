@@ -12,6 +12,7 @@ import com.hongik.graduationproject.exception.AppException;
 import com.hongik.graduationproject.exception.ErrorCode;
 import com.hongik.graduationproject.repository.CategoryRepository;
 import com.hongik.graduationproject.repository.UserRepository;
+import java.util.Date;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -73,6 +74,23 @@ public class CategoryService {
                 .collect(Collectors.toList());
 
         log.info("사용자 ID {}의 메인 카테고리 순위 조회", userId);
+        return new MainCategoryRankingListResponse(rankingList);
+    }
+
+    @Transactional
+    public MainCategoryRankingListResponse getMainCategoryRankingByDate(Long userId, Date startDate, Date endDate) {
+        List<MainCategoryCount> categoryCounts = categoryRepository.getSummaryCountOfMainCategoryByUserAndDate(userId, startDate, endDate);
+
+        int totalSummaries = categoryCounts.stream()
+                .mapToInt(count -> count.getCount().intValue())
+                .sum();
+
+        List<MainCategoryRankingResponse> rankingList = categoryCounts.stream()
+                .map(count -> createRankingResponse(count, totalSummaries))
+                .filter(ranking -> ranking.summaryCount() > 0)
+                .collect(Collectors.toList());
+
+        log.info("사용자 ID {}의 {}부터 {}까지의 메인 카테고리 순위 조회", userId, startDate, endDate);
         return new MainCategoryRankingListResponse(rankingList);
     }
 

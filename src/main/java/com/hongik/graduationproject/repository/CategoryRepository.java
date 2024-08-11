@@ -5,6 +5,7 @@ import com.hongik.graduationproject.domain.dto.category.SubCategoryResponse;
 import com.hongik.graduationproject.domain.entity.Category;
 import com.hongik.graduationproject.domain.entity.User;
 import com.hongik.graduationproject.enums.MainCategory;
+import java.util.Date;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -39,4 +40,15 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
             "ORDER BY COUNT(vsc.video_summary_category_id) DESC " +
             "LIMIT 2", nativeQuery = true)
     List<MainCategoryCount> getSummaryCountOfMainCategoryByUser(Long userId);
+
+    @Query(value = "SELECT c.main_category AS mainCategory, COUNT(vsc.video_summary_category_id) AS count " +
+            "FROM category c " +
+            "LEFT JOIN video_summary_category vsc ON c.category_id = vsc.category_id " +
+            "LEFT JOIN video_summary vs ON vsc.video_summary_id = vs.video_summary_id " +
+            "WHERE c.user_id = :userId " +
+            "AND vs.created_at BETWEEN :startDate AND :endDate "+
+            "GROUP BY c.main_category " +
+            "ORDER BY COUNT(vsc.video_summary_category_id) DESC " +
+            "LIMIT 2", nativeQuery = true)
+    List<MainCategoryCount> getSummaryCountOfMainCategoryByUserAndDate(Long userId, Date startDate, Date endDate);
 }

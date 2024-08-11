@@ -1,5 +1,7 @@
 package com.hongik.graduationproject.controller;
 
+import java.util.Date;
+
 import com.hongik.graduationproject.domain.dto.Response;
 import com.hongik.graduationproject.domain.dto.category.MainCategoryRankingListResponse;
 import com.hongik.graduationproject.domain.dto.category.SubCategoryCreateRequest;
@@ -14,6 +16,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -52,6 +55,18 @@ public class CategoryController {
 	@GetMapping("/categories/rankings")
 	public Response<MainCategoryRankingListResponse> getMainCategoryRanking(@AuthenticationPrincipal Long userId) {
 		MainCategoryRankingListResponse rankingList = categoryService.getMainCategoryRanking(userId);
+		return Response.createSuccess(rankingList);
+	}
+
+	@Operation(summary = "주차별 메인 카테고리 랭킹 가져오기", description = "특정 주차에 대한 메인 카테고리 1, 2위를 가져오는 메소드")
+	@ApiResponse(content = @Content(schema = @Schema(implementation = MainCategoryRankingListResponse.class)))
+	@ResponseStatus(HttpStatus.OK)
+	@GetMapping("/categories/rankings/weekly")
+	public Response<MainCategoryRankingListResponse> getMainCategoryRankingByDate(
+			@AuthenticationPrincipal Long userId,
+			@RequestParam(name = "start-date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate,
+			@RequestParam(name = "end-date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate) {
+		MainCategoryRankingListResponse rankingList = categoryService.getMainCategoryRankingByDate(userId, startDate, endDate);
 		return Response.createSuccess(rankingList);
 	}
 }
