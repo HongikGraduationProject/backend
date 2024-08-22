@@ -62,7 +62,7 @@ public class VideoSummaryDto {
 			.address(videoSummaryCategory.getVideoSummary().getAddress())
 			.createdAt(videoSummaryCategory.getVideoSummary().getCreatedAt().minusHours(9))
 			.platform(videoSummaryCategory.getVideoSummary().getPlatform())
-			.mainCategory(videoSummaryCategory.getVideoSummary().getGeneratedMainCategory().getName())
+			.mainCategory(videoSummaryCategory.getVideoSummary().getGeneratedMainCategory().name())
 			.mainCategoryIndex(videoSummaryCategory.getVideoSummary().getGeneratedMainCategory().getIndex())
 			.subCategory(videoSummaryCategory.getCategory().getSubCategory())
 			.subCategoryId(videoSummaryCategory.getCategory().getId())
