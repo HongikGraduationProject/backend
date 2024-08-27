@@ -17,23 +17,23 @@
 
 ### Backend
 
-![Untitled](readme%20md%20f2c3eea381f94c79a236eb251786d906/Untitled.png)
+<img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white"> <img src="https://img.shields.io/badge/spring boot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"> <img src="https://img.shields.io/badge/python-3776AB?style=for-the-badge&logo=python&logoColor=white"> <img src="https://img.shields.io/badge/rabbitmq-FF6600?style=for-the-badge&logo=RabbitMQ&logoColor=white">
 
 ### DB
-
-![Untitled](readme%20md%20f2c3eea381f94c79a236eb251786d906/Untitled%201.png)
+<img src="https://img.shields.io/badge/redis-DC382D?style=for-the-badge&logo=redis&logoColor=white"> <img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white">
 
 ### Infra
 
-![Untitled](readme%20md%20f2c3eea381f94c79a236eb251786d906/Untitled%202.png)
+<img src="https://img.shields.io/badge/amazonwebservices-232F3E?style=for-the-badge&logo=amazonwebservices&logoColor=white"> <img src="https://img.shields.io/badge/amazonec2-FF9900?style=for-the-badge&logo=amazonec2&logoColor=white"> <img src="https://img.shields.io/badge/amazonrds-527FFF?style=for-the-badge&logo=amazonrds&logoColor=white">
 
 ### Dev/Ops
 
-![Untitled](readme%20md%20f2c3eea381f94c79a236eb251786d906/Untitled%203.png)
+<img src="https://img.shields.io/badge/docker-2496ED?style=for-the-badge&logo=Docker&logoColor=white"> <img src="https://img.shields.io/badge/githubactions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white"> 
+
 
 ## 아키텍처
 
-![Frame 1.png](readme%20md%20f2c3eea381f94c79a236eb251786d906/Frame_1.png)
+![숏캡 백엔드 아키텍쳐](https://github.com/user-attachments/assets/8db4f57b-9f64-4ea6-bbfe-4179c1b26d9c)
 
 - 크게 스프링 애플리케이션, 파이썬 애플리케이션이 존재합니다.
 - 스프링 애플리케이션은 클라이언트와의 통신을 담당합니다.
