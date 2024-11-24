@@ -104,8 +104,8 @@ public class VideoSummaryService {
     }
 
     // 검색어를 포함하는 video id들을 조회하는 메서드
-    public List<Long> getAllVideoIdsBySearchWord(String searchWord) {
-        return videoSummaryRepository.getAllVideoIdsBySearchWord(searchWord);
+    public List<Long> getAllVideoIdsBySearchWord(Long userId, String searchWord) {
+        return videoSummaryRepository.getAllUserVideoIdsBySearchWord(userId, searchWord);
     }
 
     @Transactional
